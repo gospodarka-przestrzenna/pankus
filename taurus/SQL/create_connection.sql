@@ -4,5 +4,5 @@ CREATE TABLE connection(
     end_id INTEGER,
     weight REAL
 );
-CREATE INDEX IF NOT EXISTS connection_start_id_idx ON point (start_id);
-CREATE INDEX IF NOT EXISTS connection_end_id_idx ON point (end_id);
+CREATE INDEX IF NOT EXISTS connection_start_id_idx ON connection (start_id);
+CREATE INDEX IF NOT EXISTS connection_end_id_idx ON connection (end_id);

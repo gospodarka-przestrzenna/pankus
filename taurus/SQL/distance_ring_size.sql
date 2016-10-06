@@ -1,0 +1,1 @@
+SELECT count(*) FROM distance_ring

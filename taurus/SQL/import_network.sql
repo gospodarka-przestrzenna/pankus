@@ -1,7 +1,7 @@
 INSERT INTO network VALUES (
-    "{linestring}",
+    {linestring!r},
     {weight},
-    "{start}",
-    "{end}",
+    {start!r},
+    {end!r},
     {throughput}
 );

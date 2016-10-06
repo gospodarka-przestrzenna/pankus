@@ -1,6 +1,6 @@
 INSERT INTO sd VALUES (
     {sd_id},
-    "{point}",
+    {point!r},
     {sources},
     {destinations},
     {selectivity}

@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-import json
+import json,pdb
 from .sqlite_database import SQLiteDatabase
 
 class Importer(SQLiteDatabase):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+        self.kwargs=kwargs
         self.network_filename=kwargs.get('network_filename','net.geojson')
         self.sd_filename=kwargs.get('sd_filename','sd.geojson')
         self.weight_name=kwargs.get('weight_name','weight')
@@ -23,7 +24,7 @@ class Importer(SQLiteDatabase):
         self.execute_script('create_network')
         with open(self.network_filename,'r') as net:
             net_data=json.load(net)
-            print(net_data.keys())
+            # print(net_data.keys())
             for feature in net_data['features']:
                 print(feature)
                 assert self.weight_name in feature['properties']
@@ -74,5 +75,37 @@ class Importer(SQLiteDatabase):
 
     # not in this module just for now in here
     def generate_connections(self):
-        pass
+        self.execute_script('create_connection')
+        if not self.table_exists('traffic'):
+            self.execute_script('insert_connection')
+        else:
+            # new weight in order of traffic
+            pass
 
+    #dendryt function
+    def distance(self):
+        #self.generate_connections()
+        self.execute_script('create_distance')
+        sd_point_iterator=self._taurus_progressbar_cursor('select_sd_point')
+        for sd_point in sd_point_iterator:
+            id=sd_point[2]
+            self.execute_script('initialize_distance_ring',{'id':id})
+            size=self.execute_script('distance_ring_size').fetchone()[0]
+            while size:
+                row=self.execute_script('distance_ring_get_minimum').fetchone()
+                start_id=row[0]
+                end_id=row[1]
+                weight=row[4]
+
+
+                self.execute_script('distance_ring_extend',{
+                    'start_id':start_id,
+                    'end_id':end_id,
+                    'weight':weight
+                })
+                size=self.execute_script('distance_ring_size').fetchone()[0]
+                # print(size)
+
+
+    def build_rings(self,no_of_rings):
+        pass
