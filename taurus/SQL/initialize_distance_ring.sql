@@ -11,9 +11,6 @@ INSERT INTO distance_ring
     WHERE
         connection.start_id={id};
 
-INSERT INTO used VALUES(
-    {id}
-);
 
 INSERT INTO distance VALUES (
     {id},

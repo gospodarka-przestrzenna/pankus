@@ -33,6 +33,8 @@ class SQLiteDatabase:
             c.execute(sql_string)
         return c
 
+    def do(self,script_name,args={}):
+       return self.execute_script(script_name,args).fetchone()
 
     def table_exists(self,dataset_name):
         c=self.db_connection.cursor()

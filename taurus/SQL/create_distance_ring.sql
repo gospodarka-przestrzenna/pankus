@@ -16,5 +16,4 @@ CREATE TABLE used_points (
 );
 ----CREATE INDEX IF NOT EXISTS distance_ring_start_id_idx ON distance_ring (start_id);
 ----CREATE INDEX IF NOT EXISTS distance_ring_end_id_idx ON distance_ring (end_id);
-CREATE INDEX IF NOT EXISTS used_id_idx ON used (id);
-
+CREATE INDEX IF NOT EXISTS used_points_id_idx ON used_points (id);

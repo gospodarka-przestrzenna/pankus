@@ -12,10 +12,6 @@ WHERE
     end_id={end_id} AND
     weight={weight};
 
-INSERT INTO used VALUES(
-    end_id
-);
-
 INSERT INTO distance_ring
 SELECT DISTINCT
     d.start_id,
@@ -32,11 +28,12 @@ WHERE
     c.start_id=d.end_id AND
     NOT EXISTS (
         SELECT
-            id
+            *
         FROM
-            used
+            distance as dd
         WHERE
-            id =c.end_id
+            dd.end_id=c.end_id AND
+            dd.start_id={start_id}
         LIMIT 1
     );
 

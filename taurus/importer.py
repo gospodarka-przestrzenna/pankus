@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-import json,pdb
+import json,pdb,math
 from .sqlite_database import SQLiteDatabase
+
 
 class Importer(SQLiteDatabase):
 
@@ -21,7 +22,7 @@ class Importer(SQLiteDatabase):
 
 
     def import_network_geojson(self):
-        self.execute_script('create_network')
+        self.do('create_network')
         with open(self.network_filename,'r') as net:
             net_data=json.load(net)
             # print(net_data.keys())
@@ -36,7 +37,7 @@ class Importer(SQLiteDatabase):
                 start=json.dumps(feature['geometry']['coordinates'][0])
                 end=json.dumps(feature['geometry']['coordinates'][-1])
 
-                self.execute_script('import_network',{
+                self.do('import_network',{
                     'linestring':geometry,
                     'weight':weight,
                     'throughput':throughput,
@@ -44,9 +45,8 @@ class Importer(SQLiteDatabase):
                     'end':end
                 })
 
-
     def import_sd_geojson(self):
-        self.execute_script('create_sd')
+        self.do('create_sd')
         with open(self.sd_filename,'r') as sd:
             sd_data=json.load(sd)
             for feature in sd_data['features']:
@@ -62,7 +62,7 @@ class Importer(SQLiteDatabase):
                 sd_id=feature['properties'][self.sd_id_name]
 
                 geometry=json.dumps(feature['geometry']['coordinates'])
-                self.execute_script('import_sd',{
+                self.do('import_sd',{
                     'point':geometry,
                     'sources':sources,
                     'destinations':destinations,
@@ -70,14 +70,14 @@ class Importer(SQLiteDatabase):
                     'selectivity':selectivity
                 })
     def point_from_network_sd(self):
-        self.execute_script('create_point')
-        self.execute_script('insert_point')
+        self.do('create_point')
+        self.do('insert_point')
 
     # not in this module just for now in here
     def generate_connections(self):
-        self.execute_script('create_connection')
+        self.do('create_connection')
         if not self.table_exists('traffic'):
-            self.execute_script('insert_connection')
+            self.do('insert_connection')
         else:
             # new weight in order of traffic
             pass
@@ -85,27 +85,48 @@ class Importer(SQLiteDatabase):
     #dendryt function
     def distance(self):
         #self.generate_connections()
-        self.execute_script('create_distance')
+        self.do('create_distance')
         sd_point_iterator=self._taurus_progressbar_cursor('select_sd_point')
-        for sd_point in sd_point_iterator:
-            id=sd_point[2]
-            self.execute_script('initialize_distance_ring',{'id':id})
-            size=self.execute_script('distance_ring_size').fetchone()[0]
+        for _,_,sd_id in sd_point_iterator:
+            self.do('initialize_distance_ring',{'id':sd_id})
+            size,=self.do('distance_ring_size')
             while size:
-                row=self.execute_script('distance_ring_get_minimum').fetchone()
-                start_id=row[0]
-                end_id=row[1]
-                weight=row[4]
-
-
-                self.execute_script('distance_ring_extend',{
+                start_id,end_id,_,_,weight,_=self.do('distance_ring_get_minimum')
+                self.do('distance_ring_extend',{
                     'start_id':start_id,
                     'end_id':end_id,
                     'weight':weight
                 })
-                size=self.execute_script('distance_ring_size').fetchone()[0]
+                size,=self.do('distance_ring_size')
                 # print(size)
 
+    def create_escape_fraction_selectivity(self,efs):
+        destinations_total,=self.do('select_destinations_total')
+        selectivity=-math.log(efs)/destinations_total
+        self.do('update_sd_selectivity',{'selectivity':selectivity*1000000})
 
     def build_rings(self,no_of_rings):
-        pass
+        self.do('create_ring')
+        max_distance,=self.do('distance_maximum')
+        #I don't like solution but is mostly what we expect
+        factor=no_of_rings/(max_distance+0.001)
+        self.do('insert_ring',{'factor':factor})
+
+    def ring_total(self):
+        self.do('create_ring_total')
+        self.do('insert_ring_total')
+
+    def motion_exchange(self):
+        self.do('create_motion_exchange')
+        iterator=self._taurus_progressbar_cursor('select_for_motion_exchange')
+        for s,e,r,d_i,d_p,src,dst,sel in iterator:
+            if d_i>0:
+                fraction=dst*(math.exp(-sel*d_p/1000000)-math.exp(-sel*(d_i+d_p)/1000000))/d_i
+            else:
+                fraction=0
+            self.do('insert_motion_exchange',{
+                'sd_start_id':s,
+                'sd_end_id':e,
+                'fraction':fraction,
+                'motion_exchange':fraction*src
+            })

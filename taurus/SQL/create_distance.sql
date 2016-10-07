@@ -8,3 +8,4 @@ CREATE TABLE distance (
 );
 CREATE INDEX IF NOT EXISTS distance_start_id_idx ON distance (start_id);
 CREATE INDEX IF NOT EXISTS distance_end_id_idx ON distance (end_id);
+CREATE INDEX IF NOT EXISTS distance_start_id_end_id_idx ON distance (start_id,end_id);
