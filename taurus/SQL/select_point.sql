@@ -1,1 +1,1 @@
-SELECT * FROM point;
+SELECT * FROM point

@@ -7,10 +7,10 @@ __all__ = [
 
 from .sqlite_database import SQLiteDatabase
 from .importer import Importer
+from .route import Route
+from .intervening_opportunity import InterveningOpportunity
 
-class Taurus(Importer):
+class Taurus(Importer,Route,InterveningOpportunity):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
-
-

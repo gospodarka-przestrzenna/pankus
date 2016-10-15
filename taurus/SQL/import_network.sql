@@ -1,7 +1,7 @@
 INSERT INTO network VALUES (
-    {linestring!r},
-    {weight},
-    {start!r},
-    {end!r},
-    {throughput}
-);
+    :linestring,
+    :weight,
+    :start,
+    :end,
+    :throughput
+)

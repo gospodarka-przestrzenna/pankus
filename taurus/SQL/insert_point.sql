@@ -16,4 +16,4 @@ INSERT INTO point
         FROM
             network LEFT OUTER JOIN sd ON network.end=sd.point
     );
-UPDATE point SET id=rowid;
+UPDATE point SET id=(rowid-1);
