@@ -1,2 +1,2 @@
-UPDATE sd
-SET selectivity={selectivity};
+UPDATE model_parameters
+SET selectivity=:selectivity;

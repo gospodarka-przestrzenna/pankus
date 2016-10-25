@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-import json,pdb,math
+import json,pdb
 from .sqlite_database import SQLiteDatabase
-from ipy_progressbar import ProgressBar
 
 class Importer(SQLiteDatabase):
 
@@ -19,7 +18,9 @@ class Importer(SQLiteDatabase):
         self.destinations_name=kwargs.get('destinations_name','destinations')
         self.sd_id_name=kwargs.get('destinations_name','sd_id')
         self.selectivity_name=kwargs.get('selectivity_name','selectivity')
-
+        self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
+        self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
+        self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
 
     def import_network_geojson(self):
         self.do('create_network')
@@ -28,7 +29,7 @@ class Importer(SQLiteDatabase):
             # print(net_data.keys())
 
             data_to_insert=[]
-            for feature in ProgressBar(net_data['features']):
+            for feature in net_data['features']:
                 # print(feature)
                 assert self.weight_name in feature['properties']
                 assert 'LineString' == feature['geometry']['type']
@@ -38,14 +39,21 @@ class Importer(SQLiteDatabase):
                 geometry=json.dumps(feature['geometry']['coordinates'])
                 start=json.dumps(feature['geometry']['coordinates'][0])
                 end=json.dumps(feature['geometry']['coordinates'][-1])
+                convolution_start=feature['properties'].get(self.convolution_start_name,'NULL')
+                convolution_size=feature['properties'].get(self.convolution_size_name,'NULL')
+                convolution_intensity=feature['properties'].get(self.convolution_intensity_name,'NULL')
+
                 data_to_insert.append({
                     'linestring':str(geometry),
                     'weight':weight,
                     'throughput':throughput,
                     'start':str(start),
-                    'end':str(end)
+                    'end':str(end),
+                    'convolution_start':convolution_start,
+                    'convolution_size':convolution_size,
+                    'convolution_intensity':convolution_intensity
                 })
-            self.do('import_network',data_to_insert)
+            self.transaction('import_network',data_to_insert)
 
 
     def import_sd_geojson(self):
@@ -61,6 +69,9 @@ class Importer(SQLiteDatabase):
                 assert self.sd_id_name in feature['properties']
                 assert 'Point' == feature['geometry']['type']
                 selectivity=feature['properties'].get(self.selectivity_name,'NULL')
+                convolution_start=feature['properties'].get(self.convolution_start_name,'NULL')
+                convolution_size=feature['properties'].get(self.convolution_size_name,'NULL')
+                convolution_intensity=feature['properties'].get(self.convolution_intensity_name,0)
 
                 sources=feature['properties'][self.sources_name]
                 destinations=feature['properties'][self.destinations_name]
@@ -72,11 +83,16 @@ class Importer(SQLiteDatabase):
                     'sources':sources,
                     'destinations':destinations,
                     'sd_id':sd_id,
-                    'selectivity':selectivity
+                    'selectivity':selectivity,
+                    'convolution_start':convolution_start,
+                    'convolution_size':convolution_size,
+                    'convolution_intensity':convolution_intensity
                 })
 
-            self.do('import_sd',data_to_insert)
-            #self.db_connection.commit()
+            self.transaction('import_sd',data_to_insert)
+        #
+        self.do('create_model_parameters')
+        self.do('insert_model_parameters')
 
 
     def point_from_network_sd(self):

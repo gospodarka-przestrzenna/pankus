@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS sd;
-CREATE TABLE sd (
+DROP TABLE IF EXISTS model_parameters;
+CREATE TABLE model_parameters(
     sd_id INTEGER,
-    point TEXT,
     sources REAL,
     destinations REAL,
     selectivity REAL,
@@ -9,5 +8,4 @@ CREATE TABLE sd (
     convolution_size REAL,
     convolution_intensity REAL
 );
-CREATE INDEX IF NOT EXISTS sd_sd_id_idx ON sd (sd_id);
-CREATE INDEX IF NOT EXISTS sd_point_idx ON sd (point);
+CREATE INDEX IF NOT EXISTS model_parameters_sd_id_idx ON model_parameters (sd_id);

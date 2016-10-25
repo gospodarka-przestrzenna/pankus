@@ -33,7 +33,7 @@ class Route(SQLiteDatabase):
 
     def distance(self):
         #self.generate_connections()
-        assert self.do('test_point_id_range').fetchone()[0]
+        assert self.one('test_point_id_range')[0]
 
         self.do('create_distance')
 
@@ -86,5 +86,6 @@ class Route(SQLiteDatabase):
                         new_distances[c_end]['successor_id'] = new_distances[found]['successor_id']
                         new_distances[c_end]['predecessor_id'] = found
                         heappush(H,(c_weight, c_end))
-            self.do('import_distance',new_distances)
+            self.transaction('import_distance',new_distances)
+
         self.commit()

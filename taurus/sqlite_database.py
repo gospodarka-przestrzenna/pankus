@@ -15,6 +15,8 @@ class SQLiteDatabase:
         database_name=kwargs.get('database_name','taurus.db')
         self.db_connection=sqlite3.connect(database_name)
         self.do_progressbar=kwargs.get('progressbar',True)
+        #
+        self.execute=self.db_connection.execute
 
     def get_sql_form_file(self,script_name):
         return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('utf-8')
@@ -22,27 +24,40 @@ class SQLiteDatabase:
     def build_sql(self,script_string,args={}):
         return script_string.format(**args)
 
-    def executemany(self,script_name,args_list):
-        return self.db_connection.executemany(
-            self.get_sql_form_file(script_name),
-            args_list
-        )
+
     def commit(self):
         self.db_connection.commit()
 
-    def do(self,script_name,args=None):
+    def one(self,script_name,args={}):
+        cursor=self.do(script_name,args)
+        if cursor:
+            return cursor.fetchone()
+
+    def transaction(self,script_name,args):
         sql_string=self.get_sql_form_file(script_name)
-        if not args:
-            if ';' in sql_string:
-                self.db_connection.executescript(sql_string)
-            else:
-                return self.db_connection.execute(sql_string)
-        elif hasattr(args,'__iter__'):
-            return self.db_connection.executemany(sql_string,args)
-        elif isinstance(args,list):
+        assert hasattr(args,'__iter__')
+        self.db_connection.executemany(sql_string,args)
+        self.commit()
+
+    def do(self,script_name,args={}):
+        '''
+        script contains ; is script and executed without output
+        script without ; is for fetching output
+
+        :param script_name:
+        :param args:
+        :return:
+        '''
+        sql_string=self.get_sql_form_file(script_name)
+        if ';' not in sql_string:
             return self.db_connection.execute(sql_string,args)
+        elif ':' in sql_string:
+            query_list=sql_string.split(';')
+            for query in query_list:
+                self.db_connection.execute(query,args)
         else:
-            return self.db_connection.executescript(self.build_sql(sql_string,args))
+            self.db_connection.executescript(sql_string)
+
 
     def table_exists(self,dataset_name):
         c=self.db_connection.cursor()

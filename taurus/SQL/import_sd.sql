@@ -3,5 +3,8 @@ INSERT INTO sd VALUES (
     :point,
     :sources,
     :destinations,
-    :selectivity
+    :selectivity,
+    :convolution_start,
+    :convolution_size,
+    :convolution_intensity
 );

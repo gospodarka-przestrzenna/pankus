@@ -3,7 +3,7 @@ SELECT DISTINCT
     p1.sd_id,
     p2.sd_id,
     (SELECT
-        cast(weight*{factor} as int)
+        cast(weight*(:factor) as int)
     FROM
         distance as d
     WHERE
