@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS point;
 CREATE TABLE point (
     point TEXT,
-    id INTEGER,
+    id INTEGER PRIMARY KEY,
     sd_id INTEGER
 );
 CREATE INDEX IF NOT EXISTS point_id_idx ON point (id);

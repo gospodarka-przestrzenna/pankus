@@ -7,4 +7,4 @@ INSERT INTO sd VALUES (
     :convolution_start,
     :convolution_size,
     :convolution_intensity
-);
+)

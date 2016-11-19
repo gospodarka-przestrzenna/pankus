@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS sd;
 CREATE TABLE sd (
-    sd_id INTEGER,
+    sd_id INTEGER PRIMARY KEY,
     point TEXT,
     sources REAL,
     destinations REAL,

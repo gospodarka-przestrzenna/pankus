@@ -9,7 +9,12 @@ setup(
         'taurus',
     ],
     package_data={
-        'taurus': ['SQL/*.sql'],     # All files from folder A
+        'taurus': ['SQL/*.sql',
+                   'SQL/intopp/*.sql',
+                   'SQL/initial/*.sql',
+                   'SQL/route/*.sql',
+                   'SQL/mst/*.sql',
+                   ],     # All files from folder A
     },
     requires=[
         'ipy_progressbar',
@@ -18,6 +23,6 @@ setup(
     license='(c) Politechnika Wroclawska',
     author='Maciej Kamiński',
     author_email='maciej.kaminski@pwr.edu.pl',
-    description='Spatial planning software'
+    description='Spatial planning s  oftware'
 
 )

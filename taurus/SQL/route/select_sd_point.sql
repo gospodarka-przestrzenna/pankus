@@ -1,0 +1,1 @@
+SELECT * FROM point WHERE sd_id IS NOT NULL ORDER BY sd_id

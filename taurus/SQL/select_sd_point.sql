@@ -1,1 +1,0 @@
-SELECT * FROM point WHERE sd_id IS NOT NULL

@@ -19,7 +19,7 @@ class SQLiteDatabase:
         self.execute=self.db_connection.execute
 
     def get_sql_form_file(self,script_name):
-        return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('utf-8')
+        return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
 
     def build_sql(self,script_string,args={}):
         return script_string.format(**args)
@@ -33,10 +33,11 @@ class SQLiteDatabase:
         if cursor:
             return cursor.fetchone()
 
-    def transaction(self,script_name,args):
+    def transaction(self,script_name,data):
         sql_string=self.get_sql_form_file(script_name)
-        assert hasattr(args,'__iter__')
-        self.db_connection.executemany(sql_string,args)
+        assert hasattr(data,'__iter__')
+
+        self.db_connection.executemany(sql_string,data)
         self.commit()
 
     def do(self,script_name,args={}):

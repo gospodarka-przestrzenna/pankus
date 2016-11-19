@@ -16,14 +16,15 @@ class Importer(SQLiteDatabase):
         self.throughput_name=kwargs.get('throughput_name','throughput')
         self.sources_name=kwargs.get('sources_name','sources')
         self.destinations_name=kwargs.get('destinations_name','destinations')
-        self.sd_id_name=kwargs.get('destinations_name','sd_id')
+        self.sd_id_name=kwargs.get('sd_id_name','sd_id')
         self.selectivity_name=kwargs.get('selectivity_name','selectivity')
         self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
 
+
     def import_network_geojson(self):
-        self.do('create_network')
+        self.do('initial/create_network')
         with open(self.network_filename,'r') as net:
             net_data=json.load(net)
             # print(net_data.keys())
@@ -53,11 +54,14 @@ class Importer(SQLiteDatabase):
                     'convolution_size':convolution_size,
                     'convolution_intensity':convolution_intensity
                 })
-            self.transaction('import_network',data_to_insert)
+            self.transaction('initial/import_network',data_to_insert)
+        if self.table_exists('sd'):
+            self.point_from_network_sd()
+
 
 
     def import_sd_geojson(self):
-        self.do('create_sd')
+        self.do('initial/create_sd')
         with open(self.sd_filename,'r') as sd:
             sd_data=json.load(sd)
 
@@ -79,22 +83,21 @@ class Importer(SQLiteDatabase):
 
                 geometry=json.dumps(feature['geometry']['coordinates'])
                 data_to_insert.append({
+                    'sd_id':int(sd_id),
                     'point':str(geometry),
                     'sources':sources,
                     'destinations':destinations,
-                    'sd_id':sd_id,
                     'selectivity':selectivity,
                     'convolution_start':convolution_start,
                     'convolution_size':convolution_size,
                     'convolution_intensity':convolution_intensity
                 })
 
-            self.transaction('import_sd',data_to_insert)
-        #
-        self.do('create_model_parameters')
-        self.do('insert_model_parameters')
+            self.transaction('initial/import_sd',data_to_insert)
 
+        if self.table_exists('network'):
+            self.point_from_network_sd()
 
     def point_from_network_sd(self):
-        self.do('create_point')
-        self.do('insert_point')
+        self.do('initial/create_point')
+        self.do('initial/insert_point')

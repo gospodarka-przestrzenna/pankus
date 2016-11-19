@@ -12,36 +12,23 @@ class Route(SQLiteDatabase):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.kwargs=kwargs
-        self.network_filename=kwargs.get('network_filename','net.geojson')
-        self.sd_filename=kwargs.get('sd_filename','sd.geojson')
-        self.weight_name=kwargs.get('weight_name','weight')
-        self.throughput_name=kwargs.get('throughput_name','throughput')
-        self.sources_name=kwargs.get('sources_name','sources')
-        self.destinations_name=kwargs.get('destinations_name','destinations')
-        self.sd_id_name=kwargs.get('destinations_name','sd_id')
-        self.selectivity_name=kwargs.get('selectivity_name','selectivity')
-
 
     # not in this module just for now in here
     def generate_connections(self):
-        self.do('create_connection')
-        if not self.table_exists('traffic'):
-            self.do('insert_connection')
-        else:
-            # new weight in order of traffic
-            pass
+        self.do('route/create_connection')
+        self.do('route/insert_connection')
 
     def distance(self):
         #self.generate_connections()
-        assert self.one('test_point_id_range')[0]
+        assert self.one('route/test_point_id_range')[0]
 
-        self.do('create_distance')
+        self.do('route/create_distance')
 
-        featured_points=self.do('select_sd_point').fetchall()
-        all_points=self.do('select_point').fetchall()
+        featured_points=self.do('route/select_sd_point').fetchall()
+        all_points=self.do('route/select_point').fetchall()
 
         connections=[{} for p in all_points]
-        for start,end,weight, in self.do('select_connection'):
+        for start,end,weight, in self.do('route/select_connection'):
             connections[start][end]=weight
 
         for _,start,_, in ProgressBar(featured_points):
@@ -86,6 +73,5 @@ class Route(SQLiteDatabase):
                         new_distances[c_end]['successor_id'] = new_distances[found]['successor_id']
                         new_distances[c_end]['predecessor_id'] = found
                         heappush(H,(c_weight, c_end))
-            self.transaction('import_distance',new_distances)
-
+            self.transaction('route/import_distance',new_distances)
         self.commit()
