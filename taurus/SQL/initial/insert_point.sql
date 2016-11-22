@@ -1,16 +1,17 @@
 DELETE FROM point;
 INSERT INTO point (point,sd_id)
     SELECT
-        network.start AS point,
-        sd.sd_id AS sd_id
+        network_geometry.start AS point,
+        sd_geometry.sd_id AS sd_id
     FROM
-        network LEFT OUTER JOIN
-        sd ON network.start=sd.point
+        network_geometry LEFT OUTER JOIN
+        sd_geometry ON network_geometry.start=sd_geometry.point
     UNION
     SELECT
-        network.end AS point,
-        sd.sd_id AS sd_id
+        network_geometry.end AS point,
+        sd_geometry.sd_id AS sd_id
     FROM
-        network LEFT OUTER JOIN sd ON network.end=sd.point;
+        network_geometry LEFT OUTER JOIN
+        sd_geometry ON network_geometry.end=sd_geometry.point;
 
-UPDATE point SET id=(id-1);
+UPDATE point SET id=(oid-1);

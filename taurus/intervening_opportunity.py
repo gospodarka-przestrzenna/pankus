@@ -11,10 +11,24 @@ class InterveningOpportunity(SQLiteDatabase):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.kwargs=kwargs
+        self.sources_name=kwargs.get('sources_name','sources')
+        self.destinations_name=kwargs.get('destinations_name','destinations')
+        self.selectivity_name=kwargs.get('selectivity_name','selectivity')
+        self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
+        self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
+        self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
+
 
     def import_model_parameters(self):
         self.do('intopp/create_model_parameters')
-        self.do('intopp/insert_model_parameters')
+        self.do('intopp/insert_model_parameters',{
+            'sources_name':self.sources_name,
+            'destinations_name':self.destinations_name,
+            'selectivity_name':self.selectivity_name,
+            'convolution_start_name':self.convolution_start_name,
+            'convolution_size_name':self.convolution_size_name,
+            'convolution_intensity_name':self.convolution_intensity_name
+        })
 
     def create_escape_fraction_selectivity(self,efs):
         destinations_total,=self.one('intopp/select_destinations_total')
@@ -50,8 +64,6 @@ class InterveningOpportunity(SQLiteDatabase):
         self.do('intopp/sources_shift')
 
     def save_parameters(self,name):
-        #sd_id|name|value
-        #self.table_exists('')
         pass
 
     def motion_exchange(self):
@@ -124,7 +136,6 @@ class InterveningOpportunity(SQLiteDatabase):
 
             return (self.convolution_cdf(destinations-conv_a,selectivity,0,conv_b)-offset)+\
                    (offset-self.convolution_cdf(-destinations-conv_a,selectivity,0,conv_b))
-
         # main integral part of convolution CDF
 
         #before or no convolution

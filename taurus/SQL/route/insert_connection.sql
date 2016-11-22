@@ -3,11 +3,20 @@ INSERT INTO connection
     SELECT
         start.id,
         end.id,
-        network.weight
+        (SELECT
+            value
+         FROM
+            network_properties
+         WHERE
+            network_properties.name = :weight_name AND
+            network_properties.start = start.point AND
+            network_properties.end = end.point
+         LIMIT 1
+        )
     FROM
-        network,
+        network_geometry,
         point as start,
         point as end
     WHERE
-        network.start=start.point AND
-        network.end=end.point;
+        network_geometry.start=start.point AND
+        network_geometry.end=end.point;

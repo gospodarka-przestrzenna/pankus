@@ -12,16 +12,20 @@ class Route(SQLiteDatabase):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.kwargs=kwargs
+        self.weight_name=kwargs.get('weight_name','weight')
+        self.throughput_name=kwargs.get('throughput_name','throughput')
+
 
     # not in this module just for now in here
     def generate_connections(self):
         self.do('route/create_connection')
-        self.do('route/insert_connection')
+        self.do('route/insert_connection',{
+            'weight_name':self.weight_name
+        })
 
     def distance(self):
         #self.generate_connections()
         assert self.one('route/test_point_id_range')[0]
-
         self.do('route/create_distance')
 
         featured_points=self.do('route/select_sd_point').fetchall()

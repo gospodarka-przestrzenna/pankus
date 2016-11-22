@@ -51,13 +51,17 @@ class SQLiteDatabase:
         '''
         sql_string=self.get_sql_form_file(script_name)
         if ';' not in sql_string:
-            return self.db_connection.execute(sql_string,args)
+            c=self.db_connection.execute(sql_string,args)
+            self.commit()
+            return c
         elif ':' in sql_string:
             query_list=sql_string.split(';')
             for query in query_list:
                 self.db_connection.execute(query,args)
+                self.commit()
         else:
             self.db_connection.executescript(sql_string)
+            self.commit()
 
 
     def table_exists(self,dataset_name):
