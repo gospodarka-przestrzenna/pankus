@@ -1,0 +1,1 @@
+SELECT sd_start_id,sd_end_id,fraction FROM motion_exchange_fraction

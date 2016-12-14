@@ -14,10 +14,12 @@ setup(
                    'SQL/initial/*.sql',
                    'SQL/route/*.sql',
                    'SQL/mst/*.sql',
-                   ],     # All files from folder A
+                   'SQL/analysis/*.sql'
+                   ],     # All files from folder
     },
     requires=[
         'ipy_progressbar',
+        'numpy',
     ],
     url='http://github.com/mk45/taurus',
     license='(c) Politechnika Wroclawska',

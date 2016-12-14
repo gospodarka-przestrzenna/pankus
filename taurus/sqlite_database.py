@@ -5,18 +5,20 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 import sqlite3
 import pkg_resources
 from ipy_progressbar import ProgressBar
+from .taurus_leaf import TaurusLeaf
 
-class SQLiteDatabase:
-
+class SQLiteDatabase(TaurusLeaf):
 
     def __init__(self,**kwargs):
-        #super().__init__(**kwargs)
+        super().__init__(**kwargs)
         self.kwargs=kwargs
         database_name=kwargs.get('database_name','taurus.db')
         self.db_connection=sqlite3.connect(database_name)
-        self.do_progressbar=kwargs.get('progressbar',True)
         #
         self.execute=self.db_connection.execute
+
+    #def execute(self,**kwargs):
+
 
     def get_sql_form_file(self,script_name):
         return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
@@ -69,11 +71,4 @@ class SQLiteDatabase:
         return not c.execute(
             "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?",
             [dataset_name]).fetchone()[0]==0
-
-    def _taurus_progressbar_cursor(self,script):
-        if self.do_progressbar:
-            return ProgressBar(self.do(script).fetchall())
-        else:
-            return self.do(script).fetchall()
-
 

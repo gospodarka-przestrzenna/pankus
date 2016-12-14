@@ -12,7 +12,12 @@ INSERT INTO model_parameters
         where sd_geometry.sd_id=sd_id and name = :convolution_start_name LIMIT 1),
         (select value from sd_properties
         where sd_geometry.sd_id=sd_id and name = :convolution_size_name LIMIT 1),
-        (select value from sd_properties
+        CASE WHEN (select value from sd_properties
+        where sd_geometry.sd_id=sd_id and name = :convolution_intensity_name LIMIT 1) IS NULL
+        THEN 0
+        ELSE (select value from sd_properties
         where sd_geometry.sd_id=sd_id and name = :convolution_intensity_name LIMIT 1)
+        END
+
     FROM
         sd_geometry;

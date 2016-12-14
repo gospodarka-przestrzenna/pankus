@@ -10,7 +10,7 @@ SELECT
         END
     FROM
         ring,
-        sd as sdq
+        model_parameters as sdq
     WHERE
         sd_start_id=r.sd_start_id AND
         sd_end_id=sdq.sd_id AND
@@ -18,7 +18,7 @@ SELECT
 
 FROM
     ring as r,
-    sd
+    model_parameters
 WHERE
     sd_end_id=sd_id
 GROUP BY

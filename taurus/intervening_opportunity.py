@@ -18,7 +18,6 @@ class InterveningOpportunity(SQLiteDatabase):
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
 
-
     def import_model_parameters(self):
         self.do('intopp/create_model_parameters')
         self.do('intopp/insert_model_parameters',{
@@ -36,6 +35,11 @@ class InterveningOpportunity(SQLiteDatabase):
         self.do('intopp/update_sd_selectivity',{'selectivity':selectivity*1000000})
 
     def build_uniform_rings(self,no_of_rings):
+        """
+
+        :param no_of_rings:
+        :return:
+        """
         self.do('create_ring')
         max_distance,=self.one('intopp/distance_maximum')
         #I don't like solution but is mostly what we expect
@@ -63,8 +67,12 @@ class InterveningOpportunity(SQLiteDatabase):
     def sources_shift(self):
         self.do('intopp/sources_shift')
 
-    def save_parameters(self,name):
-        pass
+    def save_intopp_parameters(self,suffix):
+        self.do('intopp/save_parameters',{
+            'sources_new_name':'sources'+suffix,
+            'destinations_new_name':'destinations'+suffix,
+            'selectivity_new_name':'selectivity'+suffix,
+        })
 
     def motion_exchange(self):
         """
@@ -75,7 +83,7 @@ class InterveningOpportunity(SQLiteDatabase):
 
         featured_points=self.do('route/select_sd_point').fetchall()
         #iterator for progressbar
-        iterator=iter(ProgressBar(range(len(featured_points)**2)))
+        iterator=iter(self._taurus_progressbar(range(len(featured_points)**2)))
 
         motion_exchange=[]
         for start_id,\
@@ -164,4 +172,27 @@ class InterveningOpportunity(SQLiteDatabase):
                    self.convolution_cdf(sources,selectivity,0,0)*(1.0-alpha)
         return self.convolution_cdf(sources,selectivity,0,0)
 
+
+    def save_model_parameters(self,parameter,saved_name):
+        model_parameters=[{
+            "sd_id":t[0],
+            "sources":t[1],
+            "destinations":t[2],
+            "selectivity":t[3],
+            "convolution_start":t[4],
+            "convolution_size":t[5],
+            "convolution_intensity":t[6]
+        } for t in self.do('intopp/select_model_parameters').fetchall()]
+
+        assert parameter in model_parameters[0].keys()
+
+        self.do('initial/clean_value',{'name':saved_name,"new_name":saved_name})
+
+        new_value = [{
+            "sd_id": parameters['sd_id'],
+            "name": saved_name,
+            "value": parameters[parameter]
+        } for parameters in model_parameters]
+
+        self.transaction('initial/update_sd_values',new_value)
 

@@ -10,8 +10,11 @@ from .importer import Importer
 from .route import Route
 from .intervening_opportunity import InterveningOpportunity
 from .mst import MST
+from .network_generators import NetworkGenerator
+from .analysis import Analysis
 
-class Taurus(Importer,Route,InterveningOpportunity,MST):
+class Taurus(Route,InterveningOpportunity,MST,NetworkGenerator,Analysis):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+
