@@ -24,3 +24,14 @@ SET fraction=(
         tmeft.sd_start_id=motion_exchange_fraction.sd_start_id
     LIMIT 1
     );
+
+UPDATE motion_exchange
+SET motion_exchange=(
+    SELECT
+        motion_exchange.motion_exchange/tmeft.total
+    FROM
+        temp_motion_exchange_fraction_total as tmeft
+    WHERE
+        tmeft.sd_start_id=motion_exchange.sd_start_id
+    LIMIT 1
+    );
