@@ -59,6 +59,97 @@ class NetworkGenerator(Importer):
         self.transaction('initial/import_sd_geometry',sd_geometry_to_insert)
         self.transaction('initial/import_sd_properties',sd_data_to_insert)
 
+    def make_hexhorny_pattern_network(self,size,delta=0.0001):
+
+        self.do('initial/create_network')
+        self.do('initial/create_sd')
+
+        rows=[]
+        vector=cmath.rect(1,cmath.pi/3)
+        p=complex(0,0)
+        rows.append([[p]])
+        ring_generator=p
+        for ring in range(size):
+            r=[]
+            ring_generator+=complex(1,0)
+            for prt in range(6):
+                prtl=[]
+                for e in range(ring+1):
+                    point=(ring_generator*vector**prt+vector*vector*e*vector**prt)*delta
+                    prtl.append(point)
+
+                r.append(prtl)
+            rows.append(r)
+        #ring generator at last ring init point
+        to_delete_size=len(rows[-1][0])-1
+        to_delete_offset=1
+        for ringnumber,ring in enumerate(reversed(rows)):
+            for prt_nb,prt in enumerate(ring):
+                if to_delete_size>0:
+                    ring[prt_nb]=ring[prt_nb][:to_delete_offset]+ring[prt_nb][to_delete_offset+to_delete_size:]
+            to_delete_offset+=1
+            to_delete_size-=3
+
+        points=[]
+        for row in rows:
+            for part in row:
+                for point in part:
+                    points.append(point)
+
+
+        # Let add some data to geometries
+        points_with_data= [{
+            'geometry':[point.real,point.imag],
+            'data':{
+                'sd_id':i,
+                'sources':1,
+                'destinations':1
+            }
+        } for i,point in enumerate(points)]
+
+        # Data normalization
+        self._normalize(points_with_data)
+
+        #insert
+        self._insert_points(points_with_data)
+
+        net_geometry_to_insert=[]
+        net_data_to_insert=[]
+
+        for i,r in enumerate(rows):
+            if i==0:
+                continue
+            for j,part in enumerate(r):
+                for k,element in enumerate(part):
+                    if ((size*2)//3)>=i:
+                        # connections in row
+                        if k==0:
+                            self._addel(rows[i][j][k],rows[i][j-1][-1],net_geometry_to_insert,net_data_to_insert)
+                            self._addel(rows[i][j-1][-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                        else:
+                            self._addel(rows[i][j][k],rows[i][j][k-1],net_geometry_to_insert,net_data_to_insert)
+                            self._addel(rows[i][j][k-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+
+                    if i-1==0:
+                        # connections to 00
+                        self._addel(rows[i][j][k],rows[i-1][0][0],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i-1][0][0],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                    elif (len(part)/2)>k and i>1:
+                        self._addel(rows[i][j][k],rows[i-1][j][k],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i-1][j][k],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                    elif len(part)/2<k and i>1:
+                        l=len(part)-k
+                        self._addel(rows[i][j][k],rows[i-1][j][-l],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i-1][j][-l],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                    else:
+                        pass
+
+        self.transaction('initial/import_network_geometry',net_geometry_to_insert)
+        self.transaction('initial/import_network_properties',net_data_to_insert)
+        self.point_from_network_sd()
+
+
+
     def make_trianglehex_pattern_network(self,size,delta=0.0001):
 
         self.do('initial/create_network')
