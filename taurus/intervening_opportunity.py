@@ -30,6 +30,7 @@ class InterveningOpportunity(SQLiteDatabase):
         })
 
     def create_escape_fraction_selectivity(self,efs):
+        # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
         self.do('intopp/update_sd_selectivity',{'selectivity':selectivity*1000000})
