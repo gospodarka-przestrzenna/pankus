@@ -14,7 +14,7 @@ class Importer(SQLiteDatabase):
         self.sd_filename=kwargs.get('sd_filename','sd.geojson')
         self.sd_id_name=kwargs.get('sd_id_name','sd_id')
 
-    def import_network_geojson(self):
+    def import_network_geojson(self,make_two_side=False):
         self.do('initial/create_network')
         with open(self.network_filename,'r') as net:
             net_data=json.load(net)
@@ -33,6 +33,14 @@ class Importer(SQLiteDatabase):
                     'end':str(end),
                     'linestring':str(linestring)
                 })
+                if make_two_side:
+                    linestring=json.dumps(list(reversed(feature['geometry']['coordinates'])))
+                    geometry_to_insert.append({
+                        'start':str(end),
+                        'end':str(start),
+                        'linestring':str(linestring)
+                    })
+
                 for key in feature['properties']:
                     name=key
                     value=feature['properties'][key]
@@ -42,6 +50,14 @@ class Importer(SQLiteDatabase):
                         'name':str(name),
                         'value':str(value)
                     })
+                    if make_two_side:
+                        data_to_insert.append({
+                            'start':str(end),
+                            'end':str(start),
+                            'name':str(name),
+                            'value':str(value)
+                        })
+
             self.transaction('initial/import_network_geometry',geometry_to_insert)
             self.transaction('initial/import_network_properties',data_to_insert)
 
