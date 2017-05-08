@@ -99,3 +99,5 @@ class Importer(SQLiteDatabase):
     def point_from_network_sd(self):
         self.do('initial/create_point')
         self.do('initial/insert_point')
+
+

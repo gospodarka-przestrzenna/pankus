@@ -131,8 +131,8 @@ class InterveningOpportunity(SQLiteDatabase):
         for i in iterator:
             pass
 
-        self.transaction('insert_motion_exchange',motion_exchange)
-        self.transaction('insert_motion_exchange_fraction',motion_exchange)
+        self.transaction('intopp/insert_motion_exchange',motion_exchange)
+        self.transaction('intopp/insert_motion_exchange_fraction',motion_exchange)
         self.commit()
 
 

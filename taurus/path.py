@@ -3,7 +3,7 @@
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 from ipy_progressbar import ProgressBar
-
+from .sqlite_database import SQLiteDatabase
 
 class Path(SQLiteDatabase):
 
@@ -11,5 +11,10 @@ class Path(SQLiteDatabase):
         super().__init__(**kwargs)
         self.kwargs=kwargs
 
-    def create_path(self):
-        pass
+    def create_path(self,k_path=1):
+        if k_path > 1:
+            raise NotImplemented
+        else:
+            assert self.table_exists('distance')
+            self.do('')
+
