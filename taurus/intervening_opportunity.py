@@ -41,7 +41,7 @@ class InterveningOpportunity(SQLiteDatabase):
         :param no_of_rings:
         :return:
         """
-        self.do('create_ring')
+        self.do('intopp/create_ring')
         max_distance,=self.one('intopp/distance_maximum')
         #I don't like solution but is mostly what we expect
         factor=no_of_rings/(max_distance*1.0001)
@@ -116,14 +116,16 @@ class InterveningOpportunity(SQLiteDatabase):
                 conv_size,
                 conv_intensity
             )
-
-            fraction=(fraction_after_ring-fraction_before_ring)*destinations/destinations_in
+            if destinations_in!=0:
+                fraction=(fraction_after_ring-fraction_before_ring)*destinations/destinations_in
+            else:
+                fraction=0
 
             motion_exchange.append({
                 'sd_start_id':start_id,
                 'sd_end_id':end_id,
                 'fraction':fraction,
-                'motion_exchange':fraction*sources
+                'motion_exchange':(sources*fraction)
             })
         #iterator finished 'nice' (to do)
         for i in iterator:
