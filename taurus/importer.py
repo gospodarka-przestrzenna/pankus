@@ -100,4 +100,6 @@ class Importer(SQLiteDatabase):
         self.do('initial/create_point')
         self.do('initial/insert_point')
 
-
+    def point_from_sd(self):
+        self.do('initial/create_point')
+        self.do('initial/insert_point_from_sd')

@@ -7,6 +7,7 @@ from .sqlite_database import SQLiteDatabase
 from .taurus_leaf import TaurusLeaf
 from heapq import heappush,heappop
 from ipy_progressbar import ProgressBar
+from vincenty import vincenty
 
 class Route(SQLiteDatabase):
 
@@ -23,6 +24,47 @@ class Route(SQLiteDatabase):
         self.do('route/insert_connection',{
             'weight_name':self.weight_name
         })
+
+
+    def distance_air_lines(self,distance_type="geom"):
+        """
+        :param distance_type: 'geom'  for geometrical distance or 'vincenty' for WGS 84 with distance from vincenty algorithm
+        :return:
+        """
+        assert self.one('route/test_point_id_range')[0]
+        self.do('route/create_distance')
+
+        featured_points=self.do('route/select_sd_point').fetchall()
+        all_points=self.do('route/select_point').fetchall()
+
+
+        for start_point_geometry,start,_, in self._taurus_progressbar(featured_points):
+            new_distances=[]
+            sp_json_geometry=json.loads(start_point_geometry)
+
+            for end_point_geometry,i,_, in all_points:
+                ep_json_geometry=json.loads(end_point_geometry)
+
+                if distance_type=="geom":
+                    dist=sum([(i[0]-i[1])**2 for i in zip(ep_json_geometry,sp_json_geometry)])**0.5
+                elif distance_type=="vincenty":
+                    dist=vincenty(sp_json_geometry,ep_json_geometry)
+                else:
+                    #dist=None
+                    raise ValueError("Unknown value")
+
+                new_distances.append({
+                   'start_id': start,
+                   'end_id': i,
+                   'weight': dist,
+                   'successor_id': i,
+                   'predecessor_id': start
+                })
+
+            self.transaction('route/import_distance',new_distances)
+        self.commit()
+
+
 
     def distance(self):
         #self.generate_connections()
