@@ -127,6 +127,12 @@ class InterveningOpportunity(SQLiteDatabase):
                 'fraction':fraction,
                 'motion_exchange':(sources*fraction)
             })
+
+            if len(motion_exchange)>10000:
+                self.transaction('intopp/insert_motion_exchange',motion_exchange)
+                self.transaction('intopp/insert_motion_exchange_fraction',motion_exchange)
+                motion_exchange=[]
+
         #iterator finished 'nice' (to do)
         for i in iterator:
             pass
