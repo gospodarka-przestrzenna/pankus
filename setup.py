@@ -18,7 +18,7 @@ setup(
                    ],     # All files from folder
     },
     requires=[
-        'ipy_progressbar',
+        'progressbar2',
         'numpy',
     ],
     url='http://github.com/mk45/taurus',

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-#from ipy_progressbar import ProgressBar
 from .sqlite_database import SQLiteDatabase
 from .importer import Importer
 import cmath
@@ -462,9 +461,3 @@ class NetworkGenerator(Importer):
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
         self.point_from_network_sd()
-
-
-
-
-
-

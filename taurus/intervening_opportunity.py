@@ -4,7 +4,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb,math
 from .sqlite_database import SQLiteDatabase
-from ipy_progressbar import ProgressBar
+from .utils import TaurusLongTask
 
 class InterveningOpportunity(SQLiteDatabase):
 
@@ -83,8 +83,7 @@ class InterveningOpportunity(SQLiteDatabase):
         self.do('intopp/create_motion_exchange')
 
         featured_points=self.do('route/select_sd_point').fetchall()
-        #iterator for progressbar
-        iterator=iter(self._taurus_progressbar(range(len(featured_points)**2)))
+        expected_problem_size=len(featured_points)**2
 
         motion_exchange=[]
         for start_id,\
@@ -97,9 +96,12 @@ class InterveningOpportunity(SQLiteDatabase):
             selectivity,\
             conv_start,\
             conv_size,\
-            conv_intensity in self.do('intopp/select_for_motion_exchange'):
-            #iterator for progressbar when exchange is les than N^2 (little hack sorry)
-            iterator.__next__()
+            conv_intensity in TaurusLongTask(\
+                                self.do('intopp/select_for_motion_exchange'),\
+                                max_value=expected_problem_size,\
+                                additional_text='Intervening Opportunity',\
+                                **self.kwargs\
+                                ):
 
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,
@@ -132,10 +134,6 @@ class InterveningOpportunity(SQLiteDatabase):
                 self.transaction('intopp/insert_motion_exchange',motion_exchange)
                 self.transaction('intopp/insert_motion_exchange_fraction',motion_exchange)
                 motion_exchange=[]
-
-        #iterator finished 'nice' (to do)
-        for i in iterator:
-            pass
 
         self.transaction('intopp/insert_motion_exchange',motion_exchange)
         self.transaction('intopp/insert_motion_exchange_fraction',motion_exchange)
@@ -204,4 +202,3 @@ class InterveningOpportunity(SQLiteDatabase):
         } for parameters in model_parameters]
 
         self.transaction('initial/update_sd_values',new_value)
-
