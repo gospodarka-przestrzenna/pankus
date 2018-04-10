@@ -6,7 +6,6 @@ import json,pdb,math
 from .sqlite_database import SQLiteDatabase
 from .taurus_leaf import TaurusLeaf
 from heapq import heappush,heappop
-from ipy_progressbar import ProgressBar
 from vincenty import vincenty
 
 class Route(SQLiteDatabase):

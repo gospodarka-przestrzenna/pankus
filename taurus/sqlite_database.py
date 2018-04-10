@@ -4,7 +4,6 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import sqlite3
 import pkg_resources
-from ipy_progressbar import ProgressBar
 from .taurus_leaf import TaurusLeaf
 
 class SQLiteDatabase(TaurusLeaf):
@@ -71,4 +70,3 @@ class SQLiteDatabase(TaurusLeaf):
         return not c.execute(
             "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?",
             [dataset_name]).fetchone()[0]==0
-

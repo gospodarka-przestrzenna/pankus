@@ -4,7 +4,6 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb,math
 from .sqlite_database import SQLiteDatabase
-from ipy_progressbar import ProgressBar
 
 class InterveningOpportunity(SQLiteDatabase):
 
@@ -204,4 +203,3 @@ class InterveningOpportunity(SQLiteDatabase):
         } for parameters in model_parameters]
 
         self.transaction('initial/update_sd_values',new_value)
-

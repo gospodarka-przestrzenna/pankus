@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-from ipy_progressbar import ProgressBar
 from .sqlite_database import SQLiteDatabase
 
 class Path(SQLiteDatabase):
@@ -17,4 +16,3 @@ class Path(SQLiteDatabase):
         else:
             assert self.table_exists('distance')
             self.do('')
-
