@@ -4,6 +4,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb,math
 from .sqlite_database import SQLiteDatabase
+from .utils import TaurusLongTask
 
 class InterveningOpportunity(SQLiteDatabase):
 
@@ -94,7 +95,7 @@ class InterveningOpportunity(SQLiteDatabase):
             selectivity,\
             conv_start,\
             conv_size,\
-            conv_intensity in self.do('intopp/select_for_motion_exchange'):
+            conv_intensity in TaurusLongTask(self.do('intopp/select_for_motion_exchange'),**self.kwargs):
 
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,

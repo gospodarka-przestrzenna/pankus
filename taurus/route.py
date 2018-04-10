@@ -5,6 +5,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 import json,pdb,math
 from .sqlite_database import SQLiteDatabase
 from .taurus_leaf import TaurusLeaf
+from .utils import TaurusLongTask
 from heapq import heappush,heappop
 from vincenty import vincenty
 
@@ -37,7 +38,7 @@ class Route(SQLiteDatabase):
         all_points=self.do('route/select_point').fetchall()
 
 
-        for start_point_geometry,start,_, in featured_points:
+        for start_point_geometry,start,_, in TaurusLongTask(featured_points,**self.kwargs):
             new_distances=[]
             sp_json_geometry=json.loads(start_point_geometry)
 
@@ -77,7 +78,7 @@ class Route(SQLiteDatabase):
         for start,end,weight, in self.do('route/select_connection'):
             connections[start][end]=weight
 
-        for _,start,_, in featured_points:
+        for _,start,_, in TaurusLongTask(featured_points,**self.kwargs):
             #heap
             H=[]
             new_distances = [{
