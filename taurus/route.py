@@ -38,7 +38,10 @@ class Route(SQLiteDatabase):
         all_points=self.do('route/select_point').fetchall()
 
 
-        for start_point_geometry,start,_, in TaurusLongTask(featured_points,**self.kwargs):
+        for start_point_geometry,start,_, in TaurusLongTask(\
+                                                featured_points,\
+                                                additional_text='Distances',\
+                                                **self.kwargs):
             new_distances=[]
             sp_json_geometry=json.loads(start_point_geometry)
 
@@ -78,7 +81,10 @@ class Route(SQLiteDatabase):
         for start,end,weight, in self.do('route/select_connection'):
             connections[start][end]=weight
 
-        for _,start,_, in TaurusLongTask(featured_points,**self.kwargs):
+        for _,start,_, in TaurusLongTask(\
+                            featured_points,\
+                            additional_text='Distances',\
+                            **self.kwargs):
             #heap
             H=[]
             new_distances = [{
