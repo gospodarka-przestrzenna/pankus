@@ -83,6 +83,7 @@ class InterveningOpportunity(SQLiteDatabase):
         self.do('intopp/create_motion_exchange')
 
         featured_points=self.do('route/select_sd_point').fetchall()
+        expected_problem_size=len(featured_points)**2
 
         motion_exchange=[]
         for start_id,\
@@ -95,7 +96,12 @@ class InterveningOpportunity(SQLiteDatabase):
             selectivity,\
             conv_start,\
             conv_size,\
-            conv_intensity in TaurusLongTask(self.do('intopp/select_for_motion_exchange'),**self.kwargs):
+            conv_intensity in TaurusLongTask(\
+                                self.do('intopp/select_for_motion_exchange'),\
+                                max_value=expected_problem_size,\
+                                additional_text='Intervening Opportunity',\
+                                **self.kwargs\
+                                ):
 
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,
