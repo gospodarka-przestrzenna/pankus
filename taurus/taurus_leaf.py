@@ -7,7 +7,3 @@ class TaurusLeaf:
     def __init__(self,**kwargs):
         super().__init__()
         self.kwargs=kwargs
-        self.if_progressbar=kwargs.get('progressbar',True)
-
-    def _taurus_progressbar(self,iterator):
-        return iterator
