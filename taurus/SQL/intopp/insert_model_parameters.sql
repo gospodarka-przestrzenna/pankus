@@ -1,3 +1,5 @@
+--'insert_model_parameters.sql' writes 'model_parameters' table using 'sd_properties' and 'sd_geometry' tables
+
 DELETE FROM model_parameters;
 INSERT INTO model_parameters
     SELECT

@@ -1,3 +1,5 @@
+--'insert_connection.sql' writes 'connection' table by selecting pairs of points' id from 'network_geometry' table and weight of the connection from 'network_parameters' table
+
 DELETE FROM connection;
 INSERT INTO connection
     SELECT

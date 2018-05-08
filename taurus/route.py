@@ -18,8 +18,18 @@ class Route(SQLiteDatabase):
         self.throughput_name=kwargs.get('throughput_name','throughput')
 
 
-    # not in this module just for now in here
+    # generates connections between pairs of points. A connection has specified start, end and weight written in the table "connection".
+    # Connections are inserted into tables using SQL scripts "create_connection" and "insert_connection".
+    # "insert_connection" script uses tables "network_geometry" and "point" to write data into new tables.
     def generate_connections(self):
+        """
+        "generate_connections" function creates connections between pairs of points using network geometry and points data.
+        Each connection is expressed as a set of data - start id, end id and weight.
+        To do so "create_connection" and "inset_connection" SQL scripts are used.
+        Results are written in the 'connection' table
+        :return:
+        """
+
         self.do('route/create_connection')
         self.do('route/insert_connection',{
             'weight_name':self.weight_name
@@ -68,8 +78,18 @@ class Route(SQLiteDatabase):
         self.commit()
 
 
-
+    # it creates distances meant as routes between pairs of source-destination points, built from previously generated connections.
+    # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
+    # Data is written into table distance using SQL script "import_distance".
     def distance(self):
+        """
+        "distance" function creates distances meant as routes between pairs of source-destination points built from available connections.
+        Distances are expressed as a set od following data: start_id, end_id, weight, successor id and predecessor id.
+        Successor id and predecessor id  data allows to tie together distances which are parts of other distances.
+        Distance data is written in the script using "import_distances" SQL script
+        :param self:
+        :return:
+        """
         #self.generate_connections()
         assert self.one('route/test_point_id_range')[0]
         self.do('route/create_distance')

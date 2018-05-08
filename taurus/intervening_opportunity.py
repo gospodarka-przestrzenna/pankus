@@ -8,7 +8,12 @@ from .utils import TaurusLongTask
 
 class InterveningOpportunity(SQLiteDatabase):
 
+    # uploading keyword arguments, if the value is missing field is filled with default value
     def __init__(self,**kwargs):
+        """
+        uploading keyword arguments, if the value is missing field is filled with default value
+        :param kwargs:
+        """
         super().__init__(**kwargs)
         self.kwargs=kwargs
         self.sources_name=kwargs.get('sources_name','sources')
@@ -17,8 +22,13 @@ class InterveningOpportunity(SQLiteDatabase):
         self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
-
+    
+    # importing model parameters, if the values are not given default values from function init are used
     def import_model_parameters(self):
+        """
+        importing model parameters, if the values are not given default values from function init are used
+        :return: self
+        """
         self.do('intopp/create_model_parameters')
         self.do('intopp/insert_model_parameters',{
             'sources_name':self.sources_name,
@@ -28,23 +38,50 @@ class InterveningOpportunity(SQLiteDatabase):
             'convolution_size_name':self.convolution_size_name,
             'convolution_intensity_name':self.convolution_intensity_name
         })
-
+    
+    # creating selectivity, a parameter describing probability of object choosing a point as a destination,
+    # taking into consideration other point placed between the object and considered point.
+    # Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
+    # which is later updated in the "model_parameters" table.
+    # Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
+    # When selectivity value is used in calculations it is divided by the same number.
     def create_escape_fraction_selectivity(self,efs):
+        """
+        creating selectivity, a parameter describing probability of object choosing a point as a destination,
+        taking into consideration other point placed between the object and considered point.
+        Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
+        which is later updated in the "model_parameters" table.
+        Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
+        When selectivity value is used in calculations it is divided by the same number.
+        :param efs:
+        :return: self
+        """
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
         self.do('intopp/update_sd_selectivity',{'selectivity':selectivity*1000000})
-
+    
+    # building specified number of rings which are written in the table "ring" containing following parameters,
+    # which describe ring placement of a source-destination point in the realtion to the second source-destination point.
+    # Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation.
+    # In calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included.
+    # Table "ring" is filled using SQL script "insert_ring_uniform"
     def build_uniform_rings(self,no_of_rings):
         """
-
+        creating selectivity, a parameter describing probability of object choosing a point as a destination,
+        taking into consideration other point placed between the object and considered point.
+        Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
+        which is later updated in the "model_parameters" table.
+        Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
+        When selectivity value is used in calculations it is divided by the same number.
         :param no_of_rings:
-        :return:
+        :return: self
         """
         self.do('intopp/create_ring')
         max_distance,=self.one('intopp/distance_maximum')
         #I don't like solution but is mostly what we expect
         factor=no_of_rings/(max_distance*1.0001)
+        #
         self.do('intopp/insert_ring_uniform',{'factor':factor})
 
     def build_weighted_rings(self,weight):
@@ -52,11 +89,25 @@ class InterveningOpportunity(SQLiteDatabase):
         factor=weight
         self.do('intopp/insert_ring_weighted',{'factor':factor})
 
+    # creating table "ring_total" containing data on number of destinations located in specified ring and sum of all the destinations from rings prior to the described ring.
+    # Table is filled by SQL script which uses tables "ring" and "model_parameters"
     def ring_total(self):
+        """
+        function "ring_total" creates table "ring_total" containing data on number of destinations located in specified ring and sum of all destiantions from rings prior to this ring
+        :return: self
+        """
         self.do('intopp/create_ring_total')
         self.do('intopp/insert_ring_total')
-
+        
+    # normalization of motion exchange. All the "objects" left in te network are set to be new 100% of network population
+    # ("objects" that left the network in search for destinatons aren't included). SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total". Table "motion_exchange" is then updated with normalized values.
     def normalize_motion_exchange(self):
+        """
+        function "normalize_motion_exchange" normalizes motion exchange, setting all the objects left in the network to be the new 100% of netwok population
+        SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total".
+        Table "motion_exchange" is then updated with normalized values.
+        :return: self
+        """
         self.do('intopp/normalization')
 
     def destination_shift(self):
@@ -75,16 +126,21 @@ class InterveningOpportunity(SQLiteDatabase):
             'selectivity_new_name':'selectivity'+suffix,
         })
 
+    #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     def motion_exchange(self):
         """
-        Test description
-        :return: Return value
+        calculates numbers of transported "objects". Results ae written in the "motion_exchange" table. which describes accurate quantity of transported "objects"
+        "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
+        Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings.
+        "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
+        :return: self
         """
         self.do('intopp/create_motion_exchange')
 
         featured_points=self.do('route/select_sd_point').fetchall()
         expected_problem_size=len(featured_points)**2
 
+        # creating a matrix which will be used to store created dictionaries and write 'motion_exchange' table in SQL
         motion_exchange=[]
         for start_id,\
             end_id,\
@@ -102,7 +158,8 @@ class InterveningOpportunity(SQLiteDatabase):
                                 additional_text='Intervening Opportunity',\
                                 **self.kwargs\
                                 ):
-
+            
+            # calculating fraction of all "objects" that found destinations prior to the currently chosen ring
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,
                 selectivity/1000000.0,
@@ -111,6 +168,7 @@ class InterveningOpportunity(SQLiteDatabase):
                 conv_intensity
             )
 
+            # calculating fraction of "objects" that found destinations prior and in the currently chosen ring
             fraction_after_ring=self.convolution_mix(
                 destinations_prior+destinations_in,
                 selectivity/1000000.0,

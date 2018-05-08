@@ -1,3 +1,5 @@
+--'select_for_motion_exchange.sql' prepares data from 'ring', 'ring_total' and 'model_parameters' tables to be used in 'motion_exchange' function from python script
+
 SELECT
     r.sd_start_id,
     r.sd_end_id,

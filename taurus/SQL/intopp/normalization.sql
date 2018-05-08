@@ -1,3 +1,6 @@
+--'normaliztion.sql' normalizes content of 'motion_exchange' and 'motion_exchcange_fraction' tables by setting all the ''objects'' left in the networs as the new 100% of network population. Results of motion_exchange are updated with the normalized data. 
+--'temp_motion_exchange_fraction' table is created, containing sum of fractions from 'motion_exchange_fraction' table. Then results of motion exchange from 'motion_exchange' and 'motion_exchange_fraction' are divided by that sum and the respective tables are updated replacing their previous contents with normalized data
+
 DROP TABLE IF EXISTS temp_motion_exchange_fraction_total;
 CREATE TABLE temp_motion_exchange_fraction_total (
     sd_start_id INTEGER,

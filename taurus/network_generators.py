@@ -12,7 +12,18 @@ class NetworkGenerator(Importer):
         super().__init__(**kwargs)
         self.kwargs=kwargs
 
+    # adding new rows to tables: network_geometry and network_properties, these new rows contain data on specified segments connecting points in the network
     def _addel(self,element,elementrel,net_geometry_to_insert,net_data_to_insert,value=1):
+        """
+        function "addel" adds new rows to tables: network_geometry and network_properties,
+        these new rows contain data on specified segments connecting points in the network
+        :param element:
+        :param elementrel:
+        :param net_geometry_to_insert:
+        :param net_data_to_insert:
+        :param value:
+        :return:
+        """
         start=[element.real,element.imag]
         end=[elementrel.real,elementrel.imag]
         net_geometry_to_insert.append({
@@ -26,16 +37,28 @@ class NetworkGenerator(Importer):
             'name':'weight',
             'value':value
         })
-
+    # normalization brings numbers of sources and destinations to a fractional form, new sums of sources and ddestinations equal 1
     def _normalize(self,points_with_data):
+        """
+        normalization brings numbers of sources and destinations to a fractional forms, new sums of sources and destinations equal 1
+        :param points_with_data:
+        :return:
+        """
         dtotal=sum([point['data']['destinations'] for point in points_with_data])
         stotal=sum([point['data']['sources'] for point in points_with_data])
         for i,point in enumerate(points_with_data):
             points_with_data[i]['data']['destinations']/=dtotal
             points_with_data[i]['data']['sources']/=stotal
-
+    
+    # preparing points data stored in the dictionary 'points_with_data' to be inserted in the "sd_geometry" (columns 'sd_id' - identificational number of a source-destination point and 'geometry' - coordinates of the point) and "sd_properties" (columns 'sd_id' -   identificational number of a source-destination point, 'name' - name of a parameter describing that point and 'value' - value of the parameter) tables. The construction of "sd_properties" table allows later to add new parameters to specific points without creating new columns
     def _insert_points(self,points_with_data):
         # prepare data to insert to database
+        """
+        function "_insert_points" prepares point data in the dictionary 'points_with_data' to be inserted in the "sd_geometry" and "sd_properties" tables.
+        The construction of "sd_properties" table allows later to add new parameters to specific points without creating new columns
+        :param points_with_data:
+        :return:
+        """
         sd_geometry_to_insert=[{
             'sd_id':p['data']['sd_id'],
             'point':str(p['geometry'])
@@ -54,7 +77,7 @@ class NetworkGenerator(Importer):
                 'value':p['data']['sources']
             })
 
-        # insert data to database
+        # running SQL scripts filling existing tables with the data created earlier
         self.transaction('initial/import_sd_geometry',sd_geometry_to_insert)
         self.transaction('initial/import_sd_properties',sd_data_to_insert)
 
@@ -402,7 +425,7 @@ class NetworkGenerator(Importer):
     def make_square_pattern_network(self,size,delta=0.0001):
         '''
         Creates square pattern network.
-        Creates also corresponding sources - destinations points.
+        Coresponding sources - destinations points are also created.
         Sources - destinations are set in way their total sum is 1 for sources and destinations.
         Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
         On this level we use globe WSG84 as a Carthesian coordinates system.
@@ -443,7 +466,7 @@ class NetworkGenerator(Importer):
         #insert
         self._insert_points(points_with_data)
 
-        # Part where we create network
+        # Creating network. Data from the matrix created earlier is prepared to be written in the "network_geometry" and "network_properties" tables by being written into net_geometry_to_insert and net_data_to_insert tables. Then SQL scripts use the prepared data to insert it in the network_geometry" and "network_properties" tables.
         net_geometry_to_insert=[]
         net_data_to_insert=[]
 

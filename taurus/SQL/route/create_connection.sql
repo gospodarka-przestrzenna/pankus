@@ -1,3 +1,5 @@
+--'create_connection.sql' creates 'connection' table, containing data on pairs of connected points and weights of these connections
+
 DROP TABLE IF EXISTS connection;
 CREATE TABLE connection(
     start_id INTEGER,

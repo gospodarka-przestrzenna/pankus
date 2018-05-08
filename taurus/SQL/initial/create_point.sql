@@ -1,3 +1,6 @@
+--create_point.sql creates 'point' table, containing data on point coordinates, its id and eventually its sd id if the point is a source-destination point
+--'point' table is written by the 'insert_point.sql' script
+
 DROP TABLE IF EXISTS point;
 CREATE TABLE point (
     point TEXT,

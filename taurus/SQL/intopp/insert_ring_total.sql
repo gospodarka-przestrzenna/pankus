@@ -1,3 +1,5 @@
+--'insert_ring_total.sql' writes 'ring_total' table using 'ring' and 'model_parameters' tables, selecting from them id of a source-destination point, number of ring which the point is placed in, number of destinations in this ring and sum of destination from prior rings
+
 INSERT INTO ring_total
 SELECT
     r.sd_start_id,
@@ -24,5 +26,3 @@ WHERE
 GROUP BY
     r.sd_start_id,
     r.ring;
-
-

@@ -1,3 +1,5 @@
+--'insert_point.sql' writes table 'point', 'network_geometry' and 'sd_geometry' tables are used
+
 DELETE FROM point;
 INSERT INTO point (point,sd_id)
     SELECT
