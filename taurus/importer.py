@@ -4,6 +4,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb
 from .sqlite_database import SQLiteDatabase
+from .utils import TaurusLongTask
 
 class Importer(SQLiteDatabase):
 
@@ -22,12 +23,13 @@ class Importer(SQLiteDatabase):
 
             geometry_to_insert=[]
             data_to_insert=[]
-            for feature in net_data['features']:
+            for feature in TaurusLongTask(net_data['features'],**self.kwargs):
                 assert 'LineString' == feature['geometry']['type']
 
                 linestring=json.dumps(feature['geometry']['coordinates'])
                 start=json.dumps(feature['geometry']['coordinates'][0])
                 end=json.dumps(feature['geometry']['coordinates'][-1])
+
                 geometry_to_insert.append({
                     'start':str(start),
                     'end':str(end),
@@ -71,7 +73,7 @@ class Importer(SQLiteDatabase):
 
             geometry_to_insert=[]
             data_to_insert=[]
-            for feature in sd_data['features']:
+            for feature in TaurusLongTask(sd_data['features'],**self.kwargs):
                 assert 'Point' == feature['geometry']['type']
                 assert self.sd_id_name in feature['properties']
 
