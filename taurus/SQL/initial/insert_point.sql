@@ -1,4 +1,6 @@
 --'insert_point.sql' writes table 'point', 'network_geometry' and 'sd_geometry' tables are used
+-- sd_id might be NULL if point from network doesn't exist in sd_geometry
+-- populates point table with junkctions points 
 
 DELETE FROM point;
 INSERT INTO point (point,sd_id)

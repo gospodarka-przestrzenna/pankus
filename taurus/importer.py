@@ -65,6 +65,7 @@ class Importer(SQLiteDatabase):
 
         if self.table_exists('sd_geometry'):
             self.point_from_network_sd()
+            self.check_geometry()
 
     def import_sd_geojson(self):
         self.do('initial/create_sd')
@@ -97,6 +98,7 @@ class Importer(SQLiteDatabase):
 
         if self.table_exists('network_geometry'):
             self.point_from_network_sd()
+            self.check_geometry()
 
     def point_from_network_sd(self):
         self.do('initial/create_point')
@@ -105,3 +107,14 @@ class Importer(SQLiteDatabase):
     def point_from_sd(self):
         self.do('initial/create_point')
         self.do('initial/insert_point_from_sd')
+
+    def check_geometry(self):
+        for point, in self.do('initial/check_geometry'):
+            print("problem with geometry at:", point)
+        if not list(self.do('initial/check_geometry')):
+            print("No geometry problems")
+
+    def fix_geometry(self,range):
+        self.do('initial/fix_geometry',{'range':range})
+        self.point_from_network_sd()
+        self.check_geometry()
