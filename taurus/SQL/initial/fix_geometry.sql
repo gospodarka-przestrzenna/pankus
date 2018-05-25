@@ -1,6 +1,6 @@
 -- fix geometry
 -- get points and bind to group of points
--- 
+--
 
 DROP TABLE IF EXISTS coordinated_point;
 CREATE TABLE coordinated_point (
@@ -123,6 +123,27 @@ SET end = (
   WHERE
     pg.point = network_geometry.end
 );
+
+UPDATE network_properties
+SET start = (
+  SELECT
+    point_representative
+  FROM
+    point_group as pg
+  WHERE
+    pg.point = network_properties.start
+);
+
+UPDATE network_properties
+SET end = (
+  SELECT
+    point_representative
+  FROM
+    point_group as pg
+  WHERE
+    pg.point = network_properties.end
+);
+
 
 DROP TABLE IF EXISTS coordinated_point;
 DROP TABLE IF EXISTS point_group;
