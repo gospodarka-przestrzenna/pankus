@@ -1,15 +1,16 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup
 
 setup(
-    name='taurus',
-    version='1.1',
+    name='pankus',
+    version='1.2',
     packages=[
-        'taurus',
+        'pankus',
     ],
     package_data={
-        'taurus': ['SQL/*.sql',
+        'pankus': ['SQL/*.sql',
                    'SQL/intopp/*.sql',
                    'SQL/initial/*.sql',
                    'SQL/route/*.sql',
@@ -21,10 +22,10 @@ setup(
         'progressbar2',
         'numpy',
     ],
-    url='http://github.com/mk45/taurus',
-    license='(c) Politechnika Wroclawska',
+    url='http://github.com/mk45/pankus',
+    license='(c) Politechnika Wrocławska',
     author='Maciej Kamiński',
     author_email='maciej.kaminski@pwr.edu.pl',
-    description='Spatial planning s  oftware'
+    description='Spatial planning software'
 
 )
