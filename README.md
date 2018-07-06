@@ -8,4 +8,5 @@ Aside python package for injecting this SQL is developed
 ## Requirements
 
 Spatialite >= 4.3.0
+
 SQL
