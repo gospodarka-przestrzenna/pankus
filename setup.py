@@ -5,12 +5,12 @@ from setuptools import setup
 
 setup(
     name='pankus',
-    version='1.2',
+    version='1.2.1',
     packages=[
-        'pankus',
+        'taurus',
     ],
     package_data={
-        'pankus': ['SQL/*.sql',
+        'taurus': ['SQL/*.sql',
                    'SQL/intopp/*.sql',
                    'SQL/initial/*.sql',
                    'SQL/route/*.sql',
