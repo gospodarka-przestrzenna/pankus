@@ -6,7 +6,7 @@ import json,pdb,math
 from .sqlite_database import SQLiteDatabase
 from .utils import TaurusLongTask
 
-class InterveningOpportunity(SQLiteDatabase):
+class InterveningOpportunities(SQLiteDatabase):
 
     # uploading keyword arguments, if the value is missing field is filled with default value
     def __init__(self,**kwargs):
@@ -155,7 +155,7 @@ class InterveningOpportunity(SQLiteDatabase):
             conv_intensity in TaurusLongTask(\
                                 self.do('intopp/select_for_motion_exchange'),\
                                 max_value=expected_problem_size,\
-                                additional_text='Intervening Opportunity',\
+                                additional_text='Intervening Opportunities',\
                                 **self.kwargs\
                                 ):
 
