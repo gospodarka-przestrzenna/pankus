@@ -1,0 +1,1 @@
+SELECT * FROM point WHERE od_id IS NOT NULL ORDER BY od_id

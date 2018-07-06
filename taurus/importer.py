@@ -12,8 +12,8 @@ class Importer(SQLiteDatabase):
         super().__init__(**kwargs)
         self.kwargs=kwargs
         self.network_filename=kwargs.get('network_filename','net.geojson')
-        self.sd_filename=kwargs.get('sd_filename','sd.geojson')
-        self.sd_id_name=kwargs.get('sd_id_name','sd_id')
+        self.od_filename=kwargs.get('od_filename','od.geojson')
+        self.od_id_name=kwargs.get('od_id_name','od_id')
 
     def import_network_geojson(self,make_two_side=False):
         self.do('initial/create_network')
@@ -63,50 +63,50 @@ class Importer(SQLiteDatabase):
             self.transaction('initial/import_network_geometry',geometry_to_insert)
             self.transaction('initial/import_network_properties',data_to_insert)
 
-        if self.table_exists('sd_geometry'):
-            self.point_from_network_sd()
+        if self.table_exists('od_geometry'):
+            self.point_from_network_od()
             self.check_geometry()
 
-    def import_sd_geojson(self):
-        self.do('initial/create_sd')
-        with open(self.sd_filename,'r') as sd:
-            sd_data=json.load(sd)
+    def import_od_geojson(self):
+        self.do('initial/create_od')
+        with open(self.od_filename,'r') as od:
+            od_data=json.load(od)
 
             geometry_to_insert=[]
             data_to_insert=[]
-            for feature in TaurusLongTask(sd_data['features'],**self.kwargs):
+            for feature in TaurusLongTask(od_data['features'],**self.kwargs):
                 assert 'Point' == feature['geometry']['type']
-                assert self.sd_id_name in feature['properties']
+                assert self.od_id_name in feature['properties']
 
-                sd_id=feature['properties'][self.sd_id_name]
+                od_id=feature['properties'][self.od_id_name]
                 geometry=json.dumps(feature['geometry']['coordinates'])
                 geometry_to_insert.append({
-                    'sd_id':int(sd_id),
+                    'od_id':int(od_id),
                     'point':str(geometry)
                 })
                 for key in feature['properties']:
                     name=key
                     value=feature['properties'][key]
                     data_to_insert.append({
-                        'sd_id':int(sd_id),
+                        'od_id':int(od_id),
                         'name':str(name),
                         'value':str(value)
                     })
 
-            self.transaction('initial/import_sd_geometry',geometry_to_insert)
-            self.transaction('initial/import_sd_properties',data_to_insert)
+            self.transaction('initial/import_od_geometry',geometry_to_insert)
+            self.transaction('initial/import_od_properties',data_to_insert)
 
         if self.table_exists('network_geometry'):
-            self.point_from_network_sd()
+            self.point_from_network_od()
             self.check_geometry()
 
-    def point_from_network_sd(self):
+    def point_from_network_od(self):
         self.do('initial/create_point')
         self.do('initial/insert_point')
 
-    def point_from_sd(self):
+    def point_from_od(self):
         self.do('initial/create_point')
-        self.do('initial/insert_point_from_sd')
+        self.do('initial/insert_point_from_od')
 
     def check_geometry(self):
         for point, in self.do('initial/check_geometry'):
@@ -116,5 +116,5 @@ class Importer(SQLiteDatabase):
 
     def fix_geometry(self,range):
         self.do('initial/fix_geometry',{'range':range})
-        self.point_from_network_sd()
+        self.point_from_network_od()
         self.check_geometry()

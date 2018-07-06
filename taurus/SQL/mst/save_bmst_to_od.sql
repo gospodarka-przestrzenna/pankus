@@ -1,4 +1,4 @@
-INSERT INTO sd_properties
+INSERT INTO od_properties
     SELECT
         bmst_id,
         :supernode_level_name,

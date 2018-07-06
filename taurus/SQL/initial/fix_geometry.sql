@@ -21,7 +21,7 @@ FROM(
     SELECT
       point
     FROM
-      sd_geometry
+      od_geometry
     UNION ALL
     SELECT
       start
@@ -94,14 +94,14 @@ SET point_representative = (
   LIMIT 1
 );
 
-UPDATE sd_geometry
+UPDATE od_geometry
 SET point = (
   SELECT
     point_representative
   FROM
     point_group as pg
   WHERE
-    pg.point = sd_geometry.point
+    pg.point = od_geometry.point
 );
 
 UPDATE network_geometry

@@ -1,24 +1,23 @@
-INSERT INTO sd_properties
+INSERT INTO od_properties
     SELECT
-        sd_id,
-        :sources_new_name,
-        sources
+        od_id,
+        :origins_new_name,
+        origins
     FROM
         model_parameters;
 
-INSERT INTO sd_properties
+INSERT INTO od_properties
     SELECT
-        sd_id,
+        od_id,
         :destinations_new_name,
         destinations
     FROM
         model_parameters;
 
-INSERT INTO sd_properties
+INSERT INTO od_properties
     SELECT
-        sd_id,
+        od_id,
         :selectivity_new_name,
         selectivity
     FROM
         model_parameters;
-

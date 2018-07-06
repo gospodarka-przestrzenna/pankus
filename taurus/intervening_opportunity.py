@@ -16,13 +16,13 @@ class InterveningOpportunity(SQLiteDatabase):
         """
         super().__init__(**kwargs)
         self.kwargs=kwargs
-        self.sources_name=kwargs.get('sources_name','sources')
+        self.origins_name=kwargs.get('origins_name','origins')
         self.destinations_name=kwargs.get('destinations_name','destinations')
         self.selectivity_name=kwargs.get('selectivity_name','selectivity')
         self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
-    
+
     # importing model parameters, if the values are not given default values from function init are used
     def import_model_parameters(self):
         """
@@ -31,14 +31,14 @@ class InterveningOpportunity(SQLiteDatabase):
         """
         self.do('intopp/create_model_parameters')
         self.do('intopp/insert_model_parameters',{
-            'sources_name':self.sources_name,
+            'origins_name':self.origins_name,
             'destinations_name':self.destinations_name,
             'selectivity_name':self.selectivity_name,
             'convolution_start_name':self.convolution_start_name,
             'convolution_size_name':self.convolution_size_name,
             'convolution_intensity_name':self.convolution_intensity_name
         })
-    
+
     # creating selectivity, a parameter describing probability of object choosing a point as a destination,
     # taking into consideration other point placed between the object and considered point.
     # Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
@@ -59,10 +59,10 @@ class InterveningOpportunity(SQLiteDatabase):
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
-        self.do('intopp/update_sd_selectivity',{'selectivity':selectivity*1000000})
-    
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
+
     # building specified number of rings which are written in the table "ring" containing following parameters,
-    # which describe ring placement of a source-destination point in the realtion to the second source-destination point.
+    # which describe ring placement of a origin-destination point in the realtion to the second origin-destination point.
     # Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation.
     # In calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included.
     # Table "ring" is filled using SQL script "insert_ring_uniform"
@@ -98,7 +98,7 @@ class InterveningOpportunity(SQLiteDatabase):
         """
         self.do('intopp/create_ring_total')
         self.do('intopp/insert_ring_total')
-        
+
     # normalization of motion exchange. All the "objects" left in te network are set to be new 100% of network population
     # ("objects" that left the network in search for destinatons aren't included). SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total". Table "motion_exchange" is then updated with normalized values.
     def normalize_motion_exchange(self):
@@ -116,12 +116,12 @@ class InterveningOpportunity(SQLiteDatabase):
     def general_shift(self):
         self.do('intopp/general_shift')
 
-    def sources_shift(self):
-        self.do('intopp/sources_shift')
+    def origins_shift(self):
+        self.do('intopp/origins_shift')
 
     def save_intopp_parameters(self,suffix):
         self.do('intopp/save_parameters',{
-            'sources_new_name':'sources'+suffix,
+            'origins_new_name':'origins'+suffix,
             'destinations_new_name':'destinations'+suffix,
             'selectivity_new_name':'selectivity'+suffix,
         })
@@ -137,7 +137,7 @@ class InterveningOpportunity(SQLiteDatabase):
         """
         self.do('intopp/create_motion_exchange')
 
-        featured_points=self.do('route/select_sd_point').fetchall()
+        featured_points=self.do('route/select_od_point').fetchall()
         expected_problem_size=len(featured_points)**2
 
         # creating a matrix which will be used to store created dictionaries and write 'motion_exchange' table in SQL
@@ -147,7 +147,7 @@ class InterveningOpportunity(SQLiteDatabase):
             ring,\
             destinations_in,\
             destinations_prior,\
-            sources,\
+            origins,\
             destinations,\
             selectivity,\
             conv_start,\
@@ -158,7 +158,7 @@ class InterveningOpportunity(SQLiteDatabase):
                                 additional_text='Intervening Opportunity',\
                                 **self.kwargs\
                                 ):
-            
+
             # calculating fraction of all "objects" that found destinations prior to the currently chosen ring
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,
@@ -182,10 +182,10 @@ class InterveningOpportunity(SQLiteDatabase):
                 fraction=0
 
             motion_exchange.append({
-                'sd_start_id':start_id,
-                'sd_end_id':end_id,
+                'od_start_id':start_id,
+                'od_end_id':end_id,
                 'fraction':fraction,
-                'motion_exchange':(sources*fraction)
+                'motion_exchange':(origins*fraction)
             })
 
             if len(motion_exchange)>10000:
@@ -229,19 +229,19 @@ class InterveningOpportunity(SQLiteDatabase):
                      math.exp(selectivity*destinations)))/(conv_b*selectivity)
 
 
-    def convolution_mix(self,sources,selectivity,conv_a,conv_b,alpha):
+    def convolution_mix(self,origins,selectivity,conv_a,conv_b,alpha):
 
         assert alpha>=0.0 and alpha<=1.0
         if alpha>0:
-            return self.convolution_cdf(sources,selectivity,conv_a,conv_b)*alpha+\
-                   self.convolution_cdf(sources,selectivity,0,0)*(1.0-alpha)
-        return self.convolution_cdf(sources,selectivity,0,0)
+            return self.convolution_cdf(origins,selectivity,conv_a,conv_b)*alpha+\
+                   self.convolution_cdf(origins,selectivity,0,0)*(1.0-alpha)
+        return self.convolution_cdf(origins,selectivity,0,0)
 
 
     def save_model_parameters(self,parameter,saved_name):
         model_parameters=[{
-            "sd_id":t[0],
-            "sources":t[1],
+            "od_id":t[0],
+            "origins":t[1],
             "destinations":t[2],
             "selectivity":t[3],
             "convolution_start":t[4],
@@ -254,9 +254,9 @@ class InterveningOpportunity(SQLiteDatabase):
         self.do('initial/clean_value',{'name':saved_name,"new_name":saved_name})
 
         new_value = [{
-            "sd_id": parameters['sd_id'],
+            "od_id": parameters['od_id'],
             "name": saved_name,
             "value": parameters[parameter]
         } for parameters in model_parameters]
 
-        self.transaction('initial/update_sd_values',new_value)
+        self.transaction('initial/update_od_values',new_value)

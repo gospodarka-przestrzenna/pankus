@@ -1,41 +1,41 @@
 WITH
     min_connection_mst(src,minimum) AS (
         SELECT
-            source.bmst_supernode as src,
+            origin.bmst_supernode as src,
             min(bmst_connection.weight) as minimum
         FROM
             bmst_connection,
-            bmst AS source,
+            bmst AS origin,
             bmst AS destination
         WHERE
-            source.level=(SELECT max(level) FROM bmst) AND
+            origin.level=(SELECT max(level) FROM bmst) AND
             destination.level=(SELECT max(level) FROM bmst) AND
-            source.bmst_supernode!=destination.bmst_supernode AND
-            source.bmst_id=bmst_connection.bmst_start_id AND
+            origin.bmst_supernode!=destination.bmst_supernode AND
+            origin.bmst_id=bmst_connection.bmst_start_id AND
             destination.bmst_id=bmst_connection.bmst_end_id
         GROUP BY
-            source.bmst_supernode
+            origin.bmst_supernode
     ),
     connection_mst(src,dst,level,minimum) AS (
         SELECT DISTINCT
-            source.bmst_id as src,
+            origin.bmst_id as src,
             destination.bmst_id as dst,
-            (source.level+1),
+            (origin.level+1),
             minconn.minimum
         FROM
             min_connection_mst as minconn,
             bmst_connection,
-            bmst AS source,
+            bmst AS origin,
             bmst AS destination
 
         WHERE
             bmst_connection.weight=minconn.minimum AND
-            minconn.src=source.bmst_supernode AND
-            source.bmst_id=bmst_connection.bmst_start_id AND
+            minconn.src=origin.bmst_supernode AND
+            origin.bmst_id=bmst_connection.bmst_start_id AND
             destination.bmst_id=bmst_connection.bmst_end_id AND
-            source.level=(SELECT max(level) FROM bmst) AND
+            origin.level=(SELECT max(level) FROM bmst) AND
             destination.level=(SELECT max(level) FROM bmst) AND
-            source.bmst_supernode!=destination.bmst_supernode
+            origin.bmst_supernode!=destination.bmst_supernode
     )
 INSERT INTO bmst_used_connection SELECT * from connection_mst;
 
@@ -43,14 +43,14 @@ INSERT INTO bmst_used_connection SELECT * from connection_mst;
 WITH RECURSIVE
     connection_mst(src_supernode,dst_supernode) AS (
         SELECT DISTINCT
-            source.bmst_supernode as src,
+            origin.bmst_supernode as src,
             destination.bmst_supernode as dst
         FROM
             bmst_used_connection,
-            bmst AS source,
+            bmst AS origin,
             bmst AS destination
         WHERE
-            bmst_used_connection.bmst_start_id=source.bmst_id AND
+            bmst_used_connection.bmst_start_id=origin.bmst_id AND
             bmst_used_connection.bmst_end_id=destination.bmst_id
     ),
     supernodes(i) AS (

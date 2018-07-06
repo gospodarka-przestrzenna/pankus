@@ -37,54 +37,54 @@ class NetworkGenerator(Importer):
             'name':'weight',
             'value':value
         })
-    # normalization brings numbers of sources and destinations to a fractional form, new sums of sources and ddestinations equal 1
+    # normalization brings numbers of origins and destinations to a fractional form, new sums of origins and ddestinations equal 1
     def _normalize(self,points_with_data):
         """
-        normalization brings numbers of sources and destinations to a fractional forms, new sums of sources and destinations equal 1
+        normalization brings numbers of origins and destinations to a fractional forms, new sums of origins and destinations equal 1
         :param points_with_data:
         :return:
         """
         dtotal=sum([point['data']['destinations'] for point in points_with_data])
-        stotal=sum([point['data']['sources'] for point in points_with_data])
+        stotal=sum([point['data']['origins'] for point in points_with_data])
         for i,point in enumerate(points_with_data):
             points_with_data[i]['data']['destinations']/=dtotal
-            points_with_data[i]['data']['sources']/=stotal
-    
-    # preparing points data stored in the dictionary 'points_with_data' to be inserted in the "sd_geometry" (columns 'sd_id' - identificational number of a source-destination point and 'geometry' - coordinates of the point) and "sd_properties" (columns 'sd_id' -   identificational number of a source-destination point, 'name' - name of a parameter describing that point and 'value' - value of the parameter) tables. The construction of "sd_properties" table allows later to add new parameters to specific points without creating new columns
+            points_with_data[i]['data']['origins']/=stotal
+
+    # preparing points data stored in the dictionary 'points_with_data' to be inserted in the "od_geometry" (columns 'od_id' - identificational number of a origin-destination point and 'geometry' - coordinates of the point) and "od_properties" (columns 'od_id' -   identificational number of a origin-destination point, 'name' - name of a parameter describing that point and 'value' - value of the parameter) tables. The construction of "od_properties" table allows later to add new parameters to specific points without creating new columns
     def _insert_points(self,points_with_data):
         # prepare data to insert to database
         """
-        function "_insert_points" prepares point data in the dictionary 'points_with_data' to be inserted in the "sd_geometry" and "sd_properties" tables.
-        The construction of "sd_properties" table allows later to add new parameters to specific points without creating new columns
+        function "_insert_points" prepares point data in the dictionary 'points_with_data' to be inserted in the "od_geometry" and "od_properties" tables.
+        The construction of "od_properties" table allows later to add new parameters to specific points without creating new columns
         :param points_with_data:
         :return:
         """
-        sd_geometry_to_insert=[{
-            'sd_id':p['data']['sd_id'],
+        od_geometry_to_insert=[{
+            'od_id':p['data']['od_id'],
             'point':str(p['geometry'])
         } for p in points_with_data]
 
-        sd_data_to_insert=[]
+        od_data_to_insert=[]
         for p in points_with_data:
-            sd_data_to_insert.append({
-                'sd_id':p['data']['sd_id'],
+            od_data_to_insert.append({
+                'od_id':p['data']['od_id'],
                 'name':'destinations',
                 'value':p['data']['destinations']
             })
-            sd_data_to_insert.append({
-                'sd_id':p['data']['sd_id'],
-                'name':'sources',
-                'value':p['data']['sources']
+            od_data_to_insert.append({
+                'od_id':p['data']['od_id'],
+                'name':'origins',
+                'value':p['data']['origins']
             })
 
         # running SQL scripts filling existing tables with the data created earlier
-        self.transaction('initial/import_sd_geometry',sd_geometry_to_insert)
-        self.transaction('initial/import_sd_properties',sd_data_to_insert)
+        self.transaction('initial/import_od_geometry',od_geometry_to_insert)
+        self.transaction('initial/import_od_properties',od_data_to_insert)
 
     def make_hexhorny_pattern_network(self,size,delta=0.0001):
 
         self.do('initial/create_network')
-        self.do('initial/create_sd')
+        self.do('initial/create_od')
 
         rows=[]
         vector=cmath.rect(1,cmath.pi/3)
@@ -123,8 +123,8 @@ class NetworkGenerator(Importer):
         points_with_data= [{
             'geometry':[point.real,point.imag],
             'data':{
-                'sd_id':i,
-                'sources':1,
+                'od_id':i,
+                'origins':1,
                 'destinations':1
             }
         } for i,point in enumerate(points)]
@@ -168,14 +168,14 @@ class NetworkGenerator(Importer):
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
-        self.point_from_network_sd()
+        self.point_from_network_od()
 
 
 
     def make_trianglehex_pattern_network(self,size,delta=0.0001):
 
         self.do('initial/create_network')
-        self.do('initial/create_sd')
+        self.do('initial/create_od')
 
 
         rows=[]
@@ -205,8 +205,8 @@ class NetworkGenerator(Importer):
         points_with_data= [{
             'geometry':[point.real,point.imag],
             'data':{
-                'sd_id':i,
-                'sources':1,
+                'od_id':i,
+                'origins':1,
                 'destinations':1
             }
         } for i,point in enumerate(points)]
@@ -227,13 +227,13 @@ class NetworkGenerator(Importer):
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
-        self.point_from_network_sd()
+        self.point_from_network_od()
 
 
     def make_hexdiagonal_pattern_network(self,size,delta=0.0001):
 
         self.do('initial/create_network')
-        self.do('initial/create_sd')
+        self.do('initial/create_od')
 
 
         rows=[]
@@ -264,8 +264,8 @@ class NetworkGenerator(Importer):
         points_with_data=[{
             'geometry':[point.real,point.imag],
             'data':{
-                'sd_id':i,
-                'sources':1,
+                'od_id':i,
+                'origins':1,
                 'destinations':1
             }
         } for i,point in enumerate(points)]
@@ -342,7 +342,7 @@ class NetworkGenerator(Importer):
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
-        self.point_from_network_sd()
+        self.point_from_network_od()
 
 
 
@@ -350,8 +350,8 @@ class NetworkGenerator(Importer):
     def make_hex_pattern_network(self,size,delta=0.0001):
         '''
         Creates hexagonal pattern network. HEXAGONS binded together by edge (like square pattern but with hexagons)
-        Creates also corresponding sources - destinations points.
-        Sources - destinations are set in way their total sum is 1 for sources and destinations.
+        Creates also corresponding origins - destinations points.
+        origins - destinations are set in way their total sum is 1 for origins and destinations.
         Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
         On this level we use globe WSG84 as a Carthesian coordinates system.
         Don't use it for
@@ -361,7 +361,7 @@ class NetworkGenerator(Importer):
         :return:
         '''
         self.do('initial/create_network')
-        self.do('initial/create_sd')
+        self.do('initial/create_od')
 
         # main Point generator part
 
@@ -397,8 +397,8 @@ class NetworkGenerator(Importer):
         points_with_data=[{
             'geometry':[point.real,point.imag],
             'data':{
-                'sd_id':i,
-                'sources':1,
+                'od_id':i,
+                'origins':1,
                 'destinations':1
             }
         } for i,point in enumerate(points)]
@@ -419,14 +419,14 @@ class NetworkGenerator(Importer):
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
-        self.point_from_network_sd()
+        self.point_from_network_od()
 
 
     def make_square_pattern_network(self,size,delta=0.0001):
         '''
         Creates square pattern network.
-        Coresponding sources - destinations points are also created.
-        Sources - destinations are set in way their total sum is 1 for sources and destinations.
+        Coresponding origins - destinations points are also created.
+        origins - destinations are set in way their total sum is 1 for origins and destinations.
         Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
         On this level we use globe WSG84 as a Carthesian coordinates system.
         Don't use it for
@@ -436,7 +436,7 @@ class NetworkGenerator(Importer):
         :return:
         '''
         self.do('initial/create_network')
-        self.do('initial/create_sd')
+        self.do('initial/create_od')
 
         # main Point generator part
 
@@ -454,8 +454,8 @@ class NetworkGenerator(Importer):
         points_with_data=[{
             'geometry':[point.real,point.imag],
             'data':{
-                'sd_id':i,
-                'sources':1,
+                'od_id':i,
+                'origins':1,
                 'destinations':1
             }
         } for i,point in enumerate(points)]
@@ -483,4 +483,4 @@ class NetworkGenerator(Importer):
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
-        self.point_from_network_sd()
+        self.point_from_network_od()

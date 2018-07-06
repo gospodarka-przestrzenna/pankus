@@ -1,12 +1,12 @@
 --'select_for_motion_exchange.sql' prepares data from 'ring', 'ring_total' and 'model_parameters' tables to be used in 'motion_exchange' function from python script
 
 SELECT
-    r.sd_start_id,
-    r.sd_end_id,
+    r.od_start_id,
+    r.od_end_id,
     r.ring,
     rt.destinations_in,
     rt.destinations_prior,
-    mps.sources,
+    mps.origins,
     mp.destinations,
     mp.selectivity,
     mp.convolution_start,
@@ -19,6 +19,6 @@ FROM
     model_parameters as mps
 WHERE
     r.ring=rt.ring AND
-    r.sd_start_id=rt.sd_start_id AND
-    r.sd_end_id=mp.sd_id AND
-    r.sd_start_id=mps.sd_id
+    r.od_start_id=rt.od_start_id AND
+    r.od_end_id=mp.od_id AND
+    r.od_start_id=mps.od_id

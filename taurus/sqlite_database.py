@@ -3,7 +3,7 @@
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import sqlite3
-import pkg_resources
+import pkg_reorigins
 from .taurus_leaf import TaurusLeaf
 
 class SQLiteDatabase(TaurusLeaf):
@@ -20,7 +20,7 @@ class SQLiteDatabase(TaurusLeaf):
 
 
     def get_sql_form_file(self,script_name):
-        return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
+        return pkg_reorigins.reorigin_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
 
     def build_sql(self,script_string,args={}):
         return script_string.format(**args)

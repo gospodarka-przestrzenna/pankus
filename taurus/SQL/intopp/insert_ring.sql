@@ -1,9 +1,9 @@
---'insert_ring.sql' writes 'ring' table using 'distance' and 'point' tables. Two distinct source-destination points are selected and coresponding ring number is calculated using factor exported from pytho script
+--'insert_ring.sql' writes 'ring' table using 'distance' and 'point' tables. Two distinct origin-destination points are selected and coresponding ring number is calculated using factor exported from pytho script
 
 INSERT INTO ring
 SELECT DISTINCT
-    p1.sd_id,
-    p2.sd_id,
+    p1.od_id,
+    p2.od_id,
     (SELECT
         cast(weight*(:factor) as int)
     FROM
@@ -16,5 +16,5 @@ FROM
     point as p1,
     point as p2
 WHERE
-    p1.sd_id NOT NULL AND
-    p2.sd_id NOT NULL;
+    p1.od_id NOT NULL AND
+    p2.od_id NOT NULL;

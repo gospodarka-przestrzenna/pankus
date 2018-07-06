@@ -44,7 +44,7 @@ class Route(SQLiteDatabase):
         assert self.one('route/test_point_id_range')[0]
         self.do('route/create_distance')
 
-        featured_points=self.do('route/select_sd_point').fetchall()
+        featured_points=self.do('route/select_od_point').fetchall()
         all_points=self.do('route/select_point').fetchall()
 
 
@@ -78,12 +78,12 @@ class Route(SQLiteDatabase):
         self.commit()
 
 
-    # it creates distances meant as routes between pairs of source-destination points, built from previously generated connections.
+    # it creates distances meant as routes between pairs of origin-destination points, built from previously generated connections.
     # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
     # Data is written into table distance using SQL script "import_distance".
     def distance(self):
         """
-        "distance" function creates distances meant as routes between pairs of source-destination points built from available connections.
+        "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.
         Distances are expressed as a set od following data: start_id, end_id, weight, successor id and predecessor id.
         Successor id and predecessor id  data allows to tie together distances which are parts of other distances.
         Distance data is written in the script using "import_distances" SQL script
@@ -94,7 +94,7 @@ class Route(SQLiteDatabase):
         assert self.one('route/test_point_id_range')[0]
         self.do('route/create_distance')
 
-        featured_points=self.do('route/select_sd_point').fetchall()
+        featured_points=self.do('route/select_od_point').fetchall()
         all_points=self.do('route/select_point').fetchall()
 
         connections=[{} for _ in all_points]
