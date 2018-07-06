@@ -6,7 +6,7 @@ import json,pdb,math
 from .sqlite_database import SQLiteDatabase
 from .utils import TaurusLongTask
 
-class InterveningOpportunity(SQLiteDatabase):
+class InterveningOpportunities(SQLiteDatabase):
 
     # uploading keyword arguments, if the value is missing field is filled with default value
     def __init__(self,**kwargs):
@@ -22,7 +22,7 @@ class InterveningOpportunity(SQLiteDatabase):
         self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
-    
+
     # importing model parameters, if the values are not given default values from function init are used
     def import_model_parameters(self):
         """
@@ -38,7 +38,7 @@ class InterveningOpportunity(SQLiteDatabase):
             'convolution_size_name':self.convolution_size_name,
             'convolution_intensity_name':self.convolution_intensity_name
         })
-    
+
     # creating selectivity, a parameter describing probability of object choosing a point as a destination,
     # taking into consideration other point placed between the object and considered point.
     # Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
@@ -60,7 +60,7 @@ class InterveningOpportunity(SQLiteDatabase):
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
         self.do('intopp/update_sd_selectivity',{'selectivity':selectivity*1000000})
-    
+
     # building specified number of rings which are written in the table "ring" containing following parameters,
     # which describe ring placement of a source-destination point in the realtion to the second source-destination point.
     # Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation.
@@ -98,7 +98,7 @@ class InterveningOpportunity(SQLiteDatabase):
         """
         self.do('intopp/create_ring_total')
         self.do('intopp/insert_ring_total')
-        
+
     # normalization of motion exchange. All the "objects" left in te network are set to be new 100% of network population
     # ("objects" that left the network in search for destinatons aren't included). SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total". Table "motion_exchange" is then updated with normalized values.
     def normalize_motion_exchange(self):
@@ -155,10 +155,10 @@ class InterveningOpportunity(SQLiteDatabase):
             conv_intensity in TaurusLongTask(\
                                 self.do('intopp/select_for_motion_exchange'),\
                                 max_value=expected_problem_size,\
-                                additional_text='Intervening Opportunity',\
+                                additional_text='Intervening Opportunities',\
                                 **self.kwargs\
                                 ):
-            
+
             # calculating fraction of all "objects" that found destinations prior to the currently chosen ring
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,

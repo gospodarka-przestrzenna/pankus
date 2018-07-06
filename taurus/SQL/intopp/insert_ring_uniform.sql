@@ -1,4 +1,4 @@
---'insert_ring_uniform.sql' writes 'ring' table using 'point' and 'distance' tables. Script 'insert_ring_uniform.sql' selects pairs of source-destinations points from 'point' table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the 'buid_uniform_rings' fuction in the 'intervening_opportunity' script
+--'insert_ring_uniform.sql' writes 'ring' table using 'point' and 'distance' tables. Script 'insert_ring_uniform.sql' selects pairs of source-destinations points from 'point' table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the 'buid_uniform_rings' fuction in the 'intervening_opportunities' script
 
 INSERT INTO ring
 SELECT DISTINCT
