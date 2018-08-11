@@ -89,6 +89,15 @@ class InterveningOpportunities(SQLiteDatabase):
         factor=weight
         self.do('intopp/insert_ring_weighted',{'factor':factor})
 
+    def get_max_distance(self):
+        """
+        Computes maximum distance in all distances
+
+        :return: maximum distance in distance table
+        """
+        max_distance, = self.one('intopp/distance_maximum')
+        return max_distance
+
     # creating table "ring_total" containing data on number of destinations located in specified ring and sum of all the destinations from rings prior to the described ring.
     # Table is filled by SQL script which uses tables "ring" and "model_parameters"
     def ring_total(self):
@@ -125,6 +134,7 @@ class InterveningOpportunities(SQLiteDatabase):
             'destinations_new_name':'destinations'+suffix,
             'selectivity_new_name':'selectivity'+suffix,
         })
+
 
     #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     def motion_exchange(self):
