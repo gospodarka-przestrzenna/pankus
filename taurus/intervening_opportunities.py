@@ -54,13 +54,15 @@ class InterveningOpportunities(SQLiteDatabase):
         Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
         When selectivity value is used in calculations it is divided by the same number.
         :param efs:
-        :return: self
+        :return: Selectivity computed
         """
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
         self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
 
+        return selectivity
+    
     # building specified number of rings which are written in the table "ring" containing following parameters,
     # which describe ring placement of a origin-destination point in the realtion to the second origin-destination point.
     # Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation.
