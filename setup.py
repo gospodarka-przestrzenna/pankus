@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='pankus',
-    version='2.1.0',
+    version='2.3.0',
     packages=[
         'taurus',
     ],

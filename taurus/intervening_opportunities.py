@@ -22,6 +22,7 @@ class InterveningOpportunities(SQLiteDatabase):
         self.convolution_start_name=kwargs.get('convolution_start_name','conv_a')
         self.convolution_size_name=kwargs.get('convolution_size_name','conv_b')
         self.convolution_intensity_name=kwargs.get('convolution_intensity_name','conv_alpha')
+        self.fixed_rings_name = kwargs.get('fixed_rings_name', 'fixed_rings')
 
     # importing model parameters, if the values are not given default values from function init are used
     def import_model_parameters(self):
@@ -62,7 +63,7 @@ class InterveningOpportunities(SQLiteDatabase):
         self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
 
         return selectivity
-    
+
     # building specified number of rings which are written in the table "ring" containing following parameters,
     # which describe ring placement of a origin-destination point in the realtion to the second origin-destination point.
     # Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation.
@@ -90,6 +91,38 @@ class InterveningOpportunities(SQLiteDatabase):
         self.do('intopp/create_ring')
         factor=weight
         self.do('intopp/insert_ring_weighted',{'factor':factor})
+
+    def read_rings_layout(self,layout=None):
+        self.do('intopp/create_ring_layout')
+        rings_layout = []
+        for od_id, layout_from_od_description in self.do('intopp/select_ring_layout',{"fixed_rings_name":self.fixed_rings_name}):
+            if layout:
+                layout_value=layout
+            else:
+                layout_value=json.loads(layout_from_od_description)
+
+            assert layout_value != None # TODO some more chceck and error handling required here
+
+            prior_rings_sum=0
+            for counter, value, in enumerate(layout_value):
+                assert value >= 0 # TODO some more chceck and error handling required here
+                rings_layout.append({
+                    "od_id":od_id,
+                    "ring_number":counter,
+                    "ring_size":value,
+                    "prior_rings_size": prior_rings_sum
+                })
+                prior_rings_sum+=value
+
+        self.transaction('intopp/insert_ring_layout',rings_layout)
+
+
+    def build_rings_from_layout(self):
+        self.do('intopp/create_ring')
+        self.do('intopp/insert_ring_from_layout')
+
+    def snap_outstanding_od_to_last_ring(self):
+        self.do('intopp/insert_into_last_ring')
 
     def get_max_distance(self):
         """
