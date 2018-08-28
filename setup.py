@@ -18,9 +18,10 @@ setup(
                    'SQL/analysis/*.sql'
                    ],     # All files from folder
     },
-    requires=[
+    install_requires=[
         'progressbar2',
         'numpy',
+        'vincenty',
     ],
     url='http://github.com/mk45/pankus',
     license='(c) Politechnika Wrocławska',
