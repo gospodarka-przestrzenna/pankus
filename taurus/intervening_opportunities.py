@@ -97,6 +97,10 @@ class InterveningOpportunities(SQLiteDatabase):
     def merge_ring_with_next(self, n):
         self.do('intopp/updater_ring_next', {'ring': n})
 
+    def only_origin_in_first_ring(self):
+        self.do('intopp/update_origin_in_first_ring')
+
+
     def read_rings_layout(self,layout=None):
         self.do('intopp/create_ring_layout')
         rings_layout = []
