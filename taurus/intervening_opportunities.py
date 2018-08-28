@@ -80,17 +80,22 @@ class InterveningOpportunities(SQLiteDatabase):
         :param no_of_rings:
         :return: self
         """
+
         self.do('intopp/create_ring')
         max_distance,=self.one('intopp/distance_maximum')
-        #I don't like solution but is mostly what we expect
-        factor=no_of_rings/(max_distance*1.0001)
-        #
+        factor=no_of_rings/(max_distance)
         self.do('intopp/insert_ring_uniform',{'factor':factor})
+        # last ring must be no_of_rings-1 but through equation no_of_rings shall occur
+        # We must update it
+        self.merge_ring_with_next(no_of_rings)
 
     def build_weighted_rings(self,weight):
         self.do('intopp/create_ring')
         factor=weight
         self.do('intopp/insert_ring_weighted',{'factor':factor})
+
+    def merge_ring_with_next(self, n):
+        self.do('intopp/updater_ring_next', {'ring': n})
 
     def read_rings_layout(self,layout=None):
         self.do('intopp/create_ring_layout')
