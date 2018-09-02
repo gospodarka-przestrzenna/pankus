@@ -81,6 +81,7 @@ class Route(SQLiteDatabase):
     # it creates distances meant as routes between pairs of origin-destination points, built from previously generated connections.
     # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
     # Data is written into table distance using SQL script "import_distance".
+
     def distance(self):
         """
         "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.

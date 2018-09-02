@@ -48,3 +48,7 @@ class Analysis(SQLiteDatabase):
             } for i,origins in enumerate(origins_list_)]
         self.transaction("analysis/update_origins",new_origins_value)
         return accuracy
+
+    def get_no_ring_pairs(self):
+        for a,b in self.do('intopp/select_od_id_with_no_ring_assigned').fetchall():
+            print("Origin: ", a, " and destination: ", b , " - no ring assigned!")
