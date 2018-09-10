@@ -1,14 +1,15 @@
 Pankus
 ==========
 
-SQL baset toolset for spatial analisys. Project aims to provide only micro tools as SQL documented queries.
-Queries suposed to be injected into Spatialite (eventually Geopackage) dataset for analisys
+Set of tools for spatial-economical-potential analysis.
 
-Aside python package for injecting this SQL is developed
+Project aims to provide python function (building blocks) that helps particular
+modeling process. Python functions is injecting SQL queries into SQLite database
+(eventually Geopackage) and provide functions that is hard to express in SQL.
 
-Requirements
-==============
+Building blocks may be used to present basic idea (steps of modeling process)
+without details.
 
-Spatialite >= 4.3.0
+For detailed info please refer to documentation_
 
-SQL
+.. _documentation: https://pankus.readthedocs.io/en/latest/
