@@ -10,4 +10,13 @@ Welcome to pankus's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   source/taurus
+.. literalinclude:: ../taurus/SQL/initial/fix_geometry.sql
+   :language: SQL
+
+taurus.route module
+-------------------
+
+.. autoclass:: taurus.Route
+   :members: distance
+   :undoc-members:
+   :show-inheritance:
