@@ -10,8 +10,12 @@ Welcome to pankus's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   source/tables/model_parameters
+
 .. literalinclude:: ../taurus/SQL/initial/fix_geometry.sql
    :language: SQL
+
+
 
 taurus.route module
 -------------------
