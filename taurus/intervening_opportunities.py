@@ -54,8 +54,11 @@ class InterveningOpportunities(SQLiteDatabase):
         which is later updated in the "model_parameters" table.
         Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
         When selectivity value is used in calculations it is divided by the same number.
-        :param efs:
-        :return: Selectivity computed
+
+        Args:
+            efs (float):
+        Returns:
+            float: selectivity
         """
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
@@ -137,7 +140,8 @@ class InterveningOpportunities(SQLiteDatabase):
         """
         Computes maximum distance in all distances
 
-        :return: maximum distance in distance table
+        Returns
+            float: maximum distance
         """
         max_distance, = self.one('intopp/distance_maximum')
         return max_distance
@@ -159,7 +163,6 @@ class InterveningOpportunities(SQLiteDatabase):
         function "normalize_motion_exchange" normalizes motion exchange, setting all the objects left in the network to be the new 100% of netwok population
         SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total".
         Table "motion_exchange" is then updated with normalized values.
-        :return: self
         """
         self.do('intopp/normalization')
 

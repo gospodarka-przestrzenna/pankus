@@ -25,9 +25,6 @@ class Route(SQLiteDatabase):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
         Each connection is expressed as a set of data - start id, end id and weight.
-        To do so "create_connection" and "inset_connection" SQL scripts are used.
-        Results are written in the 'connection' table
-        :return:
         """
 
         self.do('route/create_connection')
