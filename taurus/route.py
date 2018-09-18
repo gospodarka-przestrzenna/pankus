@@ -35,8 +35,8 @@ class Route(SQLiteDatabase):
 
     def distance_air_lines(self,distance_type="geom"):
         """
-        :param distance_type: 'geom'  for geometrical distance or 'vincenty' for WGS 84 with distance from vincenty algorithm
-        :return:
+        Args:
+            distance_type (varchar): 'geom'  for geometrical distance or 'vincenty' for WGS 84 with distance from vincenty algorithm
         """
         assert self.one('route/test_point_id_range')[0]
         self.do('route/create_distance')
