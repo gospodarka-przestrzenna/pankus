@@ -1,5 +1,6 @@
 network_properties
 ==================
+
 Network_properties table contains data on start and end of segments of the network, name of segment parameter and its value
 
 .. csv-table::

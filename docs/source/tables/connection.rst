@@ -1,5 +1,6 @@
 connection
 ==========
+
 Table contains data on connections between specified locations in the network. Connections are used to create distances between locations in the network
 
 .. csv-table::
