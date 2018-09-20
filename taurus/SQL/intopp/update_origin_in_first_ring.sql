@@ -1,6 +1,4 @@
-
-
-UPUPDATE ring
+UPDATE ring
 SET ring = ring+1
 WHERE
 	---not empty set contains current element if is distance is >0

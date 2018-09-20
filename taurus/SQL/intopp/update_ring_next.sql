@@ -1,5 +1,5 @@
 
 UPDATE ring
-SET ring = :m
+SET ring = :ring
 WHERE
-    ring = :m + 1
+    ring = :ring + 1
