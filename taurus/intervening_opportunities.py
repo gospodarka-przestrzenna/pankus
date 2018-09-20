@@ -116,7 +116,7 @@ class InterveningOpportunities(SQLiteDatabase):
 
     def only_origin_in_first_ring(self):
         """
-        
+        only_origin_in_first_ring function moves points to the next ring if there's not empty set containing current element with distance greater than 0
         """
         self.do('intopp/update_origin_in_first_ring')
 
@@ -223,7 +223,6 @@ class InterveningOpportunities(SQLiteDatabase):
         "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
         Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings.
         "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
-        :return: self
         """
         self.do('intopp/create_motion_exchange')
 
