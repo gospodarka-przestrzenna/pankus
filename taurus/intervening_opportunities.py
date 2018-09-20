@@ -124,7 +124,10 @@ class InterveningOpportunities(SQLiteDatabase):
     def read_rings_layout(self,layout=None):
         """
             Args:
-                layout (varchar):
+                layout (list<float>):
+                example:
+
+                [2.5,2.5,1,1,2,5,10,10] 
         """
         self.do('intopp/create_ring_layout')
         rings_layout = []
