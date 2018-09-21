@@ -74,8 +74,9 @@ class InterveningOpportunities(SQLiteDatabase):
     def build_uniform_rings(self,no_of_rings):
         """
         build_uniform_rings builds specified in the no_of_rings parameter number of rings which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation. During calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included. Table ring is filled using SQL script insert_ring_uniform insert_ring_uniform.sql writes ring table using point and distance tables. insert_ring_uniform.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the buid_uniform_rings fuction
-            Args:
-                no_of_rings (int): number of rings to build from one origin
+
+        Args:
+            no_of_rings (int): number of rings to build from one origin
         """
 
         self.do('intopp/create_ring')
@@ -88,19 +89,10 @@ class InterveningOpportunities(SQLiteDatabase):
 
     def build_weighted_rings(self,weight):
         """
-        build_weighted_rings builds rings based on specified weight which are
-        written in the table ring describing ring placement of a
-        origin-destination point in the correlation to the second
-        origin-destination point. Function selects given weight as a factor
-        essential in rings creation. Table ring is filled using SQL script
-        insert_ring_uniform insert_ring_weighted.sql writes ring table using
-        point and distance tables. insert_ring_weighted.sql script selects
-        pairs of origin-destinations points from point table and matches
-        them with corresponding ring, expressed as the value of weight
-        of distance between points divided by a factor calculated in the
-        build_weighted_rings fuction
-            Args:
-                weight (float): rings separaded from each other by specified weight are created, weight parameter is expressed in the same units as distances betwwen points
+        build_weighted_rings builds rings based on specified weight which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects given weight as a factor essential in rings creation. Table ring is filled using SQL script insert_ring_uniform insert_ring_weighted.sql writes ring table using point and distance tables. insert_ring_weighted.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as the value of weight of distance between points divided by a factor calculated in the build_weighted_rings fuction
+
+        Args:
+            weight (float): rings separaded from each other by specified weight are created, weight parameter is expressed in the same units as distances betwwen points
         """
         self.do('intopp/create_ring')
         factor=weight
@@ -109,8 +101,9 @@ class InterveningOpportunities(SQLiteDatabase):
     def merge_ring_with_next(self, n):
         """
         merge_ring_with_next function merges next ring with ring with specified in function parameters number
-            Args:
-                n (int): number of ring which next ring will be merged into
+
+        Args:
+            n (int): number of ring which next ring will be merged into
         """
         self.do('intopp/update_ring_next', {'ring': n})
 
@@ -123,15 +116,20 @@ class InterveningOpportunities(SQLiteDatabase):
 
     def read_rings_layout(self,layout=None):
         """
-            Args:
-                layout (list<float>):
-                example:
+        read_rings_layout either uses layout given by the user in function parameters or loads the data from list od_properties table and prepares the table ring_layout necessary to create rings in specified layout
 
-                [2.5,2.5,1,1,2,5,10,10] 
+        Args:
+            layout (list<float>):
+            example:self.
+            [2.5,2.5,1,1,2,5,10,10]
         """
         self.do('intopp/create_ring_layout')
+        #worek na przyszłe wartości
         rings_layout = []
+
         for od_id, layout_from_od_description in self.do('intopp/select_ring_layout',{"fixed_rings_name":self.fixed_rings_name}):
+            # the vlue of layout for origin  we will insert
+            layout_value=[]
             if layout:
                 layout_value=layout
             else:
