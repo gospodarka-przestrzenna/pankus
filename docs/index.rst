@@ -5,22 +5,32 @@
 
 Welcome to pankus's documentation!
 ==================================
+..
+  .. literalinclude:: ../taurus/SQL/initial/fix_geometry.sql
+     :language: SQL
 
+Intervening Opportunities module
+--------------------------------
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :glob:
 
-   source/tables/model_parameters
+   source/intervening_opportunities/*
 
-.. literalinclude:: ../taurus/SQL/initial/fix_geometry.sql
-   :language: SQL
+Tables
+------
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   source/tables/*
 
 
+..
+  taurus.route module
+  -------------------
 
-taurus.route module
--------------------
-
-.. autoclass:: taurus.Route
-   :members: distance
-   :undoc-members:
-   :show-inheritance:
+  .. autoclass:: taurus.Route
+     :members: distance
+     :undoc-members:
+     :show-inheritance:
