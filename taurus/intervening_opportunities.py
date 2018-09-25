@@ -159,6 +159,9 @@ class InterveningOpportunities(SQLiteDatabase):
         self.do('intopp/insert_ring_from_layout')
 
     def snap_outstanding_od_to_last_ring(self):
+        """
+        null rings (assigned to od_id pairs in table ring) are given new number equal to maximum ring number + 1
+        """
         self.do('intopp/insert_into_last_ring')
 
     def get_max_distance(self):
