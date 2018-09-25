@@ -152,6 +152,9 @@ class InterveningOpportunities(SQLiteDatabase):
 
 
     def build_rings_from_layout(self):
+        """
+        build_rings_from_layout builds rings according to specified layout 
+        """
         self.do('intopp/create_ring')
         self.do('intopp/insert_ring_from_layout')
 
