@@ -16,4 +16,5 @@ Data used
 
 Effect
 ------
-- column ring in table ring is updated - number of next ring is changed to number of ring specified in function parameters
+- column ring in ``ring`` table is updated.
+  Number of ring following ring specified in function parameters is changed to number of its predecessor (the ring specified in function parameters)
