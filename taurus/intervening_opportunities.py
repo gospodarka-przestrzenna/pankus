@@ -185,6 +185,9 @@ class InterveningOpportunities(SQLiteDatabase):
         self.do('intopp/origins_shift')
 
     def save_intopp_parameters(self,suffix):
+        """
+        save_intopp_parameters allows user to update origins, destnations and selectivity names in od_parameters table with addition of specified suffix
+        """
         self.do('intopp/save_parameters',{
             'origins_new_name':'origins'+suffix,
             'destinations_new_name':'destinations'+suffix,
@@ -306,7 +309,7 @@ class InterveningOpportunities(SQLiteDatabase):
 
     def save_model_parameters(self,parameter,saved_name):
         """
-        save_model_parameters function allows the user to store data on model parameters in a dictionary and update od_properties table with new values for specified by the user parameter
+        save_model_parameters function allows the user to store data on model parameters in a dictionary and update od_properties table with new values of specified by the user parameter
         """
         model_parameters=[{
             "od_id":t[0],
