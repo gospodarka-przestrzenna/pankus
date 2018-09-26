@@ -167,12 +167,21 @@ class InterveningOpportunities(SQLiteDatabase):
         self.do('intopp/normalization')
 
     def destination_shift(self):
+        """
+        destination_shift update destinations after motion exchange
+        """
         self.do('intopp/destination_shift')
 
     def general_shift(self):
+        """
+        general_shift updates both destinations and origins after motion exchange
+        """
         self.do('intopp/general_shift')
 
     def origins_shift(self):
+        """
+        origins_shift
+        """
         self.do('intopp/origins_shift')
 
     def save_intopp_parameters(self,suffix):
