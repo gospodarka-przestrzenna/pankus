@@ -305,6 +305,9 @@ class InterveningOpportunities(SQLiteDatabase):
 
 
     def save_model_parameters(self,parameter,saved_name):
+        """
+        save_model_parameters function allows the user to store data on model parameters in a dictionary and update od_properties table with new values for specified by the user parameter
+        """
         model_parameters=[{
             "od_id":t[0],
             "origins":t[1],
