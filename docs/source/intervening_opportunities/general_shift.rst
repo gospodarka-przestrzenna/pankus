@@ -17,5 +17,5 @@ Data used
 Effect
 ------
 - ``model_parameters`` table is updated.
-- Each origin/destination point's origins are set to be the sum of objects transported to this point during motion exchange.
-- Each origin/destination point's destinations are set to be the sum of objects transported to this point during motion exchange divided by ratio of sum of destinations to sum of origins in the model.
+- Each origin/destination point's origins are set to be the sum of arriving motions (from motion exchange)
+- Each origin/destination computation area's destinations are set to be the sum of arriving motions (from motion exchange) normalized to keep the total sum of initial destinations unchanged.
