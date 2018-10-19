@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #from distutils.core import setup
 from setuptools import setup
-from taurus import __version__
+#from taurus import __version__
 
 setup(
     name='pankus',
@@ -20,7 +20,7 @@ setup(
                    'SQL/datajournal/*.sql'
                    ],     # All files from folder
     },
-    install_requires=[
+    pip=[
         'progressbar2',
         'numpy',
         'vincenty',

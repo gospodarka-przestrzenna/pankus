@@ -4,7 +4,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 __all__ = [
     'Taurus'
 ]
-
+__taurus_version__="4.0"
 from .importer import Importer
 from .route import Route
 from .intervening_opportunities import InterveningOpportunities
