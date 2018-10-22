@@ -25,9 +25,6 @@ class Route(SQLiteDatabase):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
         Each connection is expressed as a set of data - start id, end id and weight.
-        To do so "create_connection" and "inset_connection" SQL scripts are used.
-        Results are written in the 'connection' table
-        :return:
         """
 
         self.do('route/create_connection')
@@ -38,8 +35,8 @@ class Route(SQLiteDatabase):
 
     def distance_air_lines(self,distance_type="geom"):
         """
-        :param distance_type: 'geom'  for geometrical distance or 'vincenty' for WGS 84 with distance from vincenty algorithm
-        :return:
+        Args:
+            distance_type (varchar): 'geom'  for geometrical distance or 'vincenty' for WGS 84 with distance from vincenty algorithm
         """
         assert self.one('route/test_point_id_range')[0]
         self.do('route/create_distance')

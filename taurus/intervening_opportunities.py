@@ -54,8 +54,11 @@ class InterveningOpportunities(SQLiteDatabase):
         which is later updated in the "model_parameters" table.
         Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
         When selectivity value is used in calculations it is divided by the same number.
-        :param efs:
-        :return: Selectivity computed
+
+        Args:
+            efs (float):
+        Returns:
+            float: selectivity
         """
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
@@ -137,7 +140,8 @@ class InterveningOpportunities(SQLiteDatabase):
         """
         Computes maximum distance in all distances
 
-        :return: maximum distance in distance table
+        Returns
+            float: maximum distance
         """
         max_distance, = self.one('intopp/distance_maximum')
         return max_distance
@@ -159,20 +163,31 @@ class InterveningOpportunities(SQLiteDatabase):
         function "normalize_motion_exchange" normalizes motion exchange, setting all the objects left in the network to be the new 100% of netwok population
         SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total".
         Table "motion_exchange" is then updated with normalized values.
-        :return: self
         """
         self.do('intopp/normalization')
 
     def destination_shift(self):
+        """
+        destination_shift update destinations after motion exchange
+        """
         self.do('intopp/destination_shift')
 
     def general_shift(self):
+        """
+        general_shift updates both destinations and origins after motion exchange
+        """
         self.do('intopp/general_shift')
 
     def origins_shift(self):
+        """
+        origins_shift
+        """
         self.do('intopp/origins_shift')
 
     def save_intopp_parameters(self,suffix):
+        """
+        save_intopp_parameters allows user to update origins, destnations and selectivity names in od_parameters table with addition of specified suffix
+        """
         self.do('intopp/save_parameters',{
             'origins_new_name':'origins'+suffix,
             'destinations_new_name':'destinations'+suffix,
@@ -293,6 +308,9 @@ class InterveningOpportunities(SQLiteDatabase):
 
 
     def save_model_parameters(self,parameter,saved_name):
+        """
+        save_model_parameters function allows the user to store data on model parameters in a dictionary and update od_properties table with new values of specified by the user parameter
+        """
         model_parameters=[{
             "od_id":t[0],
             "origins":t[1],
