@@ -18,4 +18,6 @@ Data used
 
 Effect
 ------
-- table ring is created and/or written, using tables distance and point, with rings separated by uniform distance specified as weight in function parameters
+- table ``ring`` is created and/or written, using tables ``distance`` and ``point``.
+  Created rings are separated by fixed distance specified as weight in function parameters.
+  Number of each ring is determined from distance between points and provided weight parameter.
