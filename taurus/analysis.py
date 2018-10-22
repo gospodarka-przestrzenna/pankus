@@ -13,7 +13,7 @@ class Analysis(DataJournal):
         super().__init__(**kwargs)
         self.kwargs=kwargs
 
-    @Importer.logged_function
+    @DataJournal.log_and_stash()
     def solve_for_origins(self):
         '''
         Let A*S=D where D - destination satisfied vector A - motion exchange matrix and S - origins vector.
@@ -50,7 +50,7 @@ class Analysis(DataJournal):
         self.transaction("analysis/update_origins",new_origins_value)
         return accuracy
         
-    @Importer.logged_function
+    @DataJournal.log_and_stash()
     def get_no_ring_pairs(self):
         for a,b in self.do('intopp/select_od_id_with_no_ring_assigned').fetchall():
             print("Origin: ", a, " and destination: ", b , " - no ring assigned!")

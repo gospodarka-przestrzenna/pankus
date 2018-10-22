@@ -72,3 +72,4 @@ class DataJournal(SQLiteDatabase):
                 return function2(self,*args,**kwargs)
             return wrapper
         return real_decorator
+
