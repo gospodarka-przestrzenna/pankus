@@ -83,10 +83,6 @@ class Route(SQLiteDatabase):
         """
         "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.
         Distances are expressed as a set od following data: start_id, end_id, weight, successor id and predecessor id.
-        Successor id and predecessor id  data allows to tie together distances which are parts of other distances.
-        Distance data is written in the script using "import_distances" SQL script
-        :param self:
-        :return:
         """
         #self.generate_connections()
         assert self.one('route/test_point_id_range')[0]

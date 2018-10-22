@@ -28,7 +28,6 @@ class InterveningOpportunities(SQLiteDatabase):
     def import_model_parameters(self):
         """
         importing model parameters, if the values are not given default values from function init are used
-        :return: self
         """
         self.do('intopp/create_model_parameters')
         self.do('intopp/insert_model_parameters',{
@@ -74,14 +73,10 @@ class InterveningOpportunities(SQLiteDatabase):
     # Table "ring" is filled using SQL script "insert_ring_uniform"
     def build_uniform_rings(self,no_of_rings):
         """
-        creating selectivity, a parameter describing probability of object choosing a point as a destination,
-        taking into consideration other point placed between the object and considered point.
-        Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
-        which is later updated in the "model_parameters" table.
-        Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
-        When selectivity value is used in calculations it is divided by the same number.
-        :param no_of_rings:
-        :return: self
+        build_uniform_rings builds specified in the no_of_rings parameter number of rings which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation. During calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included. Table ring is filled using SQL script insert_ring_uniform insert_ring_uniform.sql writes ring table using point and distance tables. insert_ring_uniform.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the buid_uniform_rings fuction
+
+        Args:
+            no_of_rings (int): number of rings to build from one origin
         """
 
         self.do('intopp/create_ring')
@@ -93,21 +88,48 @@ class InterveningOpportunities(SQLiteDatabase):
         self.merge_ring_with_next(no_of_rings)
 
     def build_weighted_rings(self,weight):
+        """
+        build_weighted_rings builds rings based on specified weight which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects given weight as a factor essential in rings creation. Table ring is filled using SQL script insert_ring_uniform insert_ring_weighted.sql writes ring table using point and distance tables. insert_ring_weighted.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as the value of weight of distance between points divided by a factor calculated in the build_weighted_rings fuction
+
+        Args:
+            weight (float): rings separaded from each other by specified weight are created, weight parameter is expressed in the same units as distances betwwen points
+        """
         self.do('intopp/create_ring')
         factor=weight
         self.do('intopp/insert_ring_weighted',{'factor':factor})
 
     def merge_ring_with_next(self, n):
-        self.do('intopp/updater_ring_next', {'ring': n})
+        """
+        merge_ring_with_next function merges next ring with ring with specified in function parameters number
+
+        Args:
+            n (int): number of ring which next ring will be merged into
+        """
+        self.do('intopp/update_ring_next', {'ring': n})
 
     def only_origin_in_first_ring(self):
+        """
+        only_origin_in_first_ring function moves points to the next ring if there's not empty set containing current element with distance greater than 0
+        """
         self.do('intopp/update_origin_in_first_ring')
 
 
     def read_rings_layout(self,layout=None):
+        """
+        read_rings_layout either uses layout given by the user in function parameters or loads the data from list od_properties table and prepares the table ring_layout necessary to create rings in specified layout
+
+        Args:
+            layout (list<float>):
+            example:self.
+            [2.5,2.5,1,1,2,5,10,10]
+        """
         self.do('intopp/create_ring_layout')
+        #worek na przyszłe wartości
         rings_layout = []
+
         for od_id, layout_from_od_description in self.do('intopp/select_ring_layout',{"fixed_rings_name":self.fixed_rings_name}):
+            # the vlue of layout for origin  we will insert
+            layout_value=[]
             if layout:
                 layout_value=layout
             else:
@@ -130,10 +152,16 @@ class InterveningOpportunities(SQLiteDatabase):
 
 
     def build_rings_from_layout(self):
+        """
+        build_rings_from_layout builds rings according to specified layout 
+        """
         self.do('intopp/create_ring')
         self.do('intopp/insert_ring_from_layout')
 
     def snap_outstanding_od_to_last_ring(self):
+        """
+        null rings (assigned to od_id pairs in table ring) are given new number equal to maximum ring number + 1
+        """
         self.do('intopp/insert_into_last_ring')
 
     def get_max_distance(self):
@@ -202,7 +230,6 @@ class InterveningOpportunities(SQLiteDatabase):
         "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
         Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings.
         "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
-        :return: self
         """
         self.do('intopp/create_motion_exchange')
 
