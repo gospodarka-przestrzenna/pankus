@@ -10,17 +10,7 @@ setup(
     packages=[
         'taurus',
     ],
-    package_data={
-        'taurus': ['SQL/*.sql',
-                   'SQL/intopp/*.sql',
-                   'SQL/initial/*.sql',
-                   'SQL/route/*.sql',
-                   'SQL/mst/*.sql',
-                   'SQL/analysis/*.sql',
-                   'SQL/datajournal/*.sql'
-                   ],     # All files from folder
-    },
-    pip=[
+    install_requires=[
         'progressbar2',
         'numpy',
         'vincenty',

@@ -1,0 +1,1 @@
+recursive-include pankus/taurus/SQL/ *.sql
