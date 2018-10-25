@@ -3,10 +3,10 @@
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb
-from .sqlite_database import SQLiteDatabase
 from .utils import TaurusLongTask
+from .data_journal import DataJournal
 
-class Importer(SQLiteDatabase):
+class Importer(DataJournal):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)

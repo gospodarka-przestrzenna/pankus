@@ -20,6 +20,7 @@ class SQLiteDatabase(TaurusLeaf):
 
 
     def get_sql_form_file(self,script_name):
+        #print(pkg_resources,__name__)
         return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
 
     def build_sql(self,script_string,args={}):

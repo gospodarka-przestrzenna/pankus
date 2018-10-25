@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 #from distutils.core import setup
 from setuptools import setup
+from taurus import __version__
 
 setup(
     name='pankus',
-    version='2.3.0',
+    version='2.3.9',
     packages=[
         'taurus',
     ],
@@ -15,7 +16,8 @@ setup(
                    'SQL/initial/*.sql',
                    'SQL/route/*.sql',
                    'SQL/mst/*.sql',
-                   'SQL/analysis/*.sql'
+                   'SQL/analysis/*.sql',
+                   'SQL/datajournal/*.sql'
                    ],     # All files from folder
     },
     install_requires=[

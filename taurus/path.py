@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-from .sqlite_database import SQLiteDatabase
+from .data_journal import DataJournal
 
-class Path(SQLiteDatabase):
+class Path(DataJournal):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
