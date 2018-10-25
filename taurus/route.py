@@ -3,13 +3,13 @@
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb,math
-from .sqlite_database import SQLiteDatabase
 from .taurus_leaf import TaurusLeaf
 from .utils import TaurusLongTask
 from heapq import heappush,heappop
 from vincenty import vincenty
+from .data_journal import DataJournal
 
-class Route(SQLiteDatabase):
+class Route(DataJournal):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
@@ -21,6 +21,7 @@ class Route(SQLiteDatabase):
     # generates connections between pairs of points. A connection has specified start, end and weight written in the table "connection".
     # Connections are inserted into tables using SQL scripts "create_connection" and "insert_connection".
     # "insert_connection" script uses tables "network_geometry" and "point" to write data into new tables.
+    @DataJournal.log_and_stash()
     def generate_connections(self):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
@@ -32,7 +33,7 @@ class Route(SQLiteDatabase):
             'weight_name':self.weight_name
         })
 
-
+    @DataJournal.log_and_stash()
     def distance_air_lines(self,distance_type="geom"):
         """
         Args:
@@ -78,7 +79,7 @@ class Route(SQLiteDatabase):
     # it creates distances meant as routes between pairs of origin-destination points, built from previously generated connections.
     # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
     # Data is written into table distance using SQL script "import_distance".
-
+    @DataJournal.log_and_stash()
     def distance(self):
         """
         "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.

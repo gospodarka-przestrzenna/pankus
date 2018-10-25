@@ -3,16 +3,17 @@
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 #from ipy_progressbar import ProgressBar
-from .sqlite_database import SQLiteDatabase
 import numpy as np
 from .importer import Importer
+from .data_journal import DataJournal
 
-class Analysis(SQLiteDatabase):
+class Analysis(DataJournal):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.kwargs=kwargs
 
+    @DataJournal.log_and_stash()
     def solve_for_origins(self):
         '''
         Let A*S=D where D - destination satisfied vector A - motion exchange matrix and S - origins vector.
@@ -48,7 +49,8 @@ class Analysis(SQLiteDatabase):
             } for i,origins in enumerate(origins_list_)]
         self.transaction("analysis/update_origins",new_origins_value)
         return accuracy
-
+        
+    @DataJournal.log_and_stash()
     def get_no_ring_pairs(self):
         for a,b in self.do('intopp/select_od_id_with_no_ring_assigned').fetchall():
             print("Origin: ", a, " and destination: ", b , " - no ring assigned!")
