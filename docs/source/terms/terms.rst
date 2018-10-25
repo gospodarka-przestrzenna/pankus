@@ -20,3 +20,8 @@ Page presents basic terminology and concept behind implemented features.
 
     Distance
       Distances specify route between pairs of origin/destination areas combined from multiple connections.
+
+    Convolution
+      .. math::
+         dwa wzory z prezentacji, też to, co robimy, kiedy "a" jest ujemne, 
+      Reindexing of XXX
