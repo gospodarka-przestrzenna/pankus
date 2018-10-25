@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #from distutils.core import setup
-from setuptools import setup
+from setuptools import setup, find_packages
+from pkg_resources import get_distribution, DistributionNotFound
 #from taurus import __version__
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    pass
 
 setup(
     name='pankus',
-    version='2.3.9',
-    packages=[
-        'taurus',
-    ],
+    packages=find_packages(),
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     install_requires=[
         'progressbar2',
         'numpy',
