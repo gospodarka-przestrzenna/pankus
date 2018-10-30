@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__author__ = 'Maciej Kamiński Politechnika Wrocławska'
+from pankus import __version__, __authors__
 
 from .sqlite_database import SQLiteDatabase
 import pkg_resources
@@ -24,7 +24,7 @@ class DataJournal(SQLiteDatabase):
             parameter_list=[str(argg) for argg in args[1:]]
             parameter_list.extend([str(key)+'='+str(kwargs[key]) for key in list(kwargs.keys())])
             action=str(function.__name__)+"("+", ".join(parameter_list)+")"
-            version=str(pkg_resources.require("pankus")[0].version)
+            version=__version__
             action_uid=self.get_action_uid()
             out=function(self,*args, **kwargs)
             self.do('datajournal/insert_model_log',{
@@ -44,7 +44,7 @@ class DataJournal(SQLiteDatabase):
         def data_deco(function):
             def wrapper(self,*args,**kwargs):
                 out=function(self,*args, **kwargs)
-                print(table_name)
+                #print(table_name)
                 assert ";" not in table_name
                 assert len(table_name)<30
                 cursor=self.db_connection.execute("SELECT * FROM "+table_name)
@@ -52,8 +52,8 @@ class DataJournal(SQLiteDatabase):
                 header=','.join(names)
                 data=[str(row)[1:-1] for row in cursor]
                 csv=header+"\n"+"\n".join(data)
-                print(csv)
-                print(self.parent_action_uid)
+                #print(csv)
+                #print(self.parent_action_uid)
                 self.do('datajournal/insert_data_stash',{
                                                     'action_uid':self.parent_action_uid,
                                                     'table_name':table_name,

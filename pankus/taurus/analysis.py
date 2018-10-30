@@ -13,7 +13,7 @@ class Analysis(DataJournal):
         super().__init__(**kwargs)
         self.kwargs=kwargs
 
-    @DataJournal.log_and_stash()
+    @DataJournal.log_and_stash("model_parameters")
     def solve_for_origins(self):
         '''
         Let A*S=D where D - destination satisfied vector A - motion exchange matrix and S - origins vector.
