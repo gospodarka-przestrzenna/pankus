@@ -20,9 +20,8 @@
 import os
 import sys
 import sphinx_bootstrap_theme
-from pkg_resources import get_distribution
-
 sys.path.insert(0, os.path.abspath('..'))
+from pankus import __authors__,__version__
 
 # -- General configuration ------------------------------------------------
 
@@ -58,14 +57,15 @@ master_doc = 'index'
 # General information about the project.
 project = 'pankus'
 copyright = '2018, Maciej Kamiński, Wiktor Żelazo'
-author = 'Maciej Kamiński, Wiktor Żelazo'
+author = __authors__
+show_authors = True
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-release = get_distribution('pankus').version
+release = __version__
 version = '.'.join(release.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
 #release = get_distribution('pankus').version
