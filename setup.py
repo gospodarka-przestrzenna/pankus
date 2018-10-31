@@ -7,6 +7,7 @@ from pankus import __version__, __authors__
 setup(
     name='pankus',
     packages=find_packages(),
+    include_package_data=True,
     version=__version__,
     authors=__authors__,
     use_scm_version=True,
