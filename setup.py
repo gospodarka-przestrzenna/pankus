@@ -1,33 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #from distutils.core import setup
-from setuptools import setup
-#from taurus import __version__
+from setuptools import setup, find_packages
+from pankus import __version__, __authors__
 
 setup(
     name='pankus',
-    version='2.3.9',
-    packages=[
-        'taurus',
-    ],
-    package_data={
-        'taurus': ['SQL/*.sql',
-                   'SQL/intopp/*.sql',
-                   'SQL/initial/*.sql',
-                   'SQL/route/*.sql',
-                   'SQL/mst/*.sql',
-                   'SQL/analysis/*.sql',
-                   'SQL/datajournal/*.sql'
-                   ],     # All files from folder
-    },
-    pip=[
+    packages=find_packages(),
+    include_package_data=True,
+    version=__version__,
+    authors=__authors__,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
+    install_requires=[
         'progressbar2',
         'numpy',
         'vincenty',
     ],
     url='http://github.com/mk45/pankus',
     license='(c) Politechnika Wrocławska',
-    author='Maciej Kamiński',
+    #author='Maciej Kamiński',
     author_email='maciej.kaminski@pwr.edu.pl',
     description='Spatial planning software',
     classifiers=[

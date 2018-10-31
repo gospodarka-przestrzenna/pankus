@@ -21,7 +21,7 @@ class Route(DataJournal):
     # generates connections between pairs of points. A connection has specified start, end and weight written in the table "connection".
     # Connections are inserted into tables using SQL scripts "create_connection" and "insert_connection".
     # "insert_connection" script uses tables "network_geometry" and "point" to write data into new tables.
-    @DataJournal.log_and_stash()
+    @DataJournal.log_and_stash("connection")
     def generate_connections(self):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
@@ -33,7 +33,7 @@ class Route(DataJournal):
             'weight_name':self.weight_name
         })
 
-    @DataJournal.log_and_stash()
+    @DataJournal.log_and_stash("distance")
     def distance_air_lines(self,distance_type="geom"):
         """
         Args:
@@ -79,7 +79,7 @@ class Route(DataJournal):
     # it creates distances meant as routes between pairs of origin-destination points, built from previously generated connections.
     # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
     # Data is written into table distance using SQL script "import_distance".
-    @DataJournal.log_and_stash()
+    @DataJournal.log_and_stash("distance")
     def distance(self):
         """
         "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.
