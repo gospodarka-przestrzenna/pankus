@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS model_log (
     action_uid INTEGER,
     action TEXT,
-    date_time TEXT,
+    datetime TEXT,
     parent_action_uid TEXT,
     pankus_version TEXT
 );
