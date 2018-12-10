@@ -3,6 +3,7 @@
 from pankus import __version__, __authors__
 
 from .sqlite_database import SQLiteDatabase
+import time
 import pkg_resources
 import sqlite3
 import csv
@@ -21,15 +22,17 @@ class DataJournal(SQLiteDatabase):
     @staticmethod
     def logged_function(function):
         def wrapper(self,*args,**kwargs):
-            parameter_list=[str(argg) for argg in args[1:]]
+            parameter_list=[str(argg) for argg in args]
             parameter_list.extend([str(key)+'='+str(kwargs[key]) for key in list(kwargs.keys())])
             action=str(function.__name__)+"("+", ".join(parameter_list)+")"
             version=__version__
             action_uid=self.get_action_uid()
+            datetime=time.time()
             out=function(self,*args, **kwargs)
             self.do('datajournal/insert_model_log',{
                                                 'action_uid':action_uid,
                                                 'action':action,
+                                                'datetime':datetime,
                                                 'p_action_uid':self.parent_action_uid,
                                                 'version':version})
             self.parent_action_uid=action_uid
