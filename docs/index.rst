@@ -6,7 +6,7 @@
 Welcome to pankus's documentation!
 ==================================
 ..
-  .. literalinclude:: ../taurus/SQL/initial/fix_geometry.sql
+  .. literalinclude:: ../pankus/taurus/SQL/initial/fix_geometry.sql
      :language: SQL
 
 Intervening Opportunities module
@@ -30,7 +30,7 @@ Tables
   taurus.route module
   -------------------
 
-  .. autoclass:: taurus.Route
+  .. autoclass:: pankus.taurus.Route
      :members: distance
      :undoc-members:
      :show-inheritance:

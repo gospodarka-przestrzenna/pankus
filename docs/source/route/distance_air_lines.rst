@@ -1,7 +1,7 @@
 distance_air_lines
 ===================
 
-.. autoclass:: taurus.Route
+.. autoclass:: pankus.taurus.Route
     :members: distance_air_lines
 
 Data used

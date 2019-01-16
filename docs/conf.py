@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pankus'
-copyright = '2018, Maciej Kamiński, Wiktor Żelazo'
+copyright = '2019, Maciej Kamiński, Wiktor Żelazo'
 author = __authors__
 show_authors = True
 

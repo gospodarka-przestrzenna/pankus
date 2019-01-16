@@ -7,7 +7,7 @@ Submodules
 taurus.analysis module
 ----------------------
 
-.. automodule:: taurus.analysis
+.. automodule:: pankus.taurus.analysis
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ taurus.analysis module
 taurus.importer module
 ----------------------
 
-.. automodule:: taurus.importer
+.. automodule:: pankus.taurus.importer
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ taurus.importer module
 taurus.intervening\_opportunities module
 ----------------------------------------
 
-.. automodule:: taurus.intervening_opportunities
+.. automodule:: pankus.taurus.intervening_opportunities
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +31,7 @@ taurus.intervening\_opportunities module
 taurus.mst module
 -----------------
 
-.. automodule:: taurus.mst
+.. automodule:: pankus.taurus.mst
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +39,7 @@ taurus.mst module
 taurus.network\_generators module
 ---------------------------------
 
-.. automodule:: taurus.network_generators
+.. automodule:: pankus.taurus.network_generators
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +47,7 @@ taurus.network\_generators module
 taurus.path module
 ------------------
 
-.. automodule:: taurus.path
+.. automodule:: pankus.taurus.path
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +55,7 @@ taurus.path module
 taurus.route module
 -------------------
 
-.. automodule:: taurus.route
+.. automodule:: pankus.taurus.route
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +63,7 @@ taurus.route module
 taurus.sqlite\_database module
 ------------------------------
 
-.. automodule:: taurus.sqlite_database
+.. automodule:: pankus.taurus.sqlite_database
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +71,7 @@ taurus.sqlite\_database module
 taurus.taurus\_leaf module
 --------------------------
 
-.. automodule:: taurus.taurus_leaf
+.. automodule:: pankus.taurus.taurus_leaf
     :members:
     :undoc-members:
     :show-inheritance:
@@ -79,7 +79,7 @@ taurus.taurus\_leaf module
 taurus.utils module
 -------------------
 
-.. automodule:: taurus.utils
+.. automodule:: pankus.taurus.utils
     :members:
     :undoc-members:
     :show-inheritance:
@@ -88,7 +88,7 @@ taurus.utils module
 Module contents
 ---------------
 
-.. automodule:: taurus
+.. automodule:: pankus.taurus
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,6 +1,6 @@
 only_origin_in_first_ring
 =========================
-.. autoclass:: taurus.InterveningOpportunities
+.. autoclass:: pankus.taurus.InterveningOpportunities
     :members: only_origin_in_first_ring
 
 Data used

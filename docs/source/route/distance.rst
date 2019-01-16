@@ -1,7 +1,7 @@
 distance
 ===================
 
-.. autoclass:: taurus.Route
+.. autoclass:: pankus.taurus.Route
     :members: distance
 
 Data used

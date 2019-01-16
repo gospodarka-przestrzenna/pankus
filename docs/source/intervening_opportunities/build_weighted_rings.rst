@@ -1,7 +1,7 @@
 build_weighted_rings
 ====================
 
-.. autoclass:: taurus.InterveningOpportunities
+.. autoclass:: pankus.taurus.InterveningOpportunities
     :members: build_weighted_rings
 
 Data used

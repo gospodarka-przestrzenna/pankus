@@ -1,6 +1,6 @@
 import_model_parameters
 =======================
-.. autoclass:: taurus.InterveningOpportunities
+.. autoclass:: pankus.taurus.InterveningOpportunities
    :members: import_model_parameters
 
 Data used

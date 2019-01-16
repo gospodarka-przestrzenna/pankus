@@ -1,6 +1,6 @@
 save_intopp_parameters
 ======================
-.. autoclass:: taurus.InterveningOpportunities
+.. autoclass:: pankus.taurus.InterveningOpportunities
     :members: save_intopp_parameters
 
 Data used

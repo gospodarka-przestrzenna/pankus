@@ -1,6 +1,6 @@
 save_model_parameters
 =====================
-.. autoclass:: taurus.InterveningOpportunities
+.. autoclass:: pankus.taurus.InterveningOpportunities
     :members: save_model_parameters
 
 Data used
