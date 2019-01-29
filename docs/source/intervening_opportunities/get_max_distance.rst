@@ -1,9 +1,6 @@
 get_max_distance
 ================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: get_max_distance
-
 Data used
 ----------
 

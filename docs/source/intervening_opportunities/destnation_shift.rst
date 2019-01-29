@@ -1,7 +1,5 @@
 destination_shift
 ==================
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: destinations_shift
 
 Data used
 ----------

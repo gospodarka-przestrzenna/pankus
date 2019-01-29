@@ -1,7 +1,5 @@
 normalize_motion_exchange
 =========================
-.. autoclass:: pankus.taurus.InterveningOpportunities
-   :members: normalize_motion_exchange
 
 Data used
 ----------

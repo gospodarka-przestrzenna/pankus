@@ -23,5 +23,4 @@ Page presents basic terminology and concept behind implemented features.
 
     Convolution
       .. math::
-         dwa wzory z prezentacji, też to, co robimy, kiedy "a" jest ujemne, 
-      Reindexing of XXX
+         dwa wzory z prezentacji, też to, co robimy, kiedy "a" jest ujemne

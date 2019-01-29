@@ -1,7 +1,5 @@
 general_shift
 ==============
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: general_shift
 
 Data used
 ----------

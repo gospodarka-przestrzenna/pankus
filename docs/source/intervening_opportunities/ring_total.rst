@@ -1,9 +1,6 @@
 ring_total
 ==========
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: ring_total
-
 Data used
 ----------
 

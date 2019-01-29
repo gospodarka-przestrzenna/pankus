@@ -1,9 +1,6 @@
 create_escape_fraction_selectivity
 ==================================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: create_escape_fraction_selectivity
-
 Data used
 ----------
 

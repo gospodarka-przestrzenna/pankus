@@ -1,9 +1,6 @@
 build_rings_from_layout
 =======================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-  :members: build_rings_from_layout
-
 Data used
 ----------
 

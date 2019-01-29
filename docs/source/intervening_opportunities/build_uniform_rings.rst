@@ -1,9 +1,6 @@
 build_uniform_rings
 ====================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-  :members: build_uniform_rings
-
 Data used
 ----------
 

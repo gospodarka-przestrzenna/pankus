@@ -1,9 +1,6 @@
 read_rings_layout
 =================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: read_rings_layout
-
 Data used
 ----------
 

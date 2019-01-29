@@ -1,9 +1,6 @@
 merge_ring_with_next
 ====================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: merge_ring_with_next
-
 Data used
 ----------
 

@@ -1,7 +1,5 @@
 motion_exchange
 ==================
-.. autoclass:: pankus.taurus.InterveningOpportunities
-   :members: motion_exchange
 
 Data used
 ----------
@@ -14,7 +12,7 @@ Data used
   ../tables/motion_exchange_fraction
   ../tables/ring
   ../tables/ring_total
-  ../model_parameters
+  ../tables/model_parameters
 
 
 Effect
