@@ -7,12 +7,14 @@ Welcome to pankus's documentation!
 ==================================
 
 .. warning::
-   This documentstion is meant for oftware in active development
+   This documentation is meant for software in active development
 
-Pankus is meant as a collection of subpackages, under this name are available various spatial analyses libraries. Basic functionality of pankus package is meant to provide users with simple tools that might be combined into simulation models. 
+Pankus is meant as a collection of subpackages, under this name are available various spatial analyses libraries. Basic functionality of pankus package is meant to provide users with simple tools that might be combined into simulation models.
 
-You can find here glossary, explained functions and tables as well as use cases for project structures. 
+You can find here glossary, explained functions and tables as well as use cases for project structures.
 Feel free to let us know if you think there is something missing ;)
+
+If you are not equipped with a prepared network, it is advised to start with `network_generator` module followed by `route` module. Modules `analysis`, `intervenng_opportnities` and `mst` allow to further operate on prepared networks. `data_journal` module serves as journal of executed actions and data results.
 
 Terms
 -------
@@ -60,6 +62,3 @@ Examples of use
    T.import_model_parameters()
    #calculating sum of destinations in rings
    T.ring_total()
- 
-
-

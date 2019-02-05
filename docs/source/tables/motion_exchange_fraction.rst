@@ -10,4 +10,4 @@ Motion_exchange_fraction table contains data on motion_exchange results meant as
    Field name,Field type,Description
    od_start_id,INT,ID number of computation area meant as origin of motion exchange
    od_end_id,INT,ID number of computation area meant as destination of motion exchange
-   fraction,REAL,fraction of objects transported from the origin area to the destination area
+   fraction,REAL,fraction of origins transported to the destination area

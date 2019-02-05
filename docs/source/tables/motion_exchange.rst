@@ -10,4 +10,4 @@ Motion_exchange table contains data on motion_exchange results meant as sum of o
    Field name,Field type,Description
    od_start_id,INT,ID number of computation area meant as origin of motion exchange
    od_end_id,INT,ID number of computation area meant as destination of motion exchange
-   motion_exchange,REAL,sum of objects transported from the origin area to the destination area
+   motion_exchange,REAL,sum of origins transported to the destination area
