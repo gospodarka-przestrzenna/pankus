@@ -82,7 +82,7 @@ class NetworkGenerator(Importer):
         self.transaction('initial/import_od_properties',od_data_to_insert)
 
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hexhorny_pattern_network(self,size,delta=0.0001):
+    def make_hexhorny_pattern_network(self,size,delta=0.0001,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
@@ -173,7 +173,7 @@ class NetworkGenerator(Importer):
 
 
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_trianglehex_pattern_network(self,size,delta=0.0001):
+    def make_trianglehex_pattern_network(self,size,delta=0.0001,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
@@ -231,7 +231,7 @@ class NetworkGenerator(Importer):
         self.point_from_network_od()
 
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hexdiagonal_pattern_network(self,size,delta=0.0001):
+    def make_hexdiagonal_pattern_network(self,size,delta=0.0001,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
@@ -348,7 +348,7 @@ class NetworkGenerator(Importer):
 
 
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hex_pattern_network(self,size,delta=0.0001):
+    def make_hex_pattern_network(self,size,delta=0.0001,**kwargs):
         '''
         Creates hexagonal pattern network. HEXAGONS binded together by edge (like square pattern but with hexagons)
         Creates also corresponding origins - destinations points.
@@ -423,7 +423,7 @@ class NetworkGenerator(Importer):
         self.point_from_network_od()
 
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_square_pattern_network(self,size,delta=0.0001):
+    def make_square_pattern_network(self,size,delta=0.0001,**kwargs):
         '''
         Creates square pattern network.
         Coresponding origins - destinations points are also created.

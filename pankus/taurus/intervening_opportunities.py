@@ -26,7 +26,7 @@ class InterveningOpportunities(DataJournal):
 
     # importing model parameters, if the values are not given default values from function init are used
     @DataJournal.log_and_stash("model_parameters")
-    def import_model_parameters(self):
+    def import_model_parameters(self,**kwargs):
         """
         importing model parameters, if the values are not given default values from function init are used
         """
@@ -48,7 +48,7 @@ class InterveningOpportunities(DataJournal):
     # When selectivity value is used in calculations it is divided by the same number.
 
     @DataJournal.log_and_stash("model_parameters")
-    def create_escape_fraction_selectivity(self,efs):
+    def create_escape_fraction_selectivity(self,efs,**kwargs):
         """
         creating selectivity, a parameter describing probability of object choosing a point as a destination,
         taking into consideration other point placed between the object and considered point.
@@ -76,7 +76,7 @@ class InterveningOpportunities(DataJournal):
     # Table "ring" is filled using SQL script "insert_ring_uniform"
 
     @DataJournal.log_and_stash("ring")
-    def build_uniform_rings(self,no_of_rings):
+    def build_uniform_rings(self,no_of_rings,**kwargs):
         """
         build_uniform_rings builds specified in the no_of_rings parameter number of rings which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation. During calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included. Table ring is filled using SQL script insert_ring_uniform insert_ring_uniform.sql writes ring table using point and distance tables. insert_ring_uniform.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the buid_uniform_rings fuction
 
@@ -93,7 +93,7 @@ class InterveningOpportunities(DataJournal):
         self.merge_ring_with_next(no_of_rings)
 
     @DataJournal.log_and_stash("ring")
-    def build_weighted_rings(self,weight):
+    def build_weighted_rings(self,weight,**kwargs):
         """
         build_weighted_rings builds rings based on specified weight which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects given weight as a factor essential in rings creation. Table ring is filled using SQL script insert_ring_uniform insert_ring_weighted.sql writes ring table using point and distance tables. insert_ring_weighted.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as the value of weight of distance between points divided by a factor calculated in the build_weighted_rings fuction
 
@@ -105,7 +105,7 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/insert_ring_weighted',{'factor':factor})
 
     @DataJournal.log_and_stash("ring")
-    def merge_ring_with_next(self, n):
+    def merge_ring_with_next(self, n, **kwargs):
         """
         merge_ring_with_next function merges next ring with ring with specified in function parameters number
 
@@ -115,14 +115,14 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/update_ring_next', {'ring': n})
 
     @DataJournal.log_and_stash("ring")
-    def only_origin_in_first_ring(self):
+    def only_origin_in_first_ring(self, **kwargs):
         """
         only_origin_in_first_ring function moves points to the next ring if there's not empty set containing current element with distance greater than 0
         """
         self.do('intopp/update_origin_in_first_ring')
 
     @DataJournal.log_and_stash("ring_layout")
-    def read_rings_layout(self,layout=None):
+    def read_rings_layout(self,layout=None,**kwargs):
         """
         read_rings_layout either uses layout given by the user in function parameters or loads the data from list od_properties table and prepares the table ring_layout necessary to create rings in specified layout
 
@@ -159,22 +159,22 @@ class InterveningOpportunities(DataJournal):
         self.transaction('intopp/insert_ring_layout',rings_layout)
 
     @DataJournal.log_and_stash("ring")
-    def build_rings_from_layout(self):
+    def build_rings_from_layout(self,**kwargs):
         """
-        build_rings_from_layout builds rings according to specified layout 
+        build_rings_from_layout builds rings according to specified layout
         """
         self.do('intopp/create_ring')
         self.do('intopp/insert_ring_from_layout')
 
     @DataJournal.log_and_stash("ring")
-    def snap_outstanding_od_to_last_ring(self):
+    def snap_outstanding_od_to_last_ring(self,**kwargs):
         """
         null rings (assigned to od_id pairs in table ring) are given new number equal to maximum ring number + 1
         """
         self.do('intopp/insert_into_last_ring')
 
     @DataJournal.log_and_stash()
-    def get_max_distance(self):
+    def get_max_distance(self,**kwargs):
         """
         Computes maximum distance in all distances
 
@@ -187,7 +187,7 @@ class InterveningOpportunities(DataJournal):
     # creating table "ring_total" containing data on number of destinations located in specified ring and sum of all the destinations from rings prior to the described ring.
     # Table is filled by SQL script which uses tables "ring" and "model_parameters"
     @DataJournal.log_and_stash("ring_total")
-    def ring_total(self):
+    def ring_total(self,**kwargs):
         """
         function "ring_total" creates table "ring_total" containing data on number of destinations located in specified ring and sum of all destiantions from rings prior to this ring
         :return: self
@@ -198,7 +198,7 @@ class InterveningOpportunities(DataJournal):
     # normalization of motion exchange. All the "objects" left in te network are set to be new 100% of network population
     # ("objects" that left the network in search for destinatons aren't included). SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total". Table "motion_exchange" is then updated with normalized values.
     @DataJournal.log_and_stash("motion_exchange", "motion_exchange_fraction")
-    def normalize_motion_exchange(self):
+    def normalize_motion_exchange(self,**kwargs):
         """
         function "normalize_motion_exchange" normalizes motion exchange, setting all the objects left in the network to be the new 100% of netwok population
         SQL script "normalization" uses tables "motion_exchange_fraction" and creates helper table "temp_motion_exchange_fraction_total".
@@ -207,28 +207,28 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/normalization')
 
     @DataJournal.log_and_stash("model_parameters")
-    def destination_shift(self):
+    def destination_shift(self,**kwargs):
         """
         destination_shift update destinations after motion exchange
         """
         self.do('intopp/destination_shift')
 
     @DataJournal.log_and_stash("model_parameters")
-    def general_shift(self):
+    def general_shift(self,**kwargs):
         """
         general_shift updates both destinations and origins after motion exchange
         """
         self.do('intopp/general_shift')
 
     @DataJournal.log_and_stash("model_parameters")
-    def origins_shift(self):
+    def origins_shift(self,**kwargs):
         """
         origins_shift
         """
         self.do('intopp/origins_shift')
 
     @DataJournal.log_and_stash("od_properties")
-    def save_intopp_parameters(self,suffix):
+    def save_intopp_parameters(self,suffix,**kwargs):
         """
         save_intopp_parameters allows user to update origins, destnations and selectivity names in od_parameters table with addition of specified suffix
         """
@@ -241,7 +241,7 @@ class InterveningOpportunities(DataJournal):
 
     #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     @DataJournal.log_and_stash("motion_exchange", "motion_exchange_fraction")
-    def motion_exchange(self):
+    def motion_exchange(self,**kwargs):
         """
         calculates numbers of transported "objects". Results ae written in the "motion_exchange" table. which describes accurate quantity of transported "objects"
         "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
@@ -351,7 +351,7 @@ class InterveningOpportunities(DataJournal):
         return self.convolution_cdf(origins,selectivity,0,0)
 
     @DataJournal.log_and_stash("od_properties")
-    def save_model_parameters(self,parameter,saved_name):
+    def save_model_parameters(self,parameter,saved_name,**kwargs):
         """
         save_model_parameters function allows the user to store data on model parameters in a dictionary and update od_properties table with new values of specified by the user parameter
         """
