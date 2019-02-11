@@ -16,6 +16,9 @@ Feel free to let us know if you think there is something missing ;)
 
 If you are not equipped with a prepared network, it is advised to start with `network_generator` module followed by `route` module. Modules `analysis`, `intervenng_opportnities` and `mst` allow to further operate on prepared networks. `data_journal` module serves as journal of executed actions and data results.
 
+Installation
+------------
+
 Terms
 -------
 .. toctree::

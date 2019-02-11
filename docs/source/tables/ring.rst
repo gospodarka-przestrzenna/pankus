@@ -1,3 +1,5 @@
+.. _ring_table:
+
 ring
 =====
 
