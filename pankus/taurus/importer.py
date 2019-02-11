@@ -17,7 +17,7 @@ class Importer(DataJournal):
 
     def import_network_geojson(self,make_two_side=False):
         self.do('initial/create_network')
-        with open(self.network_filename,'r') as net:
+        with open(self.network_filename,'rb') as net:
             net_data=json.load(net)
             # print(net_data.keys())
 
@@ -69,7 +69,7 @@ class Importer(DataJournal):
 
     def import_od_geojson(self):
         self.do('initial/create_od')
-        with open(self.od_filename,'r') as od:
+        with open(self.od_filename,'rb') as od:
             od_data=json.load(od)
 
             geometry_to_insert=[]
