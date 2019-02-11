@@ -14,6 +14,6 @@ Data used
 
 Effect
 ------
-- ``motion_exchange_fraction`` and ``motion_exchange`` table are updated with new, normalized values.
-  After this total sum in tables ``motion_exchange_fraction`` and ``motion_exchange`` are equal to initial total mass or 1 respectively.
+- :ref:`motion_exchange_fraction_table` and :ref:`motion_exchange_table` tables are updated with new, normalized values.
+  After this total sum in tables :ref:`motion_exchange_fraction_table` and :ref:`motion_exchange_table` are equal to initial total mass or 1 respectively.
   These values are computed by multplying each of updated values by proper factor.

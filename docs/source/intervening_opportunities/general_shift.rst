@@ -14,6 +14,6 @@ Data used
 
 Effect
 ------
-- ``model_parameters`` table is updated.
-- Origins in each origin/destination point are set to be the sum of motions (from motion exchange) arriving to this point.
-- Destinations in each origin/destination point are set to be the sum of motions (from motion exchange) arriving to this point.
+- :ref:`model_parameters_table` table is updated.
+- Origins in each origin/destination point are set to be the sum of motions (from :ref:`motion_exchange_table`) arriving to this point.
+- Destinations in each origin/destination point are set to be the sum of motions (from :ref:`motion_exchange_table`) arriving to this point.

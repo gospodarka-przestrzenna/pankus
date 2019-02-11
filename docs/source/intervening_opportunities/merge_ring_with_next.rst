@@ -13,5 +13,5 @@ Data used
 
 Effect
 ------
-- column ring in ``ring`` table is updated.
+- column ring in :ref:`ring_table` table is updated.
   Number of ring following ring specified in function parameters is changed to number of its predecessor (the ring specified in function parameters)
