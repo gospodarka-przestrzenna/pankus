@@ -1,3 +1,5 @@
+.. _motion_exchange_function:
+
 motion_exchange
 ==================
 
