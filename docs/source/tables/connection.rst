@@ -1,3 +1,5 @@
+.. _connection_table:
+
 connection
 ==========
 

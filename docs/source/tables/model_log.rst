@@ -1,3 +1,5 @@
+.. _model_log_table:
+
 model_log
 ==========
 

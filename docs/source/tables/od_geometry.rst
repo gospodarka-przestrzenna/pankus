@@ -1,3 +1,5 @@
+.. _od_geometry_table:
+
 od_geometry
 ===========
 

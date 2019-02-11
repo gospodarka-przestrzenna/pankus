@@ -1,3 +1,5 @@
+.. _ring_total_table:
+
 ring_total
 ===========
 

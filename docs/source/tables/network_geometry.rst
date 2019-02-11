@@ -1,3 +1,5 @@
+.. _network_geometry_table:
+
 network_geometry
 ================
 

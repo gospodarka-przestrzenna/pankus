@@ -1,3 +1,5 @@
+.. _od_properties_table:
+
 od_properties
 ==============
 

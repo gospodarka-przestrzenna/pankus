@@ -1,3 +1,5 @@
+.. _temp_motion_exchange_fraction_total_table:
+
 temp_motion_exchange_fraction_total
 ===================================
 

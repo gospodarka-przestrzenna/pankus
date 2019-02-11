@@ -1,3 +1,5 @@
+.. _data_stash_table:
+
 data_stash
 ==========
 

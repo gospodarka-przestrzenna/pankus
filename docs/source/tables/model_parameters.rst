@@ -1,3 +1,5 @@
+.. _model_parameters_table:
+
 model_parameters
 =====================
 
