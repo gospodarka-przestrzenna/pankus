@@ -11,25 +11,35 @@ class MST(DataJournal):
         super().__init__(**kwargs)
 
     @DataJournal.log_and_stash("bmst_connection", "bmst")
-    def minimum_spanning_tree_from_network(self,**kwargs):
-        self.do('mst/create_boruvka_mst')
-        self.do('mst/bmst_connections_from_network')
-        self.do('mst/initialize_bmst')
-        self.save_bmst_parameters=self.save_bmst_parameters_to_od_properties
-        self.mst()
+    def minimum_spanning_tree(self,connection_type="distances",**kwargs):
+        """
+        Creates minimium spanning tree with levels on which level/step each
+        tree edge were added. The same information is gathered for graph nodes.
 
-    @DataJournal.log_and_stash("bmst_connection", "bmst")
-    def minimum_spanning_tree_from_distance(self,**kwargs):
-        self.do('mst/create_boruvka_mst')
-        self.do('mst/bmst_connections_from_distance')
-        self.do('mst/initialize_bmst')
-        self.save_bmst_parameters=self.save_bmst_parameters_to_network
-        self.mst()
+        Read more here [https://en.wikipedia.org/wiki/Borůvka%27s_algorithm]
+        Can be created out of network connections as basic case or from distances
+        computed earlier in process.
 
-    @DataJournal.log_and_stash()
-    def save_bmst_parameters(self,suffix,**kwargs):
-        #only proxy function Wont work until mst executed
-        pass
+        The funcion writes computed info to network_properties table under ""
+        Args:
+            connection_type (string): can be "connection" or "distance"
+
+        """
+        valid_coonection_types_names=["connection","distance"]
+        self.do('mst/create_boruvka_mst')
+        if connection_type in valid_coonection_types_names:
+            self.do('mst/bmst_connections_from_'+connection_type)
+        else
+            raise ValueError("only suported values are: "+", ".join(valid_coonection_types_names))
+        self.do('mst/initialize_bmst')
+        self.mst()
+        self.do('mst/save_bmst_parameters_form_'+connection_type)
+
+    @DataJournal.log_and_stash("bmst", "bmst_used_connection")
+    def mst(self,**kwargs):
+        #iterator=iter(ProgressBar(range(len(featured_points)**2)))
+        while not self.one('mst/bmst_finish_condition')[0]:
+            self.do('mst/bmst_step')
 
     @DataJournal.log_and_stash("od_properties")
     def save_bmst_parameters_to_od_properties(self,suffix='supernode',**kwargs):
@@ -51,12 +61,3 @@ class MST(DataJournal):
                 'level':level,
                 'supernode_level_name':'L'+str(level)+suffix
             })
-
-
-
-
-    @DataJournal.log_and_stash("bmst", "bmst_used_connection")
-    def mst(self,**kwargs):
-        #iterator=iter(ProgressBar(range(len(featured_points)**2)))
-        while not self.one('mst/bmst_finish_condition')[0]:
-            self.do('mst/bmst_step')
