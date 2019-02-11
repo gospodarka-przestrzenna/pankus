@@ -23,6 +23,9 @@ import sphinx_bootstrap_theme
 sys.path.insert(0, os.path.abspath('..'))
 from pankus import __authors__, __version__
 
+def setup(app):
+    app.add_stylesheet('css/newstyle.css')
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

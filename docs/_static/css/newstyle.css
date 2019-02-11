@@ -1,0 +1,20 @@
+body {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+/*a {
+    color: #adf127;
+}
+
+a:hover {
+    color: #ff4242;
+}
+*/
+
+code {
+    color: #c7254e;
+}
