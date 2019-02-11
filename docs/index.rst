@@ -18,6 +18,17 @@ If you are not equipped with a prepared network, it is advised to start with `ne
 
 Installation
 ------------
+Basic installation:
+
+1. make sure you have pip package installed (if not go to: https://pip.pypa.io/en/stable/installing/)
+2. enter ``pip3 install -U pankus`` in command line terminal 
+
+All the substantial packages are installed automatically
+
+.. note:: additional documentation bundle installation for developers only:
+
+   1. enter ``pip3 install sphinx`` in command line terminal
+   2. enter ``pip3 install sphinx-bootstrap-theme`` in command line terminal
 
 Terms
 -------
