@@ -3,7 +3,7 @@ Network_Generator
 
 .. autoclass:: pankus.taurus.NetworkGenerator
 
-Network_Generator
+Functions
 -------------------------
 
 .. toctree::

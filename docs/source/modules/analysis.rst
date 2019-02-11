@@ -3,8 +3,8 @@ Analysis
 
 .. autoclass:: pankus.taurus.Analysis
 
-Analysis
---------
+Functions
+-----------
 .. toctree::
    :maxdepth: 1
    :glob:

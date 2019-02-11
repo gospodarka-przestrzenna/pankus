@@ -3,8 +3,8 @@ Route
 
 .. autoclass:: pankus.taurus.Route
 
-Route
------
+Functions
+----------
 .. toctree::
    :maxdepth: 1
    :glob:

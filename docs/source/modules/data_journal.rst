@@ -3,7 +3,7 @@ Data_journal
 
 .. autoclass:: pankus.taurus.DataJournal
 
-Data_journal
+Functions
 ------------
 .. toctree::
    :maxdepth: 1

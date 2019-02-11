@@ -3,7 +3,7 @@ Intervening_opportunities
 
 .. autoclass:: pankus.taurus.InterveningOpportunities
 
-Intervening_opportunities
+Functions
 -------------------------
 
 .. toctree::

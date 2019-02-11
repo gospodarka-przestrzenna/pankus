@@ -15,7 +15,7 @@ You can find here glossary, explained functions and tables as well as use cases 
 Feel free to let us know if you think there is something missing ;)
 
 Terms
------
+-------
 .. toctree::
    :maxdepth: 1
    :glob:
@@ -23,7 +23,7 @@ Terms
    source/terms/terms
 
 Tables
-------
+--------
 .. toctree::
    :maxdepth: 1
    :glob:
@@ -31,7 +31,7 @@ Tables
    source/tables
 
 Modules
--------
+---------
 .. toctree::
    :maxdepth: 1
    :glob:
@@ -39,7 +39,7 @@ Modules
    source/modules/*
 
 Examples of use
----------------
+-----------------
 
 .. code-block:: python
 
@@ -49,7 +49,7 @@ Examples of use
    T.make_hexdiagonal_pattern_network(problem_size)
    #generating connections between pairs of points in the network
    T.generate_connections()
-   #generating distances built from connections
+   #generating distances between pairs of origin-desination points from available connections
    T.distance()
 
 .. code-block:: python
