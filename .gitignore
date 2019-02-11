@@ -61,3 +61,8 @@ target/
 
 # .idea directory
 .idea
+
+# local ipython notebooks and its data
+*.ipynb
+*.geojson
+taurus.db
