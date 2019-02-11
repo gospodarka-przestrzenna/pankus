@@ -17,7 +17,7 @@ Effect
 ------
 - A network in a shape of hexagon is created
 - Newly created network has specific properties
-- all of network data is written into ``network_properties`` and ``network_geometry`` tables
+- All of network data is written into :ref:`network_properties_table` and :ref:`network_geometry_table` tables
 
 Network shape
 --------------
