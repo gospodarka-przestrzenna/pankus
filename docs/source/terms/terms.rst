@@ -16,7 +16,7 @@ Page presents basic terminology and concept behind implemented features.
       Potential of origin/destination point to aggregate motion e.g.: Number of work places 
 
     Interaction (spatial interaction)
-      Interaction is a single pair of origin/destination computation areas and a character of their connection
+      Interaction is a character of a single pair of origin/destination points (representing computation areas) connection
 
     Connection
       Connection describes link between two points. There may be multiple connections between two points.
@@ -27,3 +27,9 @@ Page presents basic terminology and concept behind implemented features.
     Convolution
       .. math::
          dwa wzory z prezentacji, też to, co robimy, kiedy "a" jest ujemne
+         
+    Computation area
+      Determined area (usually geographically) pankus calculations apply to e.g.: urban unit
+      
+    Weight of connection
+      A cost of connection - better condition minimalize the weight
