@@ -14,4 +14,4 @@ Data used
 
 Effect
 ------
-- Table ring_layout is created and written based either on data given by the user in function parameters or data loaded from od_properties and od_geometry table
+- Table :ref:`ring_layout_table` is created and written based either on data given by the user in function parameters (if such data is provided) or data loaded from :ref:`od_properties_table` and :ref:`od_geometry_table` tables
