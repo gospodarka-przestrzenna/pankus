@@ -4,6 +4,7 @@ __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb
 from .data_journal import DataJournal
+from heapq import heappush,heappop
 
 class MST(DataJournal):
 
@@ -11,35 +12,25 @@ class MST(DataJournal):
         super().__init__(**kwargs)
 
     @DataJournal.log_and_stash("bmst_connection", "bmst")
-    def minimum_spanning_tree(self,connection_type="distances",**kwargs):
-        """
-        Creates minimium spanning tree with levels on which level/step each
-        tree edge were added. The same information is gathered for graph nodes.
-
-        Read more here [https://en.wikipedia.org/wiki/Borůvka%27s_algorithm]
-        Can be created out of network connections as basic case or from distances
-        computed earlier in process.
-
-        The funcion writes computed info to network_properties table under ""
-        Args:
-            connection_type (string): can be "connection" or "distance"
-
-        """
-        valid_coonection_types_names=["connection","distance"]
+    def minimum_spanning_tree_from_network(self,**kwargs):
         self.do('mst/create_boruvka_mst')
-        if connection_type in valid_coonection_types_names:
-            self.do('mst/bmst_connections_from_'+connection_type)
-        else
-            raise ValueError("only suported values are: "+", ".join(valid_coonection_types_names))
+        self.do('mst/bmst_connections_from_network')
         self.do('mst/initialize_bmst')
+        self.save_bmst_parameters=self.save_bmst_parameters_to_od_properties
         self.mst()
-        self.do('mst/save_bmst_parameters_form_'+connection_type)
 
-    @DataJournal.log_and_stash("bmst", "bmst_used_connection")
-    def mst(self,**kwargs):
-        #iterator=iter(ProgressBar(range(len(featured_points)**2)))
-        while not self.one('mst/bmst_finish_condition')[0]:
-            self.do('mst/bmst_step')
+    @DataJournal.log_and_stash("bmst_connection", "bmst")
+    def minimum_spanning_tree_from_distance(self,**kwargs):
+        self.do('mst/create_boruvka_mst')
+        self.do('mst/bmst_connections_from_distance')
+        self.do('mst/initialize_bmst')
+        self.save_bmst_parameters=self.save_bmst_parameters_to_network
+        self.mst()
+
+    @DataJournal.log_and_stash()
+    def save_bmst_parameters(self,suffix,**kwargs):
+        #only proxy function Wont work until mst executed
+        pass
 
     @DataJournal.log_and_stash("od_properties")
     def save_bmst_parameters_to_od_properties(self,suffix='supernode',**kwargs):
@@ -61,3 +52,45 @@ class MST(DataJournal):
                 'level':level,
                 'supernode_level_name':'L'+str(level)+suffix
             })
+
+    # @DataJournal.log_and_stash("bmst", "bmst_used_connection")
+    # def mst(self,**kwargs):
+    #     #iterator=iter(ProgressBar(range(len(featured_points)**2)))
+    #     while not self.one('mst/bmst_finish_condition')[0]:
+    #         self.do('mst/bmst_step')
+
+    def mst(self,**kwargs):
+        # provisional index is list that descibes real node number on each provisional posion [real_idx,rea_idx]
+        provisional_idx=[]
+        # start indexed dicts of
+        connections=[]
+
+
+        # INIT stage
+
+        # for each connection
+        for start_id,end_id,weight in  self.do('mst/select_bmst_connection'):
+            # create provisioanl indxes
+            try:
+                provisional_start_id=provisional_idx.index(start_id)
+            except IndexError:
+                provisional_start_id=len(provisional_idx)
+                provisional_idx.append(start_id)
+
+            try:
+                provisional_end_id=provisional_idx.index(end_id)
+            except IndexError:
+                provisional_end_id=len(provisional_idx)
+                provisional_idx.append(end_id)
+
+            connections.append((weight, (provisional_start_id,provisional_end_id)))
+
+
+        # supernode (data for supernode that point is in) (node indexed list) [sn,sn,...]
+        # supernode[node_id] returns supernode node_id is in
+        # this data can be stored
+        supernode=list(range(len(provisional_idx)))
+
+        # nodes_in_supernode (data for nodes for supernode) (supernode indexed dictionary of list of nodes) {sn:[n,n,n..],sn:[n,n,n,...]}
+        # nodes_in_supernode[supernode_id] returns list of node_is that are in bmst_bmst_supernode_idx
+        nodes_in_supernode={a:[a] for a in supernode}
