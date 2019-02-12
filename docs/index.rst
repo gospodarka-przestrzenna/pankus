@@ -14,13 +14,13 @@ Pankus is meant as a collection of subpackages, under this name are available va
 You can find here glossary, explained functions and tables as well as use cases for project structures.
 Feel free to let us know if you think there is something missing ;)
 
-If you are not equipped with a prepared network, it is advised to start with `network_generator` module followed by `route` module. Modules `analysis`, `intervenng_opportnities` and `mst` allow to further operate on prepared networks. `data_journal` module serves as journal of executed actions and data results.
+If you are not equipped with a prepared network, it is advised to start with `network_generator` module followed by `route` module. Modules `analysis`, `intervening_opportunities` and `mst` allow to further operate on prepared networks. `data_journal` module serves as journal of executed actions and data results.
 
 Installation
 ------------
 Basic installation:
 
-1. make sure you have pip package installed (if not go to: https://pip.pypa.io/en/stable/installing/)
+1. Python3.x and pip module are required
 2. enter ``pip3 install -U pankus`` in command line terminal 
 
 All the substantial packages are installed automatically
@@ -56,6 +56,7 @@ Modules
 
 Examples of use
 -----------------
+Generating network and distances within it
 
 .. code-block:: python
 
@@ -68,6 +69,9 @@ Examples of use
    #generating distances between pairs of origin-desination points from available connections
    T.distance()
 
+
+Preparing network and running motion exchange simulation 
+
 .. code-block:: python
 
    #creating specified by the user number of interval rings for each origin point
@@ -76,3 +80,5 @@ Examples of use
    T.import_model_parameters()
    #calculating sum of destinations in rings
    T.ring_total()
+   #calculating motion exchange
+   T.motion_exchange()
