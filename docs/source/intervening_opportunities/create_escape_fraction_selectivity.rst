@@ -1,9 +1,6 @@
 create_escape_fraction_selectivity
 ==================================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: create_escape_fraction_selectivity
-
 Data used
 ----------
 
@@ -16,6 +13,4 @@ Data used
 
 Effect
 ------
-- model_parameters
-  every selectivity field is set to newly calculated value.
-  new parameter "selectivity", calculated by create_escape_fraction_selectivity function, is added to the model_parameters table using update_model_parameters.sql,
+- function changes selectivity in :ref:`model_parameters_table` table. Every selectivity field is set to newly calculated value. New "selectivity" parameter is calculated so that total escapes from simulation area value is a fraction of total origins provided as a parameter.

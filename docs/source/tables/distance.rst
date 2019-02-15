@@ -1,3 +1,5 @@
+.. _distance_table:
+
 distance
 ========
 

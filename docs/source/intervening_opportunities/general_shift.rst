@@ -1,7 +1,5 @@
 general_shift
 ==============
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: general_shift
 
 Data used
 ----------
@@ -16,6 +14,6 @@ Data used
 
 Effect
 ------
-- ``model_parameters`` table is updated.
-- Each origin/destination point's origins are set to be the sum of arriving motions (from motion exchange)
-- Each origin/destination computation area's destinations are set to be the sum of arriving motions (from motion exchange) normalized to keep the total sum of initial destinations unchanged.
+- :ref:`model_parameters_table` table is updated.
+- Origins in each origin/destination point are set to be the sum of motions (from :ref:`motion_exchange_table`) arriving to this point.
+- Destinations in each origin/destination point are set to be the sum of motions (from :ref:`motion_exchange_table`) arriving to this point.

@@ -1,9 +1,6 @@
 read_rings_layout
 =================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: read_rings_layout
-
 Data used
 ----------
 
@@ -17,4 +14,4 @@ Data used
 
 Effect
 ------
-- Table ring_layout is created and written based either on data given by the user in function parameters or data loaded from od_properties and od_geometry table
+- Table :ref:`ring_layout_table` is created and written based either on data given by the user in function parameters (if there is such data provided) or data loaded from :ref:`od_properties_table`

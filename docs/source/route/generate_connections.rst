@@ -1,6 +1,7 @@
 generate_connections
 ====================
-.. autoclass:: pankus.taurus.Route
+
+.. :noindex: autoclass:: pankus.taurus.Route
     :members: generate_connections
 
 Data used

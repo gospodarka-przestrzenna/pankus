@@ -1,7 +1,5 @@
 save_intopp_parameters
 ======================
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: save_intopp_parameters
 
 Data used
 ----------
@@ -16,4 +14,4 @@ Data used
 
 Effect
 ------
-- data on origins, destinations and selectivity is inserted into ``od_properties`` table with new names updated with specified in function parameters suffix
+- data on origins, destinations and selectivity is inserted into :ref:`od_properties_table` table with new names updated with specified in function parameters suffix

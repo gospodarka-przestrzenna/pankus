@@ -1,3 +1,5 @@
+.. _network_properties_table:
+
 network_properties
 ==================
 

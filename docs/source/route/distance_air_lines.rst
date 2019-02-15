@@ -1,7 +1,7 @@
 distance_air_lines
-===================
+==================
 
-.. autoclass:: pankus.taurus.Route
+.. :noindex: autoclass:: pankus.taurus.Route
     :members: distance_air_lines
 
 Data used
@@ -17,4 +17,6 @@ Data used
 
 Effect
 ------
-- :doc:`distance table<../tables/distance>` is created and/or written with air line distances either with geometrical distance or with WGS 84 distance from vincenty algorithm
+- :doc:`distance table<../tables/distance>` is created and/or written with airline distances either with geometrical distance (if distance_type "geom" is chosen as keyword function argument) or with WGS 84 distance from vincenty algorithm (if distance_type "vincenty" is chosen as keyword function argument)
+- distances created with `distance_air_lines` using vincenty algorithm are relative to motion across geoid
+

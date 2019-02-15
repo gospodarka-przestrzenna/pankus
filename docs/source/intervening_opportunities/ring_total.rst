@@ -1,9 +1,6 @@
 ring_total
 ==========
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-    :members: ring_total
-
 Data used
 ----------
 
@@ -18,4 +15,4 @@ Data used
 
 Effect
 ------
-- table ring_total is created and  written, using tables ring and parameters to calculate sum of destinations in specified ring and all previous rings
+- table :ref:`ring_total_table` is created and  written, using tables :ref:`ring_table` and :ref:`model_parameters_table` to calculate sum of destinations in specified ring and all previous rings

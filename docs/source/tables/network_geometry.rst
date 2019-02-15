@@ -1,7 +1,9 @@
+.. _network_geometry_table:
+
 network_geometry
 ================
 
-Network_geometry table contains data on start and end of a segment of the network and
+Network_geometry table contains data on start and end of a segment of the network
 
 .. csv-table::
    :widths: 2,1,9

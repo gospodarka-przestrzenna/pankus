@@ -21,7 +21,10 @@ import os
 import sys
 import sphinx_bootstrap_theme
 sys.path.insert(0, os.path.abspath('..'))
-from pankus import __authors__,__version__
+from pankus import __authors__, __version__
+
+def setup(app):
+    app.add_stylesheet('css/newstyle.css')
 
 # -- General configuration ------------------------------------------------
 

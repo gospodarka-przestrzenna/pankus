@@ -1,9 +1,6 @@
 build_uniform_rings
 ====================
 
-.. autoclass:: pankus.taurus.InterveningOpportunities
-  :members: build_uniform_rings
-
 Data used
 ----------
 
@@ -18,5 +15,5 @@ Data used
 
 Effect
 ------
-- table ``ring`` is created and/or written, using tables ``distance`` and ``point``, with number of rings specified in function parameters.
+- table :ref:`ring_table` is created and/or written, using tables :ref:`distance_table` and :ref:`point_table`, with number of rings specified in function parameters.
   Created rings are separated by uniform distance, determined from maximum distance in model and given number of rings.
