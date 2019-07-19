@@ -3,12 +3,12 @@ Pankus
 
 Set of tools for spatial-economical-potential analysis.
 
-Project aims to provide python function (building blocks) that helps particular
-modeling process. Python functions is injecting SQL queries into SQLite database
-(eventually Geopackage) and provide functions that is hard to express in SQL.
+Project aims to provide python functions (building blocks) that help particular
+modeling process. Python functions are injecting SQL queries into SQLite database
+(eventually Geopackage) and complete them with expressions eliminating the need to write complicated code in SQL.
 
-Building blocks may be used to present basic idea (steps of modeling process)
-without details.
+Described building blocks may be used to present the basic idea (steps of modeling process)
+without going into details.
 
 For detailed info please refer to documentation_
 
