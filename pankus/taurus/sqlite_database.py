@@ -13,9 +13,8 @@ class SQLiteDatabase:
         super().__init__()
         self.db_connection=sqlite3.connect(database_name)
 
-    def execute(self,**kwargs):
-
-        return self.db_connection.execute(**kwargs)
+    def execute(self,*args,**kwargs):           
+        return self.db_connection.execute(*args,**kwargs)
 
     def get_sql_form_file(self,script_name):
         #print(pkg_resources,__name__)

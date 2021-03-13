@@ -77,7 +77,6 @@ class Importer(DataJournal):
 
     @init_kwargs_as_parameters
     def import_od_geojson(self,od_filename="od.geojson",od_id_name="od_id",**kwargs):
-        print(od_filename,od_id_name,kwargs)
         self.do('initial/create_od')
         with open(od_filename,'rb') as od:
             od_data=json.load(od)
