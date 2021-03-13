@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pankus'
-copyright = '2019, Maciej Kamiński, Wiktor Żelazo'
+copyright = '2021, Politechnika Wrocławska'
 author = __authors__
 show_authors = True
 
@@ -222,7 +222,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'pankus.tex', 'pankus Documentation',
-     'Maciej Kamiński, Wiktor Żelazo', 'manual'),
+     'Politechnika Wrocławska', 'manual'),
 ]
 
 
