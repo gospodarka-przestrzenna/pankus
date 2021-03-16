@@ -44,7 +44,7 @@ class Importer(DataJournal):
                     'linestring':str(linestring)
                 })
                 if make_two_side:
-                    linestring=json.dumps(list(reversed(feature['geometry']['coordinates'])))
+                    linestring=json.dumps(list(reversed(geometry)))
                     geometry_to_insert.append({
                         'start':str(end),
                         'end':str(start),
