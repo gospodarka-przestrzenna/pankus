@@ -383,7 +383,7 @@ class InterveningOpportunities(DataJournal):
 
         assert parameter in model_parameters[0].keys()
 
-        self.do('initial/clean_value_od',{'name':saved_name,"new_name":saved_name})
+        self.do('initial/clean_value_od',{'name':saved_name,"new_name":saved_name,"default":""})
 
         new_value = [{
             "od_id": parameters['od_id'],
