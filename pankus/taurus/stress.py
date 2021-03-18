@@ -90,9 +90,18 @@ class Stress(DataJournal):
             stress_to_store=[]
             for i,s in enumerate(stress):
                 for e in stress[i]:
-                    stress_to_store={"start_id":i,"end_id":e,"stress":stress[i][e]}
+                    stress_to_store.append({"start_id":i,"end_id":e,"stress":stress[i][e]})
             self.transaction('stress/import_stress',stress_to_store)
 
         elif type=="SQL":
             self.do('stress/stress_connections')
+
+    def save_stress(self,saved_name='stress',**kwargs):
+        """
+        Saves stress to network_parameters
+        """
+        self.do('initial/clean_value_net',{'name':saved_name,"new_name":saved_name,"default":"0"})
+        self.do('stress/save_stress_to_net',{'name':saved_name})
+
+
 
