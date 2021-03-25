@@ -6,7 +6,7 @@ from .sqlite_database import SQLiteDatabase
 from .importer import Importer
 from .utils import init_kwargs_as_parameters
 from itertools import accumulate
-import cmath
+import cmath,math
 
 class NetworkGenerator(Importer):
 
@@ -861,6 +861,152 @@ class NetworkGenerator(Importer):
 
         # Data normalization
         self._normalize(points_with_data)
+
+        #insert
+        self._insert_points(points_with_data)
+
+
+        self.transaction('initial/import_network_geometry',net_geometry_to_insert)
+        self.transaction('initial/import_network_properties',net_data_to_insert)
+        self.point_from_network_od()
+
+    @init_kwargs_as_parameters
+    @Importer.log_and_stash("network_properties", "network_geometry")
+    def make_triangular_catenary_pattern_network(self,size,delta=1,**kwargs):
+        '''
+        Creates triangular catenary (T. Zipser) pattern network.
+        Coresponding origins - destinations points are also created.
+        origins - destinations are set in way their total sum is 1 for origins and destinations.
+        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
+        On this level we use globe WSG84 as a Carthesian coordinates system.
+
+        :param size: Size
+        :param delta: Network relative (to earth WSG84) size.
+        :return:
+        '''
+        self.do('initial/create_network')
+        self.do('initial/create_od')
+
+        # main Point generator part
+        net_geometry_to_insert=[]
+        net_data_to_insert=[]
+        points_with_data=[]
+        
+        point_geoms=set()
+        od_geoms=set()
+        
+        def gb(c):
+            return complex(int(round(c.real,10)*1024)/1024*delta,int(round(c.imag,10)*1024)/1024*delta)
+        def pwd(c,o,d,i):
+            gc=gb(c)
+            if gc not in od_geoms:
+                od_geoms.add(gc)
+                points_with_data.append({
+                    'data':{
+                        'od_id':i,
+                        'destinations':d,
+                        'origins':o
+                        },
+                    'geometry':[gc.real,gc.imag]
+                    })
+        def con(x,y,w):
+            gx,gy=gb(x),gb(y)
+            if (gx,gy) not in point_geoms:
+                point_geoms.add((gx,gy))
+                point_geoms.add((gy,gx))
+                self._addel(gx,gy,net_geometry_to_insert,net_data_to_insert,w)
+                self._addel(gy,gx,net_geometry_to_insert,net_data_to_insert,w)
+
+
+
+        vector=cmath.rect(1,cmath.pi/3) # single vector of 1/6 circle
+        qvector=cmath.rect(1,cmath.pi/12)
+        vq=complex(1,cmath.tan(cmath.phase(qvector))*1)
+        vv=complex(1,cmath.tan(cmath.phase(qvector**2))*1)
+
+        # lets create hexagons centers
+        generator_points=[]
+        row_generator=complex(0,0)
+        for i in range(size):
+            generator_points+=[row_generator + i for i in range(size)]
+            if i%2==0:
+                row_generator+=vector
+            else:
+                row_generator+=vector**2
+
+        
+        for i,g in enumerate(generator_points):
+            #create centre
+            c=g+(vector**(6/5))/33
+            
+            for j in range(6):
+                base=vector**(j)*1/2
+                rbase=base*1/20
+                p1=g+base
+                p2=g+base*vq
+                p3=g+base*vv
+                p4=g+base*vq*qvector**2
+                p5=g+base*vector
+                
+                p10=g+rbase*8
+                p9=g+rbase*8*qvector
+                p8=g+rbase*8*qvector**2
+                p7=g+rbase*8*qvector**3
+                p6=g+rbase*8*qvector**4
+                
+                p11=g+rbase*11*qvector
+                p12=g+rbase*14*qvector
+                p13=g+rbase*17*qvector
+
+                p14=g+rbase*11*qvector**3
+                p15=g+rbase*14*qvector**3
+                p16=g+rbase*17*qvector**3
+
+                h1=math.tan(math.pi/12)
+                h2=math.tan(math.pi/6)
+                
+                # connections
+                con(p1,p10,12/20*0.5*100)
+                con(p1,p2,h1*0.5*100)
+                con(p2,p3,(h2-h1)*0.5*100)
+                con(p3,p4,(h2-h1)*0.5*100)
+                con(p4,p5,h1*0.5*100)
+                con(p5,p6,12/20*0.5*100)
+                con(c,p7,8/20*0.5*1.4*100) # 
+
+                sr=2*cmath.pi*8/20*0.5*1/24*100
+
+                con(p6,p7,sr)
+                con(p7,p8,sr)
+                con(p8,p9,sr)
+                con(p9,p10,sr)
+
+                con(p8,p3,((h2*2)-(8/20))*0.5*100)
+                
+                s=(1/math.cos(math.pi/6)-8/20)*1/4*0.5*1.6*100
+                
+                con(p2,p13,s)
+                con(p12,p13,s)
+                con(p12,p11,s)
+                con(p10,p11,s)
+
+                con(p4,p16,s)
+                con(p15,p16,s)
+                con(p15,p14,s)
+                con(p6,p14,s)
+                # od points
+                cp=int(1000000*2/17)
+                l= 900000/36
+                ll=100000*2/5
+                pwd(c,ll,cp,i*9*6+j*9+0)
+                pwd(p2,ll/4,cp/4,i*9*6+j*9+1)
+                pwd(p4,ll/4,cp/4,i*9*6+j*9+2)
+                pwd(p11,l,cp/6,i*9*6+j*9+3)
+                pwd(p12,l,cp/6,i*9*6+j*9+4)
+                pwd(p13,l,cp/6,i*9*6+j*9+5)
+                pwd(p14,l,cp/6,i*9*6+j*9+6)
+                pwd(p15,l,cp/6,i*9*6+j*9+7)
+                pwd(p16,l,cp/6,i*9*6+j*9+8)
 
         #insert
         self._insert_points(points_with_data)
