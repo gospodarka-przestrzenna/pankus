@@ -10,7 +10,7 @@ CREATE INDEX IF NOT EXISTS motion_exchange_by_id_end_id_idx ON motion_exchange_b
 
 INSERT INTO motion_exchange_by_id
 SELECT 
-    start.id,end.id,motion_exchange.motion_exchange
+    start.id,end.id,motion_exchange.motion_exchange*:fraction
 FROM
     point as start,
     point as end,
@@ -21,15 +21,20 @@ WHERE
  ;
 
 INSERT INTO  stress
-SELECT 
-    path.segment_start_id,path.segment_end_id,sum(me.motion_exchange)
-FROM
-    path,
-    motion_exchange_by_id as me
+SET stress=(stress+stressed.stress)
+FROM 
+    (SELECT 
+        path.segment_start_id as start_id,path.segment_end_id as end_id ,sum(me.motion_exchange) as stress
+    FROM
+        path,
+        motion_exchange_by_id as me
+    WHERE
+        path.start_id=me.start_id AND
+        path.end_id=me.end_id
+    GROUP BY
+        path.segment_start_id,path.segment_end_id) as stressed
 WHERE
-    path.start_id=me.start_id AND
-    path.end_id=me.end_id
-GROUP BY
-    path.segment_start_id,path.segment_end_id
+    stressed.start_id=start_id AND
+    stressed.end_id=end_id
 ;
 DROP TABLE IF EXISTS  motion_exchange_by_id;

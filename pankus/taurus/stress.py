@@ -6,9 +6,9 @@ import json,pdb,math
 from .utils import TaurusLongTask
 from .data_journal import DataJournal
 from .utils import init_kwargs_as_parameters
+from .utils import RouteCache
 
 class Stress(DataJournal):
-
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
@@ -44,35 +44,22 @@ class Stress(DataJournal):
             'value':value
         })
 
-    def initialize_stress(self,weight="weight",**kwargs):
+    def initialize_stress(self,stress_name=None,**kwargs):
         """ 
             Creates stress table, that holds stress for a graph.
         """
         self.do('stress/create_stress')
-
-    def do_stress(self,type="progressbar",**kwargs):
-        """
-        """
-        assert self.table_exists('motion_exchange')
-        assert self.table_exists('path')
-        assert self.table_exists('stress')
+        self.do('stress/initialize_stress',{"stress_name":stress_name})
         
-        if type=='progressbar':
-
-            points=[(point,id,od_idi) for (point,id,od_idi) in self.do('stress/select_point')]
-                        
-            max_point=max([p[1] for p in points])+1
-            max_od_point=max([p[2] for p in points if p[2]])+1
-
-            motion_exchange=[[None for i in range(max_od_point)] for j in range(max_od_point)]
-            od_id=[None for i in range(max_point)]
-            stress=[{} for i in range(max_point)]
-
-            for p in points:
-                od_id[p[1]]=p[2]
+        
+    def do_stress(self,method="python",fraction=1.0,**kwargs):
+        """
+        """
+        if method=='python':
             
-            for start,end,value in self.do('stress/select_motion_exchange'):
-                motion_exchange[start][end]=value
+            rc=RouteCache(self)
+            rc.cache_motion_exchange()
+            rc.cache_stress()
 
             expected_problem_size,=self.do('stress/select_path_count').fetchone()
 
@@ -81,20 +68,18 @@ class Stress(DataJournal):
                                             max_value=expected_problem_size,\
                                             additional_text='Stressing',\
                                             **kwargs):
-                if od_id[end]:
-                    if send not in stress[sstart]:
-                        stress[sstart][send]=motion_exchange[od_id[start]][od_id[end]]
-                    else:
-                        stress[sstart][send]+=motion_exchange[od_id[start]][od_id[end]]
-
+                if rc.od_id[end]:
+                    rc.stress[sstart][send]+=rc.motion_exchange[rc.od_id[start]][rc.od_id[end]]*fraction
+                    
             stress_to_store=[]
-            for i,s in enumerate(stress):
-                for e in stress[i]:
-                    stress_to_store.append({"start_id":i,"end_id":e,"stress":stress[i][e]})
+            for i,s in enumerate(rc.stress):
+                for e in rc.stress[i]:
+                    stress_to_store.append({"start_id":i,"end_id":e,"stress":rc.stress[i][e]})
+            self.do('stress/delete_stress')
             self.transaction('stress/import_stress',stress_to_store)
 
-        elif type=="SQL":
-            self.do('stress/stress_connections')
+        elif method=="SQL":
+            self.do('stress/stress_connections',{"fraction":fraction})
 
     def save_stress(self,saved_name='stress',**kwargs):
         """
@@ -102,6 +87,65 @@ class Stress(DataJournal):
         """
         self.do('initial/clean_value_net',{'name':saved_name,"new_name":saved_name,"default":"0"})
         self.do('stress/save_stress_to_net',{'name':saved_name})
+
+
+    def path_and_stress(self,fraction=1.0,**kwargs):        
+        rc=RouteCache(self)
+        rc.cache_motion_exchange()
+        rc.cache_stress()
+        rc.cache_distances()
+        
+
+        for start_od_id in TaurusLongTask(\
+                        rc.featured_points,\
+                        additional_text='Stress',\
+                        **kwargs):
+            
+            for _,end_id,_ in rc.points:
+                if rc.od_id[end_id]==None:
+                    continue
+                end_od_id = rc.od_id[end_id]
+                
+                #if start_od_id==end_od_id:
+                #    continue
+                # the value will be spread on segments
+                value=rc.motion_exchange[start_od_id][end_od_id]
+                if not value:
+                    continue
+                predeccessor = rc.distance[start_od_id][end_id][0]   
+                if predeccessor==None:
+                    continue
+                #save stress
+                #print(start_od_id)
+                #print(predeccessor,end_id)
+                #print(rc.stress[predeccessor])
+                successor=end_id
+                while rc.od_id[successor]!=start_od_id:
+                    rc.stress[predeccessor][successor]+=rc.motion_exchange[start_od_id][end_od_id]*fraction
+                    predeccessor,successor=rc.distance[start_od_id][predeccessor][0],predeccessor
+                    
+
+        stress_to_store=[]
+        for i,s in enumerate(rc.stress):
+            for e in rc.stress[i]:
+                stress_to_store.append({"start_id":i,"end_id":e,"stress":rc.stress[i][e]})
+        self.do('stress/delete_stress')
+        self.transaction('stress/import_stress',stress_to_store)
+
+    def stress_weight_connections(self,
+            stress_name="stress",
+            throughput_name="throughput",
+            weight_name="weight",**kwargs):
+        self.do('stress/create_weight_stress_change')
+        self.do('stress/initialize_weight_stress_change',{
+            "stress_name":stress_name,
+            "throughput_name":throughput_name,
+            "weight_name":weight_name
+        })
+        self.do('route/create_connection')
+        self.do('stress/create_stressed_connection')
+
+        
 
 
 
