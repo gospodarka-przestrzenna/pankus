@@ -44,6 +44,7 @@ class Stress(DataJournal):
             'value':value
         })
 
+
     def initialize_stress(self,stress_name=None,**kwargs):
         """ 
             Creates stress table, that holds stress for a graph.
@@ -51,7 +52,7 @@ class Stress(DataJournal):
         self.do('stress/create_stress')
         self.do('stress/initialize_stress',{"stress_name":stress_name})
         
-        
+    @init_kwargs_as_parameters        
     def do_stress(self,method="python",fraction=1.0,**kwargs):
         """
         """
@@ -88,7 +89,7 @@ class Stress(DataJournal):
         self.do('initial/clean_value_net',{'name':saved_name,"new_name":saved_name,"default":"0"})
         self.do('stress/save_stress_to_net',{'name':saved_name})
 
-
+    @init_kwargs_as_parameters
     def path_and_stress(self,fraction=1.0,**kwargs):        
         rc=RouteCache(self)
         rc.cache_motion_exchange()
@@ -132,6 +133,7 @@ class Stress(DataJournal):
         self.do('stress/delete_stress')
         self.transaction('stress/import_stress',stress_to_store)
 
+    @init_kwargs_as_parameters
     def stress_weight_connections(self,
             stress_name="stress",
             throughput_name="throughput",
