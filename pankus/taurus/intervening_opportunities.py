@@ -65,6 +65,22 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
 
         return selectivity
+    
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("model_parameters")
+    def create_particular_selectivity(self,selectivity,**kwargs):
+        """
+        setting selectivity, a parameter describing probability of object choosing a point as a destination,
+        
+        Args:
+            selectivity (float):
+        Returns:
+            float: selectivity
+        """
+        # TODO search for selectivity in convolution
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
+
+        return selectivity
 
     # building specified number of rings which are written in the table "ring" containing following parameters,
     # which describe ring placement of a origin-destination point in the realtion to the second origin-destination point.
