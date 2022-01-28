@@ -71,14 +71,17 @@ class InterveningOpportunities(DataJournal):
     def create_particular_selectivity(self,selectivity,**kwargs):
         """
         setting selectivity, a parameter describing probability of object choosing a point as a destination,
-        
+       
+        Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
+        When selectivity value is used in calculations it is divided by the same number.
+
         Args:
             selectivity (float):
         Returns:
             float: selectivity
         """
         # TODO search for selectivity in convolution
-        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
 
         return selectivity
 
@@ -195,6 +198,14 @@ class InterveningOpportunities(DataJournal):
         null rings (assigned to od_id pairs in table ring) are given new number equal to maximum ring number + 1
         """
         self.do('intopp/insert_into_last_ring')
+
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("ring")
+    def critical_contact_distance(self,critical_distance,**kwargs):
+        """
+        We are not interested in considering contacts further than distance
+        """
+        self.do('intopp/delete_critical_distance',{'critical_distance':critical_distance})
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash()
