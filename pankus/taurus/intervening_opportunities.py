@@ -159,8 +159,8 @@ class InterveningOpportunities(DataJournal):
         for od_id, layout_from_od_description in self.do('intopp/select_ring_layout',{"fixed_rings_name":fixed_rings_name}):
             # the vlue of layout for origin  we will insert
             layout_value=[]
-            if layout:
-                layout_value=layout
+            if fixed_rings_layout:
+                layout_value=fixed_rings_layout
             else:
                 layout_value=json.loads(layout_from_od_description)
 
