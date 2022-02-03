@@ -118,3 +118,30 @@ class Exporter(DataJournal):
 
         with open(out_od_filename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)
+
+    @init_kwargs_as_parameters
+    def export_motion_exchange_geojson(self,
+                                out_filename="motion_exchange.geojson",
+                                fields=None, #if none select all fields ; else list of filelds
+                                **kwargs):
+        
+        assert self.table_exists('motion_exchange')
+
+        geojson={"type": "FeatureCollection","features": []}
+
+        for start,end,motion_exchange,fraction in self.do('exporter/select_motion_exchange_with_geometry'):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [eval(start),eval(end)]
+                    },
+                "properties" : {
+                    "motion_exchange": motion_exchange,
+                    "fraction": fraction
+                }
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as net:
+            json.dump(geojson,net)
+        
