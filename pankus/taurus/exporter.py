@@ -129,7 +129,7 @@ class Exporter(DataJournal):
 
         geojson={"type": "FeatureCollection","features": []}
 
-        for start,end,motion_exchange,fraction in self.do('exporter/select_motion_exchange_with_geometry'):
+        for start,end,start_id,end_id,motion_exchange,fraction in self.do('exporter/select_motion_exchange_with_geometry'):
             geojson["features"].append({
                 "type": "Feature",
                 "geometry": {
@@ -137,6 +137,8 @@ class Exporter(DataJournal):
                     "coordinates": [eval(start),eval(end)]
                     },
                 "properties" : {
+                    "start": start_id,
+                    "end": end_id,
                     "motion_exchange": motion_exchange,
                     "fraction": fraction
                 }

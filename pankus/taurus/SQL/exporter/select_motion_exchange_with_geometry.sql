@@ -3,6 +3,8 @@
 SELECT
   p1.point,
   p2.point,
+  p1.od_id,
+  p2.od_id,
   ifnull((SELECT 
     mx.motion_exchange 
   FROM
