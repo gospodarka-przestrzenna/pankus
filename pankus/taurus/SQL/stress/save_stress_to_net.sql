@@ -1,19 +1,18 @@
 UPDATE
 	network_properties
 SET
-	value=vals.value
-FROM
-	(SELECT
-		start.point as start,end.point as end,s.stress as value
+	value=(
+	SELECT
+		ifnull(s.stress,0)
 	FROM
 		stress as s,
-		point as start,
-		point as end
+		point as p1,
+		point as p2
 	WHERE
-		s.start_id=start.id AND
-		s.end_id=end.id 
-		) as vals
+		network_properties.end = p2.point AND
+		network_properties.start = p1.point AND
+		s.start_id  = p1.id AND
+		s.end_id  = p2.id
+	LIMIT 1)
 WHERE
-	network_properties.start=vals.start AND
-	network_properties.end=vals.end AND
-	network_properties.name=:name
+	name=:name
