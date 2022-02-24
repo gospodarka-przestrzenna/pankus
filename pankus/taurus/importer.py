@@ -120,10 +120,14 @@ class Importer(DataJournal):
 
     @init_kwargs_as_parameters
     def check_geometry(self,**kwargs):
+        #Check lines
+        for start,end,count in self.do('initial/check_lines'):
+            print("problem with multiple connections between:"+str(start)+str(end))
+        #Check geometry points
         for point, in self.do('initial/check_geometry'):
             print("problem with geometry at:", point)
         if not list(self.do('initial/check_geometry')):
-            print("No geometry problems")
+            print("No points problems")
 
     @init_kwargs_as_parameters
     def fix_geometry(self,range=0.01,**kwargs):
