@@ -1,6 +1,6 @@
 --
 WITH
-connections(start,end,,count) as (
+connections(start,end,linestring,count) as (
 SELECT
   network_geometry.start,
   network_geometry.end,

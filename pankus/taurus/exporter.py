@@ -149,7 +149,7 @@ class Exporter(DataJournal):
         
     @init_kwargs_as_parameters
     def export_network_without_repetition_geojson(self,
-                                out_filename="no_repetition_network_.geojson",
+                                out_filename="no_repetition_network.geojson",
                                 fields=None, #if none select all fields ; else list of filelds
                                 **kwargs):
         geojson={"type": "FeatureCollection","features": []}
