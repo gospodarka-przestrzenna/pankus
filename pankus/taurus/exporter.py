@@ -147,3 +147,19 @@ class Exporter(DataJournal):
         with open(out_filename,'w',encoding='utf-8') as net:
             json.dump(geojson,net)
         
+    @init_kwargs_as_parameters
+    def export_network_without_repetition_geojson(self,
+                                out_filename="no_repetition_network_.geojson",
+                                fields=None, #if none select all fields ; else list of filelds
+                                **kwargs):
+        geojson={"type": "FeatureCollection","features": []}
+
+        for start,end,linestring,count in self.do('exporter/select_network_geometry_without_repetition'):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": eval(linestring)
+                    },
+                "properties" : {}
+            })
