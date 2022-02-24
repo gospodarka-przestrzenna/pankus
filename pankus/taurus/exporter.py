@@ -163,3 +163,6 @@ class Exporter(DataJournal):
                     },
                 "properties" : {}
             })
+
+        with open(out_filename,'w',encoding='utf-8') as net:
+            json.dump(geojson,net)
