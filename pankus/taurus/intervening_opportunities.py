@@ -72,8 +72,9 @@ class InterveningOpportunities(DataJournal):
         """
         setting selectivity, a parameter describing probability of object choosing a point as a destination,
        
-        Before being written in the table value of selectivity is multiplied by 1 000 000 to include its fractional part with high accuracy.
-        When selectivity value is used in calculations it is divided by the same number.
+        Before being written in the table value of selectivity is NOT multiplied by 1 000 000 
+        to include its fractional part with high accuracy!.
+        When selectivity value is used in calculations it will be divided by 1 000 000.
 
         Args:
             selectivity (float):
@@ -81,7 +82,7 @@ class InterveningOpportunities(DataJournal):
             float: selectivity
         """
         # TODO search for selectivity in convolution
-        self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
 
         return selectivity
 
