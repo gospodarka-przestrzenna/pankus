@@ -118,3 +118,51 @@ class Exporter(DataJournal):
 
         with open(out_od_filename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)
+
+    @init_kwargs_as_parameters
+    def export_motion_exchange_geojson(self,
+                                out_filename="motion_exchange.geojson",
+                                fields=None, #if none select all fields ; else list of filelds
+                                **kwargs):
+        
+        assert self.table_exists('motion_exchange')
+
+        geojson={"type": "FeatureCollection","features": []}
+
+        for start,end,start_id,end_id,motion_exchange,fraction in self.do('exporter/select_motion_exchange_with_geometry'):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [eval(start),eval(end)]
+                    },
+                "properties" : {
+                    "start": start_id,
+                    "end": end_id,
+                    "motion_exchange": motion_exchange,
+                    "fraction": fraction
+                }
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as net:
+            json.dump(geojson,net)
+        
+    @init_kwargs_as_parameters
+    def export_network_without_repetition_geojson(self,
+                                out_filename="no_repetition_network.geojson",
+                                fields=None, #if none select all fields ; else list of filelds
+                                **kwargs):
+        geojson={"type": "FeatureCollection","features": []}
+
+        for start,end,linestring,count in self.do('exporter/select_network_geometry_without_repetition'):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": eval(linestring)
+                    },
+                "properties" : {}
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as net:
+            json.dump(geojson,net)

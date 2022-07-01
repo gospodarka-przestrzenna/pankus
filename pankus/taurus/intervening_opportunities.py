@@ -65,6 +65,26 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
 
         return selectivity
+    
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("model_parameters")
+    def create_particular_selectivity(self,selectivity,**kwargs):
+        """
+        setting selectivity, a parameter describing probability of object choosing a point as a destination,
+       
+        Before being written in the table value of selectivity is NOT multiplied by 1 000 000 
+        to include its fractional part with high accuracy!.
+        When selectivity value is used in calculations it will be divided by 1 000 000.
+
+        Args:
+            selectivity (float):
+        Returns:
+            float: selectivity
+        """
+        # TODO search for selectivity in convolution
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
+
+        return selectivity
 
     # building specified number of rings which are written in the table "ring" containing following parameters,
     # which describe ring placement of a origin-destination point in the realtion to the second origin-destination point.
@@ -143,8 +163,8 @@ class InterveningOpportunities(DataJournal):
         for od_id, layout_from_od_description in self.do('intopp/select_ring_layout',{"fixed_rings_name":fixed_rings_name}):
             # the vlue of layout for origin  we will insert
             layout_value=[]
-            if layout:
-                layout_value=layout
+            if fixed_rings_layout:
+                layout_value=fixed_rings_layout
             else:
                 layout_value=json.loads(layout_from_od_description)
 
@@ -179,6 +199,14 @@ class InterveningOpportunities(DataJournal):
         null rings (assigned to od_id pairs in table ring) are given new number equal to maximum ring number + 1
         """
         self.do('intopp/insert_into_last_ring')
+
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("ring")
+    def critical_contact_distance(self,critical_distance,**kwargs):
+        """
+        We are not interested in considering contacts further than distance
+        """
+        self.do('intopp/delete_critical_distance',{'critical_distance':critical_distance})
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash()
