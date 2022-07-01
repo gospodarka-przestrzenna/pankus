@@ -62,7 +62,7 @@ class InterveningOpportunities(DataJournal):
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
-        self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
 
         return selectivity
     
@@ -318,7 +318,7 @@ class InterveningOpportunities(DataJournal):
             # calculating fraction of all "objects" that found destinations prior to the currently chosen ring
             fraction_before_ring=self.convolution_mix(
                 destinations_prior,
-                selectivity/1000000.0,
+                selectivity,
                 conv_start,
                 conv_size,
                 conv_intensity
@@ -327,7 +327,7 @@ class InterveningOpportunities(DataJournal):
             # calculating fraction of "objects" that found destinations prior and in the currently chosen ring
             fraction_after_ring=self.convolution_mix(
                 destinations_prior+destinations_in,
-                selectivity/1000000.0,
+                selectivity,
                 conv_start,
                 conv_size,
                 conv_intensity
