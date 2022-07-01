@@ -62,7 +62,7 @@ class InterveningOpportunities(DataJournal):
         # TODO search for selectivity in convolution
         destinations_total,=self.one('intopp/select_destinations_total')
         selectivity=-math.log(efs)/destinations_total
-        self.do('intopp/update_od_selectivity',{'selectivity':selectivity*1000000})
+        self.do('intopp/update_od_selectivity',{'selectivity':selectivity})
 
         return selectivity
     
