@@ -24,13 +24,34 @@ class Route(DataJournal):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
         Each connection is expressed as a set of data - start id, end id and weight.
-
+        
         """
+        assert self.table_exists('point')
+        assert self.table_exists('network_geometry')
+        assert self.table_exists('network_properties')
 
         self.do('route/create_connection')
         self.do('route/insert_connection',{
             'weight_name':weight_name
         })
+
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("connection")
+    def remove_connetions_having_value(self,key=None,value=None,**kwargs):
+        """
+        Removes the connections having specfic value in key. Value exists in analog network_properties table
+
+        :param key: The name of the colum to look for a value
+        :param value: the value for which connection will be removed
+        """
+        assert self.table_exists('point')
+        assert self.table_exists('connection')
+        assert self.table_exists('network_properties')
+        self.do('route/remove_connection_having_value',{
+            'key':key,
+            'value':value
+        })
+
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("distance")

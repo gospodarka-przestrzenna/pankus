@@ -6,8 +6,8 @@ SELECT
 FROM 
 	distance 
 WHERE 
-	start_id!=end_id  
-	AND 
+	start_id!=end_id AND
+	predecessor_id is not NULL AND 
 	start_id=:start
 UNION
 SELECT 

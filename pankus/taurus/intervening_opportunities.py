@@ -383,7 +383,7 @@ class InterveningOpportunities(DataJournal):
 
         assert parameter in model_parameters[0].keys()
 
-        self.do('initial/clean_value',{'name':saved_name,"new_name":saved_name})
+        self.do('initial/clean_value_od',{'name':saved_name,"new_name":saved_name,"default":""})
 
         new_value = [{
             "od_id": parameters['od_id'],
@@ -391,4 +391,20 @@ class InterveningOpportunities(DataJournal):
             "value": parameters[parameter]
         } for parameters in model_parameters]
 
+        self.transaction('initial/update_od_values',new_value)
+
+    @init_kwargs_as_parameters
+    def inspect_exchange_from(self,od_id,saved_name,**kwargs):
+        """
+        Function stores motion exchange fraction from given source od_id.
+        Motion exchange from od_id to every other od_id is then stored 
+        to property for every target od_id
+        """
+        self.do('initial/clean_value_od',{'name':saved_name,"new_name":saved_name,"default":""})
+        
+        new_value = [{
+            "od_id": d,
+            "name": saved_name,
+            "value": mexf
+        } for s,d,mexf in self.do('intopp/select_motion_exchange_fraction') if s==od_id ]
         self.transaction('initial/update_od_values',new_value)
