@@ -14,9 +14,9 @@ from .analysis import Analysis
 from .data_journal import DataJournal
 from .exporter import Exporter
 from .path import Path
-from .stress import Stress
+from .stress import Load
 
-class Taurus(Route,InterveningOpportunities,MST,NetworkGenerator,Analysis,Exporter,Path,Stress):
+class Taurus(Route,InterveningOpportunities,MST,NetworkGenerator,Analysis,Exporter,Path,Load):
 
     def __init__(self,**kwargs):
         self.kwargs=kwargs

@@ -8,7 +8,7 @@ from .data_journal import DataJournal
 from .utils import init_kwargs_as_parameters
 from .utils import RouteCache
 
-class Stress(DataJournal):
+class Load(DataJournal):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
@@ -67,7 +67,7 @@ class Stress(DataJournal):
             for start,end,_,sstart,send in TaurusLongTask(\
                                             self.do('stress/select_path'),\
                                             max_value=expected_problem_size,\
-                                            additional_text='Stressing',\
+                                            additional_text='Loading_paths',\
                                             **kwargs):
                 if rc.od_id[end]:
                     rc.stress[sstart][send]+=rc.motion_exchange[rc.od_id[start]][rc.od_id[end]]*fraction
@@ -99,7 +99,7 @@ class Stress(DataJournal):
 
         for start_od_id in TaurusLongTask(\
                         rc.featured_points,\
-                        additional_text='Stress',\
+                        additional_text='Load',\
                         **kwargs):
             
             for _,end_id,_ in rc.points:
