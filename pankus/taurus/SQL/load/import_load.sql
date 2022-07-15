@@ -1,5 +1,5 @@
-INSERT INTO stress VALUES (
+INSERT INTO load VALUES (
     :start_id,
     :end_id,
-    :stress
+    :load
 )

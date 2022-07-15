@@ -13,17 +13,17 @@ class Load(DataJournal):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
 
-    def stress_route(self,stress_name='stress',**kwargs):
-        #create stress
+    def load_route(self,load_name='load',**kwargs):
+        #create load
         assert self.table_exists('connection')
         assert self.table_exists('network_properties')
         assert self.table_exists('point')
         assert self.table_exists('motion_exchange')
 
-        self.do('initial/clean_value_net',{'name':stress_name,"new_name":stress_name})
+        self.do('initial/clean_value_net',{'name':load_name,"new_name":load_name})
 
         for s,e,f, in  self.do('intopp/select_motion_exchange_fraction'):
-            self.do('stress/stress_connections')
+            self.do('load/load_connections')
         
         
     
@@ -39,61 +39,61 @@ class Load(DataJournal):
         assert self.table_exists('point')
         assert self.table_exists('connection')
         assert self.table_exists('network_properties')
-        self.do('stress/remove_network_having_value',{
+        self.do('load/remove_network_having_value',{
             'key':key,
             'value':value
         })
 
 
-    def initialize_stress(self,stress_name=None,**kwargs):
+    def initialize_load(self,load_name=None,**kwargs):
         """ 
-            Creates stress table, that holds stress for a graph.
+            Creates load table, that holds load for a graph.
         """
-        self.do('stress/create_stress')
-        self.do('stress/initialize_stress',{"stress_name":stress_name})
+        self.do('load/create_load')
+        self.do('load/initialize_load',{"load_name":load_name})
         
     @init_kwargs_as_parameters        
-    def do_stress(self,method="python",fraction=1.0,**kwargs):
+    def do_load(self,method="python",fraction=1.0,**kwargs):
         """
         """
         if method=='python':
             
             rc=RouteCache(self)
             rc.cache_motion_exchange()
-            rc.cache_stress()
+            rc.cache_load()
 
-            expected_problem_size,=self.do('stress/select_path_count').fetchone()
+            expected_problem_size,=self.do('load/select_path_count').fetchone()
 
             for start,end,_,sstart,send in TaurusLongTask(\
-                                            self.do('stress/select_path'),\
+                                            self.do('load/select_path'),\
                                             max_value=expected_problem_size,\
                                             additional_text='Loading_paths',\
                                             **kwargs):
                 if rc.od_id[end]:
-                    rc.stress[sstart][send]+=rc.motion_exchange[rc.od_id[start]][rc.od_id[end]]*fraction
+                    rc.load[sstart][send]+=rc.motion_exchange[rc.od_id[start]][rc.od_id[end]]*fraction
                     
-            stress_to_store=[]
-            for i,s in enumerate(rc.stress):
-                for e in rc.stress[i]:
-                    stress_to_store.append({"start_id":i,"end_id":e,"stress":rc.stress[i][e]})
-            self.do('stress/delete_stress')
-            self.transaction('stress/import_stress',stress_to_store)
+            load_to_store=[]
+            for i,s in enumerate(rc.load):
+                for e in rc.load[i]:
+                    load_to_store.append({"start_id":i,"end_id":e,"load":rc.load[i][e]})
+            self.do('load/delete_load')
+            self.transaction('load/import_load',load_to_store)
 
         elif method=="SQL":
-            self.do('stress/stress_connections',{"fraction":fraction})
+            self.do('load/load_connections',{"fraction":fraction})
 
-    def save_stress(self,saved_name='stress',**kwargs):
+    def save_load(self,saved_name='load',**kwargs):
         """
-        Saves stress to network_parameters
+        Saves load to network_parameters
         """
         self.do('initial/clean_value_net',{'name':saved_name,"new_name":saved_name,"default":"0"})
-        self.do('stress/save_stress_to_net',{'name':saved_name})
+        self.do('load/save_load_to_net',{'name':saved_name})
 
     @init_kwargs_as_parameters
-    def path_and_stress(self,fraction=1.0,**kwargs):        
+    def path_and_load(self,fraction=1.0,**kwargs):        
         rc=RouteCache(self)
         rc.cache_motion_exchange()
-        rc.cache_stress()
+        rc.cache_load()
         rc.cache_distances()
         
 
@@ -116,36 +116,36 @@ class Load(DataJournal):
                 predeccessor = rc.distance[start_od_id][end_id][0]   
                 if predeccessor==None:
                     continue
-                #save stress
+                #save load
                 #print(start_od_id)
                 #print(predeccessor,end_id)
-                #print(rc.stress[predeccessor])
+                #print(rc.load[predeccessor])
                 successor=end_id
                 while rc.od_id[successor]!=start_od_id:
-                    rc.stress[predeccessor][successor]+=rc.motion_exchange[start_od_id][end_od_id]*fraction
+                    rc.load[predeccessor][successor]+=rc.motion_exchange[start_od_id][end_od_id]*fraction
                     predeccessor,successor=rc.distance[start_od_id][predeccessor][0],predeccessor
                     
 
-        stress_to_store=[]
-        for i,s in enumerate(rc.stress):
-            for e in rc.stress[i]:
-                stress_to_store.append({"start_id":i,"end_id":e,"stress":rc.stress[i][e]})
-        self.do('stress/delete_stress')
-        self.transaction('stress/import_stress',stress_to_store)
+        load_to_store=[]
+        for i,s in enumerate(rc.load):
+            for e in rc.load[i]:
+                load_to_store.append({"start_id":i,"end_id":e,"load":rc.load[i][e]})
+        self.do('load/delete_load')
+        self.transaction('load/import_load',load_to_store)
 
     @init_kwargs_as_parameters
-    def stress_weight_connections(self,
-            stress_name="stress",
+    def load_weight_connections(self,
+            load_name="load",
             throughput_name="throughput",
             weight_name="weight",**kwargs):
-        self.do('stress/create_weight_stress_change')
-        self.do('stress/initialize_weight_stress_change',{
-            "stress_name":stress_name,
+        self.do('load/create_weight_load_change')
+        self.do('load/initialize_weight_load_change',{
+            "load_name":load_name,
             "throughput_name":throughput_name,
             "weight_name":weight_name
         })
         self.do('route/create_connection')
-        self.do('stress/create_stressed_connection')
+        self.do('load/create_loaded_connection')
 
         
 

@@ -1,5 +1,5 @@
-DELETE FROM weight_stress_change;
-INSERT INTO weight_stress_change
+DELETE FROM weight_load_change;
+INSERT INTO weight_load_change
     SELECT
         start.id,
         end.id,
@@ -8,7 +8,7 @@ INSERT INTO weight_stress_change
          FROM
             network_properties
          WHERE
-            network_properties.name = :stress_name AND
+            network_properties.name = :load_name AND
             network_properties.start = start.point AND
             network_properties.end = end.point
          LIMIT 1

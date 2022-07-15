@@ -1,3 +1,3 @@
--- removes everything from stress
+-- removes everything from load
 
-DELETE FROM stress
+DELETE FROM load

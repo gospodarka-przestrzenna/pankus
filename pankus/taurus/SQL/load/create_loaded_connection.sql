@@ -3,6 +3,6 @@ INSERT INTO connection
     SELECT
         start_id,
         end_id,
-        weight*(1+((stress/throughput)*(stress/throughput)*(stress/throughput)*(stress/throughput)*(stress/throughput)))
+        weight*(1+((load/throughput)*(load/throughput)*(load/throughput)*(load/throughput)*(load/throughput)))
     FROM
-        weight_stress_change
+        weight_load_change

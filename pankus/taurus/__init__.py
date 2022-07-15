@@ -14,7 +14,7 @@ from .analysis import Analysis
 from .data_journal import DataJournal
 from .exporter import Exporter
 from .path import Path
-from .stress import Load
+from .load import Load
 
 class Taurus(Route,InterveningOpportunities,MST,NetworkGenerator,Analysis,Exporter,Path,Load):
 

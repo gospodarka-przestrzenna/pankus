@@ -77,14 +77,14 @@ class RouteCache:
     def cache_motion_exchange(self):
         assert self.taurus_object.table_exists('motion_exchange')
         self.motion_exchange=[[None for i in range(self.max_od_point)] for j in range(self.max_od_point)]
-        for start,end,value in self.taurus_object.do('stress/select_motion_exchange'):
+        for start,end,value in self.taurus_object.do('load/select_motion_exchange'):
             self.motion_exchange[start][end]=value
 
-    def cache_stress(self):
-            assert self.taurus_object.table_exists('stress')
-            self.stress=[{} for i in range(self.max_point)]
-            for start_id,end_id,stress in self.taurus_object.do('stress/select_stress'):
-                self.stress[start_id][end_id]=stress
+    def cache_load(self):
+            assert self.taurus_object.table_exists('load')
+            self.load=[{} for i in range(self.max_point)]
+            for start_id,end_id,load in self.taurus_object.do('load/select_load'):
+                self.load[start_id][end_id]=load
 
 
 

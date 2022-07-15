@@ -1,1 +1,1 @@
-select * from stress
+select * from load
