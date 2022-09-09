@@ -1,7 +1,7 @@
---just zeroed stress table
+--just zeroed load table
 
-DELETE FROM stress;
-INSERT INTO stress
+DELETE FROM load;
+INSERT INTO load
     SELECT
         start.id,
         end.id,
@@ -10,7 +10,7 @@ INSERT INTO stress
 			FROM
 				network_properties
 			WHERE
-				network_properties.name = :stress_name AND
+				network_properties.name = :load_name AND
 				network_properties.start = start.point AND
 				network_properties.end = end.point
 			LIMIT 1

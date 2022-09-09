@@ -3,9 +3,9 @@ UPDATE
 SET
 	value=(
 	SELECT
-		ifnull(s.stress,0)
+		ifnull(s.load,0)
 	FROM
-		stress as s,
+		load as s,
 		point as p1,
 		point as p2
 	WHERE

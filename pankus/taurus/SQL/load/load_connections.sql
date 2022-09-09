@@ -20,11 +20,11 @@ WHERE
     end.od_id=motion_exchange.od_end_id
  ;
 
-INSERT INTO  stress
-SET stress=(stress+stressed.stress)
+INSERT INTO  load
+SET load=(load+loaded.load)
 FROM 
     (SELECT 
-        path.segment_start_id as start_id,path.segment_end_id as end_id ,sum(me.motion_exchange) as stress
+        path.segment_start_id as start_id,path.segment_end_id as end_id ,sum(me.motion_exchange) as load
     FROM
         path,
         motion_exchange_by_id as me
@@ -32,9 +32,9 @@ FROM
         path.start_id=me.start_id AND
         path.end_id=me.end_id
     GROUP BY
-        path.segment_start_id,path.segment_end_id) as stressed
+        path.segment_start_id,path.segment_end_id) as loaded
 WHERE
-    stressed.start_id=start_id AND
-    stressed.end_id=end_id
+    loaded.start_id=start_id AND
+    loaded.end_id=end_id
 ;
 DROP TABLE IF EXISTS  motion_exchange_by_id;
