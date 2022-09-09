@@ -14,4 +14,4 @@ Distance table contains data on distances between locations or in particular bet
    end_id,INT,ID number of path ending point
    predecessor_id,INT,ID number of the point preceeding the ending point on the path
    successor_id,INT,ID number of the area following the starting point on the path
-   weight,REAL,weight of described distance e.g. its capacity
+   cost,REAL,cost of described distance e.g. its capacity

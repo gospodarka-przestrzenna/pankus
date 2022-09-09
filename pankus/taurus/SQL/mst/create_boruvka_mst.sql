@@ -13,11 +13,11 @@ DROP TABLE IF EXISTS bmst_connection;
 CREATE TABLE bmst_connection(
     bmst_start_id INTEGER,
     bmst_end_id INTEGER,
-    weight REAL
+    cost REAL
 );
 CREATE INDEX IF NOT EXISTS bmst_connection_bmst_start_id_idx ON bmst_connection (bmst_start_id);
 CREATE INDEX IF NOT EXISTS bmst_connection_bmst_end_id_idx ON bmst_connection (bmst_end_id);
-CREATE INDEX IF NOT EXISTS bmst_connection_weight_idx ON bmst_connection (weight);
+CREATE INDEX IF NOT EXISTS bmst_connection_cost_idx ON bmst_connection (cost);
 
 
 DROP TABLE IF EXISTS bmst_used_connection;
@@ -25,7 +25,7 @@ CREATE TABLE bmst_used_connection(
     bmst_start_id INTEGER,
     bmst_end_id INTEGER,
     level INTEGER,
-    weight REAL
+    cost REAL
 );
 CREATE INDEX IF NOT EXISTS bmst_used_connection_bmst_start_id_idx ON bmst_used_connection (bmst_start_id);
 CREATE INDEX IF NOT EXISTS bmst_used_connection_bmst_end_id_idx ON bmst_used_connection (bmst_end_id);

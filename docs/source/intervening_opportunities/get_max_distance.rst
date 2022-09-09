@@ -13,4 +13,4 @@ Data used
 
 Effect
 ------
-- distance with the highest weight is selected
+- distance with the highest cost is selected

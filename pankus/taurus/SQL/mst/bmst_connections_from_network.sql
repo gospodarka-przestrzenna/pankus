@@ -2,7 +2,7 @@ INSERT INTO bmst_connection
 SELECT DISTINCT
     start.id,
     end.id,
-    network.weight
+    network.cost
 FROM
     network,
     point as start,

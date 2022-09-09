@@ -35,7 +35,7 @@ class NetworkGenerator(Importer):
         net_data_to_insert.append({
             'start':str(start),
             'end':str(end),
-            'name':'weight',
+            'name':'cost',
             'value':value
         })
     # normalization brings numbers of origins and destinations to a fractional form, new sums of origins and ddestinations equal 1

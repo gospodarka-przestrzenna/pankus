@@ -3,5 +3,5 @@ INSERT INTO distance VALUES (
     :end_id,
     :predecessor_id,
     :successor_id,
-    :weight
+    :cost
 )

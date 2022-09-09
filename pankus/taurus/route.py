@@ -15,15 +15,15 @@ class Route(DataJournal):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
 
-    # generates connections between pairs of points. A connection has specified start, end and weight written in the table "connection".
+    # generates connections between pairs of points. A connection has specified start, end and cost written in the table "connection".
     # Connections are inserted into tables using SQL scripts "create_connection" and "insert_connection".
     # "insert_connection" script uses tables "network_geometry" and "point" to write data into new tables.
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("connection")
-    def generate_connections(self,weight_name="weight",**kwargs):
+    def generate_connections(self,cost_name="cost",**kwargs):
         """
         "generate_connections" function creates connections between pairs of points using network geometry and points data.
-        Each connection is expressed as a set of data - start id, end id and weight.
+        Each connection is expressed as a set of data - start id, end id and cost.
         
         """
         assert self.table_exists('point')
@@ -32,7 +32,7 @@ class Route(DataJournal):
 
         self.do('route/create_connection')
         self.do('route/insert_connection',{
-            'weight_name':weight_name
+            'cost_name':cost_name
         })
 
     @init_kwargs_as_parameters
@@ -88,7 +88,7 @@ class Route(DataJournal):
                 new_distances.append({
                    'start_id': start,
                    'end_id': i,
-                   'weight': dist,
+                   'cost': dist,
                    'successor_id': i,
                    'predecessor_id': start
                 })
@@ -98,14 +98,14 @@ class Route(DataJournal):
 
 
     # it creates distances meant as routes between pairs of origin-destination points, built from previously generated connections.
-    # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, weight, successorr id and predecessor id.
+    # Distances are written in the table distance. Each record in the distance table is described by following parameters: start id, end id, cost, successorr id and predecessor id.
     # Data is written into table distance using SQL script "import_distance".
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("distance")
     def distance(self,**kwargs):
         """
         "distance" function creates distances meant as routes between pairs of origin-destination points built from available connections.
-        Distances are expressed as a set od following data: start_id, end_id, weight, successor id and predecessor id.
+        Distances are expressed as a set od following data: start_id, end_id, cost, successor id and predecessor id.
         """
         #self.generate_connections()
         assert self.one('route/test_point_id_range')[0]
@@ -115,8 +115,8 @@ class Route(DataJournal):
         all_points=self.do('route/select_point').fetchall()
 
         connections=[{} for _ in all_points]
-        for start,end,weight, in self.do('route/select_connection'):
-            connections[start][end]=weight
+        for start,end,cost, in self.do('route/select_connection'):
+            connections[start][end]=cost
 
         for _,start,_, in TaurusLongTask(\
                             featured_points,\
@@ -127,39 +127,39 @@ class Route(DataJournal):
             new_distances = [{
                'start_id': start,
                'end_id': i,
-               'weight': float('inf'),
+               'cost': float('inf'),
                'successor_id': None,
                'predecessor_id': None
             } for _,i,_, in all_points]
 
             used=[False for _ in all_points]
-            new_distances[start]['weight'] = 0
+            new_distances[start]['cost'] = 0
             new_distances[start]['predecessor_id'] = start
             new_distances[start]['successor_id'] = start
             used[start] = True
 
-            for end,weight in connections[start].items():
-                new_distances[end]['weight'] = weight
+            for end,cost in connections[start].items():
+                new_distances[end]['cost'] = cost
                 new_distances[end]['successor_id'] = end
                 new_distances[end]['predecessor_id'] = start
-                heappush(H, (weight, end))
+                heappush(H, (cost, end))
 
             while H != []:
 
-                weight,closest_end = heappop(H)
+                cost,closest_end = heappop(H)
                 if used[closest_end]:
                     continue
 
                 used[closest_end] = True
 
-                for n_end,c_weight in connections[closest_end].items():
+                for n_end,c_cost in connections[closest_end].items():
                     if used[n_end]:
                         continue
-                    n_weight = c_weight+weight
-                    if new_distances[n_end]['weight'] > n_weight:
-                        new_distances[n_end]['weight'] = n_weight
+                    n_cost = c_cost+cost
+                    if new_distances[n_end]['cost'] > n_cost:
+                        new_distances[n_end]['cost'] = n_cost
                         new_distances[n_end]['successor_id'] = new_distances[closest_end]['successor_id']
                         new_distances[n_end]['predecessor_id'] = closest_end
-                        heappush(H,(n_weight, n_end))
+                        heappush(H,(n_cost, n_end))
             self.transaction('route/import_distance',new_distances)
         self.commit()

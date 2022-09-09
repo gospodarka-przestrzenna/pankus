@@ -2,7 +2,7 @@ WITH
     min_connection_mst(src,minimum) AS (
         SELECT
             origin.bmst_supernode as src,
-            min(bmst_connection.weight) as minimum
+            min(bmst_connection.cost) as minimum
         FROM
             bmst_connection,
             bmst AS origin,
@@ -29,7 +29,7 @@ WITH
             bmst AS destination
 
         WHERE
-            bmst_connection.weight=minconn.minimum AND
+            bmst_connection.cost=minconn.minimum AND
             minconn.src=origin.bmst_supernode AND
             origin.bmst_id=bmst_connection.bmst_start_id AND
             destination.bmst_id=bmst_connection.bmst_end_id AND

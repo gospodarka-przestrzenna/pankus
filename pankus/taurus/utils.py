@@ -71,8 +71,8 @@ class RouteCache:
         assert self.taurus_object.table_exists('distance')
         self.distance=[[None for i in range(self.max_point)] for j in range(self.max_od_point)]
 
-        for start_id,end_id,predecessor_id,successor_id,weight in self.taurus_object.do('path/select_routes'):
-            self.distance[self.od_id[start_id]][end_id]=[predecessor_id,weight]
+        for start_id,end_id,predecessor_id,successor_id,cost in self.taurus_object.do('path/select_routes'):
+            self.distance[self.od_id[start_id]][end_id]=[predecessor_id,cost]
 
     def cache_motion_exchange(self):
         assert self.taurus_object.table_exists('motion_exchange')
