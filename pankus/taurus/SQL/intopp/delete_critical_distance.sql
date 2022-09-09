@@ -12,5 +12,5 @@ WHERE EXISTS(
         ring.od_end_id=p2.od_id AND
         d.start_id = p1.id AND
         d.end_id = p2.id AND
-        d.weight > :critical_distance
+        d.cost > :critical_distance
 )

@@ -4,7 +4,7 @@ CREATE TABLE distance (
     end_id INTEGER,
     predecessor_id INTEGER,
     successor_id INTEGER,
-    weight REAL
+    cost REAL
 );
 CREATE INDEX IF NOT EXISTS distance_start_id_idx ON distance (start_id);
 CREATE INDEX IF NOT EXISTS distance_end_id_idx ON distance (end_id);

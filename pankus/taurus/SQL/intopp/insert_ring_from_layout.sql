@@ -14,5 +14,5 @@ SELECT DISTINCT
       d.start_id=p1.id AND
       d.end_id=p2.id AND
       rl.od_id=p1.od_id AND
-      rl.prior_rings_size <= d.weight AND
-      rl.prior_rings_size + rl.ring_size > d.weight
+      rl.prior_rings_size <= d.cost AND
+      rl.prior_rings_size + rl.ring_size > d.cost

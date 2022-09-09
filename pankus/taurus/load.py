@@ -134,15 +134,15 @@ class Load(DataJournal):
         self.transaction('load/import_load',load_to_store)
 
     @init_kwargs_as_parameters
-    def load_weight_connections(self,
+    def load_cost_connections(self,
             load_name="load",
             throughput_name="throughput",
-            weight_name="weight",**kwargs):
-        self.do('load/create_weight_load_change')
-        self.do('load/initialize_weight_load_change',{
+            cost_name="cost",**kwargs):
+        self.do('load/create_cost_load_change')
+        self.do('load/initialize_cost_load_change',{
             "load_name":load_name,
             "throughput_name":throughput_name,
-            "weight_name":weight_name
+            "cost_name":cost_name
         })
         self.do('route/create_connection')
         self.do('load/create_loaded_connection')

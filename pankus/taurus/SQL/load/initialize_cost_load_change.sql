@@ -1,5 +1,5 @@
-DELETE FROM weight_load_change;
-INSERT INTO weight_load_change
+DELETE FROM cost_load_change;
+INSERT INTO cost_load_change
     SELECT
         start.id,
         end.id,
@@ -28,7 +28,7 @@ INSERT INTO weight_load_change
          FROM
             network_properties
          WHERE
-            network_properties.name = :weight_name AND
+            network_properties.name = :cost_name AND
             network_properties.start = start.point AND
             network_properties.end = end.point
          LIMIT 1

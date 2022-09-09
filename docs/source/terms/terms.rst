@@ -31,5 +31,5 @@ Page presents basic terminology and concept behind implemented features.
     Computation area
       Determined area (usually geographically) pankus calculations apply to e.g.: urban unit
       
-    Weight of connection
-      A cost of connection - better condition minimalize the weight
+    Cost of connection
+      A cost of connection - better condition minimalize the cost

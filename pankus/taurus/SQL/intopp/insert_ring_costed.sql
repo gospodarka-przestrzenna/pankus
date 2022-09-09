@@ -3,7 +3,7 @@ SELECT DISTINCT
     p1.od_id,
     p2.od_id,
     (SELECT
-        cast(weight/(:factor) as int)
+        cast(cost/(:factor) as int)
     FROM
         distance as d
     WHERE

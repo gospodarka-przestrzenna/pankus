@@ -95,7 +95,7 @@ class InterveningOpportunities(DataJournal):
     @DataJournal.log_and_stash("ring")
     def build_uniform_rings(self,no_of_rings,**kwargs):
         """
-        build_uniform_rings builds specified in the no_of_rings parameter number of rings which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation. During calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included. Table ring is filled using SQL script insert_ring_uniform insert_ring_uniform.sql writes ring table using point and distance tables. insert_ring_uniform.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as value of weight of distance between points multiplied by a factor calculated in the buid_uniform_rings fuction
+        build_uniform_rings builds specified in the no_of_rings parameter number of rings which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects maximum value of distance from table distance then uses it to calculate a factor essential in rings creation. During calculations maximum distance is multiplied by 1.0001 in order to move slightly the border of last ring so the furthest point in the network is included. Table ring is filled using SQL script insert_ring_uniform insert_ring_uniform.sql writes ring table using point and distance tables. insert_ring_uniform.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as value of cost of distance between points multiplied by a factor calculated in the buid_uniform_rings fuction
 
         Args:
             no_of_rings (int): number of rings to build from one origin
@@ -111,16 +111,16 @@ class InterveningOpportunities(DataJournal):
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("ring")
-    def build_weighted_rings(self,weight,**kwargs):
+    def build_costed_rings(self,cost,**kwargs):
         """
-        build_weighted_rings builds rings based on specified weight which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects given weight as a factor essential in rings creation. Table ring is filled using SQL script insert_ring_uniform insert_ring_weighted.sql writes ring table using point and distance tables. insert_ring_weighted.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as the value of weight of distance between points divided by a factor calculated in the build_weighted_rings fuction
+        build_costed_rings builds rings based on specified cost which are written in the table ring describing ring placement of a origin-destination point in the correlation to the second origin-destination point. Function selects given cost as a factor essential in rings creation. Table ring is filled using SQL script insert_ring_uniform insert_ring_costed.sql writes ring table using point and distance tables. insert_ring_costed.sql script selects pairs of origin-destinations points from point table and matches them with corresponding ring, expressed as the value of cost of distance between points divided by a factor calculated in the build_costed_rings fuction
 
         Args:
-            weight (float): rings separaded from each other by specified weight are created, weight parameter is expressed in the same units as distances betwwen points
+            cost (float): rings separaded from each other by specified cost are created, cost parameter is expressed in the same units as distances betwwen points
         """
         self.do('intopp/create_ring')
-        factor=weight
-        self.do('intopp/insert_ring_weighted',{'factor':factor})
+        factor=cost
+        self.do('intopp/insert_ring_costed',{'factor':factor})
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("ring")
