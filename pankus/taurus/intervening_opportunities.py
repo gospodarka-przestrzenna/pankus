@@ -184,6 +184,67 @@ class InterveningOpportunities(DataJournal):
         self.transaction('intopp/insert_ring_layout',rings_layout)
 
     @init_kwargs_as_parameters
+    # @DataJournal.log_and_stash("ring_layout")
+    def build_uniform_layout(self,no_of_rings,**kwargs):
+        """
+        Creates layout for uniform ring distribution
+        the procedure will create ring_layout table with size of each ring 
+        For this particular function each ring will have same size and there will be 
+        no_of_rings upper limit on ring generated for any od point ()
+
+        Args:
+            no_of_rings (int):
+                
+        """
+        self.do('intopp/create_ring_layout')
+        max_distance,=self.one('intopp/distance_maximum')
+        size=(max_distance)/no_of_rings
+        layout=[]
+        for od_id,point in self.do('exporter/select_od_geometry'):
+            for ring in range(no_of_rings):
+                layout.append((
+                    od_id,
+                    ring,
+                    size*(2 if ring==no_of_rings-1 else 1), #last ring can be twice as big to include edge case 
+                    ring*size
+                ))
+        # last ring must be no_of_rings-1 but through equation no_of_rings shall occur
+        # we must take it into accont
+        
+        self.transaction('intopp/insert_ring_layout',layout)
+        
+    @init_kwargs_as_parameters
+    # @DataJournal.log_and_stash("ring_layout")
+    def build_costed_layout(self,cost,**kwargs):
+        """
+        Creates layout for costed ring distribution
+        the procedure will create ring_layout table with size of each ring 
+        For this particular function each ring will have same size 
+        provided as function parameter
+
+        Args:
+            cost (float):
+                
+        """
+        self.do('intopp/create_ring_layout')
+
+        max_distance,=self.one('intopp/distance_maximum')
+        layout=[]
+        for od_id,point in self.do('exporter/select_od_geometry'):
+            ring=0
+            while not ring*cost>max_distance:
+                layout.append((
+                    od_id,
+                    ring,
+                    cost,
+                    ring*cost
+                ))
+                ring+=1
+        
+        self.transaction('intopp/insert_ring_layout',layout)
+
+
+    @init_kwargs_as_parameters
     @DataJournal.log_and_stash("ring")
     def build_rings_from_layout(self,**kwargs):
         """
