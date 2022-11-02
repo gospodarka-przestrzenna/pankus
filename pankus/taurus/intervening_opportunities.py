@@ -100,14 +100,8 @@ class InterveningOpportunities(DataJournal):
         Args:
             no_of_rings (int): number of rings to build from one origin
         """
-
-        self.do('intopp/create_ring')
-        max_distance,=self.one('intopp/distance_maximum')
-        factor=no_of_rings/(max_distance)
-        self.do('intopp/insert_ring_uniform',{'factor':factor})
-        # last ring must be no_of_rings-1 but through equation no_of_rings shall occur
-        # We must update it
-        self.merge_ring_with_next(no_of_rings)
+        self.build_uniform_layout(no_of_rings)
+        self.build_rings_from_layout()
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("ring")
@@ -118,9 +112,8 @@ class InterveningOpportunities(DataJournal):
         Args:
             cost (float): rings separaded from each other by specified cost are created, cost parameter is expressed in the same units as distances betwwen points
         """
-        self.do('intopp/create_ring')
-        factor=cost
-        self.do('intopp/insert_ring_costed',{'factor':factor})
+        self.build_costed_layout(cost)
+        self.build_rings_from_layout()
 
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("ring")
