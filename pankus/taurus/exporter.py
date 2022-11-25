@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Maciej Kamiński Politechnika Wrocławska'
 
-import json,pdb
+import json,pdb 
 from .utils import TaurusLongTask
 from .data_journal import DataJournal
 from .utils import init_kwargs_as_parameters
@@ -166,3 +166,34 @@ class Exporter(DataJournal):
 
         with open(out_filename,'w',encoding='utf-8') as net:
             json.dump(geojson,net)
+
+    @init_kwargs_as_parameters
+    def export_node_zones(self,
+                        out_filename="node_zones.geojson",
+                        zone_name_prefix="STREFA_",
+                        od_field_name="LOC_ID",
+                        fields=None, #provide list of fields
+                        **kwargs):
+        
+        property_builder = dict()
+
+        # { 7: { STREFA_4": "4 5 7", ...,LOC_ID: 7}, 9: {"STREFA_3: "4 7 9" ...} ... }
+        for od_id,ring,group in self.do('exporter/select_od_rings_orionjs'):
+            if od_id not in property_builder:
+                property_builder[od_id]={}
+            property_builder[od_id][od_field_name]=od_id
+            property_builder[od_id][zone_name_prefix+str(ring)]=str(group) if group else None
+        
+        for i,od_id in enumerate(property_builder):
+            property_builder[od_id]['ID']=i
+
+        geojson={"type": "FeatureCollection","features": []}
+        for od_id in property_builder:
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {"type": "GeometryCollection" , "geometries":[]},
+                "properties" : property_builder[od_id]
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as od:
+            json.dump(geojson,od)
