@@ -197,3 +197,29 @@ class Exporter(DataJournal):
 
         with open(out_filename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)
+
+    def export_zones_cost(self,
+                        out_filename="zones_cost.geojson",
+                        zone_name="ZONE",
+                        cost_name="COST",
+                        **kwargs):
+        
+        property_builder = []
+
+        for _,size,prior_cost in self.do('exporter/select_random_ring_layout_costs'):
+            property_builder.append({
+                'ID':len(property_builder),
+                zone_name:prior_cost+size,
+                cost_name:prior_cost+size/2
+            })
+
+        geojson={"type": "FeatureCollection","features": []}
+        for element in property_builder:
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {"type": "GeometryCollection" , "geometries":[]},
+                "properties" : element
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as od:
+            json.dump(geojson,od)
