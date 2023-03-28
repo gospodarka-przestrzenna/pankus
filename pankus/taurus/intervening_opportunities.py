@@ -492,9 +492,9 @@ class InterveningOpportunities(DataJournal):
         self.transaction('initial/update_od_values',new_value)
 
     @init_kwargs_as_parameters
-    def limit_destinations(self,floor_name='floor',celling_name='celling',iteration=1,**kwargs):
+    def limit_destinations(self,min_name='floor',max_name='celling',iteration=1,**kwargs):
         
         self.do('intopp/create_roof_original')
         for i in range(iteration):
-            self.do('intopp/eradicate_celling',{'floor_name':floor_name,'celling_name':celling_name})
+            self.do('intopp/eradicate_celling',{'floor_name':min_name,'celling_name':max_name})
         
