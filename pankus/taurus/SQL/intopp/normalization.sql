@@ -20,7 +20,10 @@ GROUP BY
 UPDATE motion_exchange_fraction
 SET fraction=(
     SELECT
-        motion_exchange_fraction.fraction/tmeft.total
+        CASE 
+            WHEN motion_exchange_fraction.fraction == 0 THEN  0
+            ELSE motion_exchange_fraction.fraction/tmeft.total
+        END
     FROM
         temp_motion_exchange_fraction_total as tmeft
     WHERE
@@ -31,7 +34,10 @@ SET fraction=(
 UPDATE motion_exchange
 SET motion_exchange=(
     SELECT
-        motion_exchange.motion_exchange/tmeft.total
+        CASE 
+            WHEN motion_exchange.motion_exchange == 0 THEN 0
+            ELSE motion_exchange.motion_exchange/tmeft.total
+        END
     FROM
         temp_motion_exchange_fraction_total as tmeft
     WHERE
