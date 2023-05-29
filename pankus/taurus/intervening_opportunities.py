@@ -338,12 +338,18 @@ class InterveningOpportunities(DataJournal):
     #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("motion_exchange", "motion_exchange_fraction")
-    def motion_exchange(self,**kwargs):
+    def motion_exchange(self,scale=1.0,**kwargs):
         """
         calculates numbers of transported "objects". Results ae written in the "motion_exchange" table. which describes accurate quantity of transported "objects"
         "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
         Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings.
         "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
+        
+        Args:
+            scale (float):
+                example:
+                0.9
+
         """
         self.do('intopp/create_motion_exchange')
 
@@ -395,7 +401,7 @@ class InterveningOpportunities(DataJournal):
                 'od_start_id':start_id,
                 'od_end_id':end_id,
                 'fraction':fraction,
-                'motion_exchange':(origins*fraction)
+                'motion_exchange':(origins*fraction*scale)
             })
 
             if len(motion_exchange)>10000:
