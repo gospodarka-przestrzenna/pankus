@@ -52,6 +52,9 @@ CREATE TABLE point_group (
     point TEXT
 );
 
+CREATE INDEX IF NOT EXISTS  point_group_point_idx ON point_group (point_representative);
+
+
 WITH RECURSIVE
   point_groupper(point_ref,point,x,y) AS (
   SELECT
@@ -144,6 +147,23 @@ SET end = (
     pg.point = network_properties.end
 );
 
+UPDATE network_geometry
+SET linestring = (
+  SELECT
+    REPLACE(
+      REPLACE(linestring,pg1.point,pg1.point_representative),
+      pg2.point,pg2.point_representative
+  )
+  FROM
+    point_group as pg1,
+    point_group as pg2
+  WHERE
+    pg1.point_representative = network_geometry.start AND
+    pg2.point_representative = network_geometry.end AND
+    instr(linestring,pg1.point)>0 and
+	  instr(linestring,pg2.point)>0 
+)
 
-DROP TABLE IF EXISTS coordinated_point;
-DROP TABLE IF EXISTS point_group;
+
+-- DROP TABLE IF EXISTS coordinated_point;
+-- DROP TABLE IF EXISTS point_group;
