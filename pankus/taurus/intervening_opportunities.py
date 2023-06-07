@@ -222,8 +222,10 @@ class InterveningOpportunities(DataJournal):
         self.do('intopp/create_ring_layout')
 
         max_distance,=self.one('intopp/distance_maximum')
+        assert max_distance < float('inf')
+
         layout=[]
-        for od_id,point in self.do('exporter/select_od_geometry'):
+        for _,_,od_id in self.do('route/select_od_point'):
             ring=0
             while not ring*cost>max_distance:
                 layout.append((
@@ -338,7 +340,7 @@ class InterveningOpportunities(DataJournal):
     #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("motion_exchange", "motion_exchange_fraction")
-    def motion_exchange(self,scale=1.0,**kwargs):
+    def motion_exchange(self,scale=1.0,potential=False,**kwargs):
         """
         calculates numbers of transported "objects". Results ae written in the "motion_exchange" table. which describes accurate quantity of transported "objects"
         "motion_exchange_fraction" contains the same data in a different form - quantity of transported objects is expressed as a fraction.
@@ -393,7 +395,7 @@ class InterveningOpportunities(DataJournal):
                 conv_intensity
             )
             if destinations_in!=0:
-                fraction=(fraction_after_ring-fraction_before_ring)*destinations/destinations_in
+                fraction=(fraction_after_ring-fraction_before_ring)*destinations/destinations_in if not potential else (1 - fraction_before_ring)
             else:
                 fraction=0
 
