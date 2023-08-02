@@ -8,10 +8,10 @@ SELECT
     rt.destinations_prior,
     mps.origins,
     mp.destinations,
-    mp.selectivity,
-    mp.convolution_start,
-    mp.convolution_size,
-    mp.convolution_intensity
+    mps.selectivity,
+    mps.convolution_start,
+    mps.convolution_size,
+    mps.convolution_intensity
 FROM
     ring as r,
     ring_total as rt,
