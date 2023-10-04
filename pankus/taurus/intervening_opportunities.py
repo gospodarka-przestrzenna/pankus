@@ -490,3 +490,18 @@ class InterveningOpportunities(DataJournal):
             "value": mexf
         } for s,d,mexf in self.do('intopp/select_motion_exchange_fraction') if s==od_id ]
         self.transaction('initial/update_od_values',new_value)
+
+    @init_kwargs_as_parameters
+    def limit_destinations(self,min_name='floor',max_name='celling',iteration=1,**kwargs):
+        
+        self.do('intopp/create_roof_origins')
+        for i in range(iteration):
+            self.do('intopp/eradicate_celling_destinations',{'floor_name':min_name,'celling_name':max_name})
+
+    @init_kwargs_as_parameters
+    def limit_origins(self,min_name='floor',max_name='celling',iteration=1,**kwargs):
+        
+        self.do('intopp/create_roof_original')
+        for i in range(iteration):
+            self.do('intopp/eradicate_celling_origins',{'floor_name':min_name,'celling_name':max_name})
+        
