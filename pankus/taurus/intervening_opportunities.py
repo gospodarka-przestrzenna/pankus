@@ -494,7 +494,14 @@ class InterveningOpportunities(DataJournal):
     @init_kwargs_as_parameters
     def limit_destinations(self,min_name='floor',max_name='celling',iteration=1,**kwargs):
         
+        self.do('intopp/create_roof_origins')
+        for i in range(iteration):
+            self.do('intopp/eradicate_celling_destinations',{'floor_name':min_name,'celling_name':max_name})
+
+    @init_kwargs_as_parameters
+    def limit_origins(self,min_name='floor',max_name='celling',iteration=1,**kwargs):
+        
         self.do('intopp/create_roof_original')
         for i in range(iteration):
-            self.do('intopp/eradicate_celling',{'floor_name':min_name,'celling_name':max_name})
+            self.do('intopp/eradicate_celling_origins',{'floor_name':min_name,'celling_name':max_name})
         
