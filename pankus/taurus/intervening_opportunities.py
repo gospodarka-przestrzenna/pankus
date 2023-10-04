@@ -505,3 +505,12 @@ class InterveningOpportunities(DataJournal):
         for i in range(iteration):
             self.do('intopp/eradicate_celling_origins',{'floor_name':min_name,'celling_name':max_name})
         
+    @init_kwargs_as_parameters
+    def tighten_origins(self,**kwargs):
+        """
+        This function brings origins values to destinations
+        If executed after destination shift together should work as general shift
+
+
+        """
+        self.do('intopp/origins_tighten')
