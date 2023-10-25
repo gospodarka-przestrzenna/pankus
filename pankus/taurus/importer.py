@@ -131,6 +131,7 @@ class Importer(DataJournal):
 
     @init_kwargs_as_parameters
     def fix_geometry(self,range=0.01,**kwargs):
+        print("Snapping to grid and checking for problems")
         self.do('initial/fix_geometry',{'range':range})
         self.point_from_network_od()
         self.check_geometry()
