@@ -148,6 +148,25 @@ class Exporter(DataJournal):
             json.dump(geojson,net)
         
     @init_kwargs_as_parameters
+    def export_problematic_points_geojson(self,
+                                out_filename="problematic_points.geojson",
+                                **kwargs):
+        geojson={"type": "FeatureCollection","features": []}
+
+        for point, in self.do('initial/check_geometry'):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": eval(point)
+                    },
+                "properties" : {}
+            })
+
+        with open(out_filename,'w',encoding='utf-8') as points:
+            json.dump(geojson,points)
+
+    @init_kwargs_as_parameters
     def export_network_without_repetition_geojson(self,
                                 out_filename="no_repetition_network.geojson",
                                 fields=None, #if none select all fields ; else list of filelds
