@@ -121,11 +121,24 @@ class Importer(DataJournal):
     @init_kwargs_as_parameters
     def check_geometry(self,**kwargs):
         #Check lines
+
+        header_printed=False
         for start,end,count in self.do('initial/check_lines'):
-            print("problem with multiple connections between:"+str(start)+str(end))
+            if not header_printed:
+                print("Comment, Line_As_WKT")
+                header_printed=True
+            start=json.loads(start)
+            end=json.loads(end)
+            print("Problem: multiple connections betweeen two nodes:, \"LINESTRING("+' '.join(map(str,start))+', '+' '.join(map(str,end))+")\"")
         #Check geometry points
+
+        header_printed=False
         for point, in self.do('initial/check_geometry'):
-            print("problem with geometry at:", point)
+            if not header_printed:
+                print("Comment, Point_As_WKT")
+                header_printed=True
+            point=json.loads(point)
+            print("Problem: generating node connection at:, \"POINT("+' '.join(map(str,point))+")\"")
         if not list(self.do('initial/check_geometry')):
             print("No points problems")
 
