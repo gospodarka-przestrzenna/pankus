@@ -223,3 +223,18 @@ class Exporter(DataJournal):
 
         with open(out_filename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)
+    
+    def export_unreachable_points_geojson(self,od_id=None,out_fiename="unreachable.geojson",**kwargs):
+        geojson={"type": "FeatureCollection","features": []}
+
+        for id,point in self.do('exporter/select_unreachable_points',{'od_id':od_id}):
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": eval(point)
+                    },
+                "properties" : {}
+            })
+        with open(out_fiename,'w',encoding='utf-8') as od:
+            json.dump(geojson,od)
