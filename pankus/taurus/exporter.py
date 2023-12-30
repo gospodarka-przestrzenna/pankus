@@ -263,3 +263,32 @@ class Exporter(DataJournal):
             })
         with open(out_fiename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)
+
+    def export_rings_information_geojson(self,list_of_nodes: None | list =None,out_fiename="rings.geojson",**kwargs):
+        geojson={"type": "FeatureCollection","features": []}
+        
+        #take only first 100 nodes if provided else find firs 100 ids
+        if not list_of_nodes:
+            list_of_nodes = [id for id, in self.do('export/od_geometry')][:100]
+        else:
+            list_of_nodes = [id for id, in self.do('export/od_geometry') if id in list_of_nodes][:100]
+            
+        features_properties={} # { (start_id): { (end_id): (ring), (end_id): (ring) } }
+        feature_points={} # { (start_id): (point), ... }
+        for point,id,end_id,ring in self.do('exporter/select_rings_for_draw'):
+            feature_points[id]=point
+            if id not in features_properties:
+                features_properties[id] = {}
+            features_properties[id][end_id] = ring
+        
+        for id in features_properties:
+            geojson["features"].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": eval(feature_points[id])
+                    },
+                "properties" : features_properties[id]
+            })
+        with open(out_fiename,'w',encoding='utf-8') as od:
+            json.dump(geojson,od)
