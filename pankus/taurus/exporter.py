@@ -263,9 +263,9 @@ class Exporter(DataJournal):
         
         #take only first 100 nodes if provided else find firs 100 ids
         if not list_of_nodes:
-            list_of_nodes = [id for id, in self.do('export/select_od_ids_from_point')][:500]
+            list_of_nodes = [id for id, in self.do('exporter/select_od_ids_from_point')][:500]
         else:
-            list_of_nodes = [id for id, in self.do('export/select_od_ids_from_point') if id in list_of_nodes][:500]
+            list_of_nodes = [id for id, in self.do('exporter/select_od_ids_from_point') if id in list_of_nodes][:500]
             
         features_properties={} # { (start_id): { (end_id): (ring), (end_id): (ring) } }
         feature_points={} # { (start_id): (point), ... }

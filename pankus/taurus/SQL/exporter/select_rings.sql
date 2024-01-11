@@ -3,7 +3,7 @@ SELECT
 	g_start.point,
 	g_start.od_id,
 	g_end.od_id,
-	(SELECT ring FROM ring WHERE od_start_id=g_start.od_id AND od_end_id=g_end.od_id) as ring,
+	(SELECT ring FROM ring WHERE od_start_id=g_start.od_id AND od_end_id=g_end.od_id) as ring
 FROM
 	od_geometry as g_start,
 	od_geometry as g_end
