@@ -9,4 +9,4 @@ FROM
 	od_geometry as g_end
 WHERE
 	g_start.od_id IN (SELECT od_id FROM point WHERE od_id IS NOT NULL) AND
-	g_start in :list_of_points
+	g_start.od_id in (:list_of_points)
