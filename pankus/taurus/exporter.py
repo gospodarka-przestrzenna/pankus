@@ -269,7 +269,7 @@ class Exporter(DataJournal):
             
         features_properties={} # { (start_id): { (end_id): (ring), (end_id): (ring) } }
         feature_points={} # { (start_id): (point), ... }
-        for point,id,end_id,ring in self.do('exporter/select_rings',{'list_of_nodes':list_of_nodes}):
+        for point,id,end_id,ring in self.do('exporter/select_rings'):
             feature_points[id]=point
             if id not in features_properties:
                 features_properties[id] = {}
