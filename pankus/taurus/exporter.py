@@ -270,19 +270,19 @@ class Exporter(DataJournal):
         features_properties={} # { (start_id): { (end_id): (ring), (end_id): (ring) } }
         feature_points={} # { (start_id): (point), ... }
         for point,id,end_id,ring in self.do('exporter/select_rings'):
-            feature_points[id]=point
-            if id not in features_properties:
-                features_properties[id] = {}
-            features_properties[id][end_id] = ring
+            feature_points[end_id]=point
+            if end_id not in features_properties:
+                features_properties[end_id] = {"ID":end_id}
+            features_properties[end_id][id] = ring
         
-        for id in features_properties:
+        for end_id in features_properties:
             geojson["features"].append({
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": eval(feature_points[id])
+                    "coordinates": eval(feature_points[end_id])
                     },
-                "properties" : features_properties[id]
+                "properties" : features_properties[end_id]
             })
         with open(out_fiename,'w',encoding='utf-8') as od:
             json.dump(geojson,od)

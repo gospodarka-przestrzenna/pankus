@@ -1,13 +1,17 @@
 --
+WITH od_ids(od_id) AS
+(
+	SELECT od_id FROM point WHERE od_id IS NOT NULL LIMIT 100
+)
 SELECT
-	g_start.point,
+	g_end.point,
 	g_start.od_id,
 	g_end.od_id,
 	(SELECT ring FROM ring WHERE od_start_id=g_start.od_id AND od_end_id=g_end.od_id) as ring
 FROM
 	od_geometry as g_start,
 	od_geometry as g_end,
-    (SELECT od_id FROM point WHERE od_id IS NOT NULL LIMIT 100) as od_ids
+    od_ids
 WHERE
     g_start.od_id is NOT NULL AND
 	g_start.od_id = od_ids.od_id 
