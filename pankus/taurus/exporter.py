@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__author__ = 'Maciej Kamiński Politechnika Wrocławska'
+__author__ = 'Wawrzyniec Zipser, Maciej Kamiński Politechnika Wrocławska'
 
 import json,pdb 
 from .utils import TaurusLongTask
