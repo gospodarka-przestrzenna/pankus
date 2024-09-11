@@ -283,6 +283,18 @@ class InterveningOpportunities(DataJournal):
         max_distance, = self.one('intopp/distance_maximum')
         return max_distance
 
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash()
+    def get_max_od_distance(self,**kwargs):
+        """
+        Computes maximum distance between od points
+
+        Returns
+            float: maximum distance
+        """
+        max_distance, = self.one('intopp/od_distance_maximum')
+        return max_distance
+
     # creating table "ring_total" containing data on number of destinations located in specified ring and sum of all the destinations from rings prior to the described ring.
     # Table is filled by SQL script which uses tables "ring" and "model_parameters"
     @init_kwargs_as_parameters
