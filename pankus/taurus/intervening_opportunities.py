@@ -37,6 +37,15 @@ class InterveningOpportunities(DataJournal):
             'convolution_intensity_name':convolution_intensity_name
         })
 
+    @init_kwargs_as_parameters
+    @DataJournal.log_and_stash("model_parameters")
+    def scale_origins(self,fraction=1.0,**kwargs):
+       
+        """
+        multiplies origins by a given fraction
+        """
+        self.do('intopp/multiply_origins',{'fraction':fraction})
+
     # creating selectivity, a parameter describing probability of object choosing a point as a destination,
     # taking into consideration other point placed between the object and considered point.
     # Sum of all destinations from table "model_parameters" is selected, then used to calculate selectivity value,
@@ -333,8 +342,7 @@ class InterveningOpportunities(DataJournal):
             'destinations_new_name':'destinations'+suffix,
             'selectivity_new_name':'selectivity'+suffix,
         })
-
-
+    
     #calculating numbers of transported "objects". Results are written in the "motion_exchange" table, describing accurate quantity of transported "objects" and "motion_exchange_fraction" table, describing the same amounts in a form of fractions. Due to the model nature especially importatnt are fraction of "objects" which found destination in a chosen ring and fraction of "objects" which found destinations in the prior rings. "motion_exchange" function uses data stored in tables "ring", "ring_total" and "model_parameters".
     @init_kwargs_as_parameters
     @DataJournal.log_and_stash("motion_exchange", "motion_exchange_fraction")
