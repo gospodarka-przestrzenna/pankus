@@ -203,6 +203,12 @@ class Exporter(DataJournal):
             property_builder[od_id][od_field_name]=od_id
             property_builder[od_id][zone_name_prefix+str(ring)]=str(group) if group else None
         
+        # the od_field_name must contain consecutive numbers starting from 0
+
+        numbers = sorted([property_builder[od_id][od_field_name] for od_id in property_builder])
+        if numbers != list(range(len(numbers))):
+            raise ValueError("The identifiaction column must contain consecutive numbers starting from 0")
+
         for i,od_id in enumerate(property_builder):
             property_builder[od_id]['ID']=i
 
