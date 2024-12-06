@@ -12,16 +12,38 @@ class Importer(DataJournal):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
 
+    def _check_crs_match(self,json_data):
+        self.do('initial/create_metadata') # create metadata table if not exists
+        
+        crs = json_data['crs']
+        if crs is None:
+            crs_name = 'EPSG:4326'
+        else:
+            if crs['type'] != 'name':
+                raise ValueError("Unsupported crs type "+str(crs))
+            else:
+                crs_name=crs['properties']['name']
+
+        db_crs = self.one('initial/select_metadata',{'key':'crs_name'})
+        if db_crs is None:
+            self.do('initial/insert_metadata',{'key':'crs_name','value':crs_name})
+        else:
+            if db_crs[0] != crs_name:
+                raise AssertionError("CRS mismatch: "+str(db_crs[0])+" != "+str(crs_name))
+    
     @init_kwargs_as_parameters
     def import_network_geojson(self,
                                 make_two_side=False,
                                 network_filename="net.geojson",
 
                                 **kwargs):
+        self.do('initial/create_metadata')
         self.do('initial/create_network')
         with open(network_filename,'rb') as net:
             net_data=json.load(net)
-
+            
+            self._check_crs_match(net_data)
+            
             geometry_to_insert=[]
             data_to_insert=[]
             for feature in TaurusLongTask(net_data['features'],**kwargs):
@@ -80,6 +102,8 @@ class Importer(DataJournal):
         self.do('initial/create_od')
         with open(od_filename,'rb') as od:
             od_data=json.load(od)
+            
+            self._check_crs_match(od_data)
 
             geometry_to_insert=[]
             data_to_insert=[]

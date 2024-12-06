@@ -12,6 +12,20 @@ class Exporter(DataJournal):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
 
+    def _add_crs(self,geojson):
+        crs_name = self.one('initial/select_metadata',{'key':'crs_name'})
+
+        if not crs_name:
+            # As for backward compatibility let's do nothing
+            return
+        
+        geojson['crs'] = {
+            "type": "name",
+            "properties": {
+                "name": crs_name[0]
+            }
+        }
+
     @init_kwargs_as_parameters
     def export_network_geojson(self,
                                 out_network_filename="out_net.geojson",
@@ -54,6 +68,7 @@ class Exporter(DataJournal):
 
 
         geojson={"type": "FeatureCollection","features": []}
+        self._add_crs(geojson)
         for start,end,linestring in self.do('exporter/select_network_geometry'):
             geojson["features"].append({
                 "type": "Feature",
@@ -106,6 +121,7 @@ class Exporter(DataJournal):
                 add_field(name,float_values)
 
         geojson={"type": "FeatureCollection","features": []}
+        self._add_crs(geojson)
         for od_id,point in self.do('exporter/select_od_geometry'):
             geojson["features"].append({
                 "type": "Feature",
@@ -128,7 +144,7 @@ class Exporter(DataJournal):
         assert self.table_exists('motion_exchange')
 
         geojson={"type": "FeatureCollection","features": []}
-
+        self._add_crs(geojson)
         for start,end,start_id,end_id,motion_exchange,fraction in self.do('exporter/select_motion_exchange_with_geometry'):
             geojson["features"].append({
                 "type": "Feature",
@@ -152,7 +168,7 @@ class Exporter(DataJournal):
                                 out_filename="problematic_points.geojson",
                                 **kwargs):
         geojson={"type": "FeatureCollection","features": []}
-
+        self._add_crs(geojson)
         for point, in self.do('initial/check_geometry'):
             geojson["features"].append({
                 "type": "Feature",
@@ -172,7 +188,7 @@ class Exporter(DataJournal):
                                 fields=None, #if none select all fields ; else list of filelds
                                 **kwargs):
         geojson={"type": "FeatureCollection","features": []}
-
+        self._add_crs(geojson)
         for start,end,linestring,count in self.do('exporter/select_network_geometry_without_repetition'):
             geojson["features"].append({
                 "type": "Feature",
@@ -213,6 +229,7 @@ class Exporter(DataJournal):
             property_builder[od_id]['ID']=i
 
         geojson={"type": "FeatureCollection","features": []}
+        self._add_crs(geojson)
         for od_id in property_builder:
             geojson["features"].append({
                 "type": "Feature",
@@ -246,6 +263,7 @@ class Exporter(DataJournal):
             })
 
         geojson={"type": "FeatureCollection","features": []}
+        self._add_crs(geojson)
         for element in property_builder:
             geojson["features"].append({
                 "type": "Feature",
@@ -258,7 +276,7 @@ class Exporter(DataJournal):
     
     def export_unreachable_points_geojson(self,od_id=None,out_filename="unreachable.geojson",**kwargs):
         geojson={"type": "FeatureCollection","features": []}
-
+        self._add_crs(geojson)
         for id,point in self.do('exporter/select_unreachable_points',{'od_id':od_id}):
             geojson["features"].append({
                 "type": "Feature",
