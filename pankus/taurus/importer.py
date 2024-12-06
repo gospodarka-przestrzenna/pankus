@@ -55,6 +55,14 @@ class Importer(DataJournal):
                     geometry = feature['geometry']['coordinates']
                 else:
                     raise ValueError("Unsupported geomety in feature "+str(feature))
+                
+                # chech if geometry is not empty
+                if len(geometry)<2:
+                    raise ValueError("Empty geometry in feature "+str(feature))
+                
+                # check if it is not true that each point is the same
+                if all([geometry[0]==point for point in geometry]):
+                    raise ValueError("All points are the same in feature "+str(feature))
 
                 linestring=json.dumps(geometry)
                 start=json.dumps(geometry[0])
