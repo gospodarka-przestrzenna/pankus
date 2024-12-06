@@ -121,6 +121,9 @@ class Importer(DataJournal):
 
                 od_id=feature['properties'][od_id_name]
                 geometry=json.dumps(feature['geometry']['coordinates'])
+                # check if geometry is not empty
+                if len(geometry)!=2:
+                    raise ValueError("Empty geometry in feature "+str(feature))
                 geometry_to_insert.append({
                     'od_id':int(od_id),
                     'point':str(geometry)
