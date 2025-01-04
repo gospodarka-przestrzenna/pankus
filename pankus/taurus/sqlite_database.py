@@ -78,7 +78,7 @@ class SQLiteDatabase:
             query_list=sql_string.split(';')
             for query in query_list:
                 self.db_connection.execute(query,args)
-                self.commit()
+            self.commit()
         else:
             self.db_connection.executescript(sql_string)
             self.commit()
