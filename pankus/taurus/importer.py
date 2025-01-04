@@ -120,7 +120,7 @@ class Importer(DataJournal):
                 assert od_id_name in feature['properties']
 
                 od_id=feature['properties'][od_id_name]
-                geometry=json.dumps(feature['geometry']['coordinates'])
+                geometry=feature['geometry']['coordinates']
                 # check if geometry is not empty
                 if len(geometry)!=2:
                     raise ValueError("Empty geometry in feature "+str(feature))
