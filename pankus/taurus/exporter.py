@@ -231,7 +231,14 @@ class Exporter(DataJournal):
         
         property_builder = []
 
+        # lets see what the max ring is we must not exceed it
+        max_ring=0
+        for od_id,ring,group in self.do('exporter/select_od_rings_orionjs'):
+            max_ring=max(max_ring,ring)
+
         for _,size,prior_cost in self.do('exporter/select_random_ring_layout_costs'):
+            if len(property_builder) > max_ring:
+                break
             property_builder.append({
                 'ID':len(property_builder),
                 zone_name:prior_cost+size,
