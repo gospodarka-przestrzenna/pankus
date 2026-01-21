@@ -229,6 +229,10 @@ class Exporter(DataJournal):
                 zone_name=zone_name_prefix+str(ring)
                 if zone_name not in property_builder[od_id]:
                     property_builder[od_id][zone_name]=None
+                # now let's structure and order fields
+                data = property_builder[od_id][zone_name]
+                del property_builder[od_id][zone_name]
+                property_builder[od_id][zone_name]=data
         
         # the od_field_name must contain consecutive numbers starting from 0
 
