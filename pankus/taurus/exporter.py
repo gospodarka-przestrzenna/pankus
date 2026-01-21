@@ -213,11 +213,22 @@ class Exporter(DataJournal):
         property_builder = dict()
 
         # { 7: { STREFA_4": "4 5 7", ...,LOC_ID: 7}, 9: {"STREFA_3: "4 7 9" ...} ... }
+        ring_ids = set()
+
         for od_id,ring,group in self.do('exporter/select_od_rings_orionjs'):
             if od_id not in property_builder:
                 property_builder[od_id]={}
             property_builder[od_id][od_field_name]=od_id
             property_builder[od_id][zone_name_prefix+str(ring)]=str(group) if group else None
+            ring_ids.add(ring)
+        
+        max_ring = max(ring_ids)
+        # fill missing zones with None
+        for od_id in property_builder:
+            for ring in range(max_ring+1):
+                zone_name=zone_name_prefix+str(ring)
+                if zone_name not in property_builder[od_id]:
+                    property_builder[od_id][zone_name]=None
         
         # the od_field_name must contain consecutive numbers starting from 0
 
