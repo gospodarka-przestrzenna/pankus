@@ -55,6 +55,14 @@ class Importer(DataJournal):
                     geometry = feature['geometry']['coordinates']
                 else:
                     raise ValueError("Unsupported geomety in feature "+str(feature))
+                
+                # chech if geometry is not empty
+                if len(geometry)<2:
+                    raise ValueError("Empty geometry in feature "+str(feature))
+                
+                # check if it is not true that each point is the same
+                if all([geometry[0]==point for point in geometry]):
+                    raise ValueError("All points are the same in feature "+str(feature))
 
                 linestring=json.dumps(geometry)
                 start=json.dumps(geometry[0])
@@ -112,7 +120,10 @@ class Importer(DataJournal):
                 assert od_id_name in feature['properties']
 
                 od_id=feature['properties'][od_id_name]
-                geometry=json.dumps(feature['geometry']['coordinates'])
+                geometry=feature['geometry']['coordinates']
+                # check if geometry is not empty
+                if len(geometry)!=2:
+                    raise ValueError("Empty geometry in feature "+str(feature))
                 geometry_to_insert.append({
                     'od_id':int(od_id),
                     'point':str(geometry)
