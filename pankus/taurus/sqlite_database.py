@@ -3,7 +3,7 @@
 __author__ = 'Wawrzyniec Zipser, Maciej Kamiński Politechnika Wrocławska'
 
 import sqlite3
-import pkg_resources
+from importlib import resources
 #from .taurus_leaf import TaurusLeaf
 from .utils import init_kwargs_as_parameters
 
@@ -18,7 +18,11 @@ class SQLiteDatabase:
 
     def get_sql_form_file(self,script_name):
         #print(pkg_resources,__name__)
-        return pkg_resources.resource_stream(__name__,'SQL/'+script_name+'.sql').read().decode('ascii')
+        return (
+                resources.files(__package__)
+                    .joinpath('SQL', script_name + '.sql')
+                    .read_text(encoding='ascii')
+        )
 
     def build_sql(self,script_string,args={}):
         return script_string.format(**args)
