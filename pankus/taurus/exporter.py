@@ -13,7 +13,10 @@ class Exporter(DataJournal):
         super().__init__(**kwargs)
 
     def _add_crs(self,geojson):
-        crs_name = self.one('initial/select_metadata',{'key':'crs_name'})
+        try:
+            crs_name = self.one('initial/select_metadata',{'key':'crs_name'})
+        except:
+            crs_xname = None
 
         if not crs_name:
             # As for backward compatibility let's do nothing
