@@ -16,7 +16,7 @@ class Exporter(DataJournal):
         try:
             crs_name = self.one('initial/select_metadata',{'key':'crs_name'})
         except:
-            crs_xname = None
+            crs_name = None
 
         if not crs_name:
             # As for backward compatibility let's do nothing
