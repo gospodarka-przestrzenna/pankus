@@ -15,7 +15,7 @@ class Importer(DataJournal):
     def _check_crs_match(self,json_data):
         self.do('initial/create_metadata') # create metadata table if not exists
         
-        crs = json_data['crs']
+        crs = json_data.get('crs',None)
         if crs is None:
             crs_name = 'EPSG:4326'
         else:
