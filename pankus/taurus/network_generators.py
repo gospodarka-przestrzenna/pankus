@@ -82,6 +82,19 @@ class NetworkGenerator(Importer):
         self.transaction('initial/import_od_geometry',od_geometry_to_insert)
         self.transaction('initial/import_od_properties',od_data_to_insert)
 
+    # write crs with check if it is the same as in the database, if not raise an error
+    def _generated_network_crs(self,crs_name:str):
+        self.do('initial/create_metadata') # create metadata table if not exists
+        db_crs = self.one('initial/select_metadata',{'key':'crs_name'})
+
+        # Project CRS must not be different from the CRS of the generated network. If the project CRS is not set, it will be set to the CRS of the generated network.
+        if db_crs is not None and db_crs[0] != crs_name:
+            raise AssertionError("CRS mismatch: "+str(db_crs[0])+" != "+str(crs_name))
+        
+        if db_crs is  None:
+            self.do('initial/insert_metadata',{'key':'crs_name','value':crs_name})
+    
+
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
     def make_hexhorny_pattern_network(self,size,delta=0.0001,**kwargs):
