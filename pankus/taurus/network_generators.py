@@ -77,6 +77,12 @@ class NetworkGenerator(Importer):
                 'name':'origins',
                 'value':p['data']['origins']
             })
+            od_data_to_insert.append({
+                'od_id':p['data']['od_id'],
+                'name':'od_id',
+                'value':p['data']['od_id']
+            })
+            
 
         # running SQL scripts filling existing tables with the data created earlier
         self.transaction('initial/import_od_geometry',od_geometry_to_insert)
