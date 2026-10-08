@@ -82,12 +82,26 @@ class NetworkGenerator(Importer):
         self.transaction('initial/import_od_geometry',od_geometry_to_insert)
         self.transaction('initial/import_od_properties',od_data_to_insert)
 
+    # write crs with check if it is the same as in the database, if not raise an error
+    def _generated_network_crs(self,crs_name:str):
+        self.do('initial/create_metadata') # create metadata table if not exists
+        db_crs = self.one('initial/select_metadata',{'key':'crs_name'})
+
+        # Project CRS must not be different from the CRS of the generated network. If the project CRS is not set, it will be set to the CRS of the generated network.
+        if db_crs is not None and db_crs[0] != crs_name:
+            raise AssertionError("CRS mismatch: "+str(db_crs[0])+" != "+str(crs_name))
+        
+        if db_crs is  None:
+            self.do('initial/insert_metadata',{'key':'crs_name','value':crs_name})
+    
+
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hexhorny_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_hexhorny_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         rows=[]
         vector=cmath.rect(1,cmath.pi/3)
@@ -124,7 +138,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data= [{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -176,11 +190,11 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_trianglehex_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_trianglehex_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
-
+        self._generated_network_crs(crs_name)
 
         rows=[]
         vector=cmath.rect(1,cmath.pi/3)
@@ -207,7 +221,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data= [{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -235,11 +249,11 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hexdiagonal_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_hexdiagonal_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
 
         self.do('initial/create_network')
         self.do('initial/create_od')
-
+        self._generated_network_crs(crs_name)
 
         rows=[]
         vector=cmath.rect(1,cmath.pi/3)
@@ -267,7 +281,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -353,21 +367,25 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_hex_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_hex_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
         '''
         Creates hexagonal pattern network. HEXAGONS binded together by edge (like square pattern but with hexagons)
         Creates also corresponding origins - destinations points.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
         Don't use it for
 
         :param size: How many lines to create on side. 1 by 1 lines create just a hexagon with point inside.
-        :param delta: Network relative (to earth WSG84) size.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the network center.
+        :param lon: Longitude of the network center.
+        :param delta: Network connection size.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         # main Point generator part
 
@@ -401,7 +419,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -429,22 +447,26 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_square_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_square_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
         '''
         Creates square pattern network.
         Coresponding origins - destinations points are also created.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
         Don't use it for
 
-        :param size: How many lines to create. 1 by 1 lines create just a square.
-        :param delta: Network relative (to earth WSG84) size.
+        :param size: How many lines to create on side. 1 by 1 lines create just a hexagon with point inside.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the network center.
+        :param lon: Longitude of the network center.
+        :param delta: Network connection size.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
-
+        self._generated_network_crs(crs_name)
+        
         # main Point generator part
 
         points=[]
@@ -459,7 +481,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -494,21 +516,26 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_trihexhex_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_trihexhex_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
         '''
         Creates trihexhex pattern network.
         mede out of tri-hexagons layers round tri-hexagon
         Coresponding origins - destinations points are also created.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
+        Don't use it for
 
-        :param size: How many layers to create. 1 by 1 lines create just a square.
-        :param delta: Network relative (to earth WSG84) size.
+        :param size: How many lines to create on side. 1 by 1 lines create just a hexagon with point inside.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the network center.
+        :param lon: Longitude of the network center.
+        :param delta: Network connection size.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         # main Point generator part
         points=[]
@@ -574,7 +601,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -604,20 +631,25 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_octagonlike_square_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_octagonlike_square_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
         '''
         Creates octagon looked like pattern network mede out of squares.
         Coresponding origins - destinations points are also created.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
+        Don't use it for
 
-        :param size: How many layers to create. 1 by 1 lines create just a square.
-        :param delta: Network relative (to earth WSG84) size.
+        :param size: How many lines to create on side. 1 by 1 lines create just a hexagon with point inside.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the network center.
+        :param lon: Longitude of the network center.
+        :param delta: Network connection size.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         # main Point generator part
         points=[]
@@ -698,7 +730,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -720,20 +752,25 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_snowflake_pattern_network(self,size,delta=0.0001,**kwargs):
+    def make_snowflake_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=100,**kwargs):
         '''
         Creates snowflake looked like pattern network.
         Coresponding origins - destinations points are also created.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
+        Don't use it for
 
-        :param size: How many layers to create. 1 by 1 lines create just a square.
-        :param delta: Network relative (to earth WSG84) size.
+        :param size: How many lines to create on side. 1 by 1 lines create just a hexagon with point inside.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the reference point.
+        :param lon: Longitude of the reference point.
+        :param delta: Network connection size.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         # main Point generator part
         points=[]
@@ -851,7 +888,7 @@ class NetworkGenerator(Importer):
 
         # Let add some data to geometries
         points_with_data=[{
-            'geometry':[point.real,point.imag],
+            'geometry':[point.real+lon,point.imag+lat],
             'data':{
                 'od_id':i,
                 'origins':1,
@@ -872,20 +909,24 @@ class NetworkGenerator(Importer):
 
     @init_kwargs_as_parameters
     @Importer.log_and_stash("network_properties", "network_geometry")
-    def make_triangular_catenary_pattern_network(self,size,delta=1,**kwargs):
+    def make_triangular_catenary_pattern_network(self,size,crs_name="EPSG:2180",lat=0,lon=0,delta=500,**kwargs):
         '''
         Creates triangular catenary (T. Zipser) pattern network.
         Coresponding origins - destinations points are also created.
         origins - destinations are set in way their total sum is 1 for origins and destinations.
-        Points for abstract network are generated in WSG84 coordinate system starting at point (0,0).
-        On this level we use globe WSG84 as a Carthesian coordinates system.
+        Points for abstract network are generated in metric coordinate system starting at point (lon, lat).
+        On this level we use CRS as a Carthesian coordinates system.
 
         :param size: Size
-        :param delta: Network relative (to earth WSG84) size.
+        :param crs_name: The coordinate reference system name.
+        :param lat: Latitude of the reference point.
+        :param lon: Longitude of the reference point.
+        :param delta: Network connector length.
         :return:
         '''
         self.do('initial/create_network')
         self.do('initial/create_od')
+        self._generated_network_crs(crs_name)
 
         # main Point generator part
         net_geometry_to_insert=[]
@@ -907,7 +948,7 @@ class NetworkGenerator(Importer):
                         'destinations':d,
                         'origins':o
                         },
-                    'geometry':[gc.real,gc.imag]
+                    'geometry':[gc.real+lon,gc.imag+lat]
                     })
         def con(x,y,w):
             gx,gy=gb(x),gb(y)
