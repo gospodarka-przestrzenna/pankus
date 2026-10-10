@@ -14,7 +14,7 @@ class NetworkGenerator(Importer):
         super().__init__(**kwargs)
 
     # adding new rows to tables: network_geometry and network_properties, these new rows contain data on specified segments connecting points in the network
-    def _addel(self,element,elementrel,net_geometry_to_insert,net_data_to_insert,value=1):
+    def _addel(self,element,elementrel,net_geometry_to_insert,net_data_to_insert,value=1,**kwargs):
         """
         function "addel" adds new rows to tables: network_geometry and network_properties,
         these new rows contain data on specified segments connecting points in the network
@@ -25,8 +25,13 @@ class NetworkGenerator(Importer):
         :param value:
         :return:
         """
-        start=[element.real,element.imag]
-        end=[elementrel.real,elementrel.imag]
+        
+        lat=kwargs.get('lat',0)
+        lon=kwargs.get('lon',0)
+
+        start=[element.real+lon,element.imag+lat]
+        end=[elementrel.real+lon,elementrel.imag+lat]
+
         net_geometry_to_insert.append({
             'start':str(start),
             'end':str(end),
@@ -169,23 +174,23 @@ class NetworkGenerator(Importer):
                     if ((size*2)//3)>=i:
                         # connections in row
                         if k==0:
-                            self._addel(rows[i][j][k],rows[i][j-1][-1],net_geometry_to_insert,net_data_to_insert)
-                            self._addel(rows[i][j-1][-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                            self._addel(rows[i][j][k],rows[i][j-1][-1],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
+                            self._addel(rows[i][j-1][-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                         else:
-                            self._addel(rows[i][j][k],rows[i][j][k-1],net_geometry_to_insert,net_data_to_insert)
-                            self._addel(rows[i][j][k-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                            self._addel(rows[i][j][k],rows[i][j][k-1],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
+                            self._addel(rows[i][j][k-1],rows[i][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
                     if i-1==0:
                         # connections to 00
-                        self._addel(rows[i][j][k],rows[i-1][0][0],net_geometry_to_insert,net_data_to_insert)
-                        self._addel(rows[i-1][0][0],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i][j][k],rows[i-1][0][0],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
+                        self._addel(rows[i-1][0][0],rows[i][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     elif (len(part)/2)>k and i>1:
-                        self._addel(rows[i][j][k],rows[i-1][j][k],net_geometry_to_insert,net_data_to_insert)
-                        self._addel(rows[i-1][j][k],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i][j][k],rows[i-1][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
+                        self._addel(rows[i-1][j][k],rows[i][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     elif len(part)/2<k and i>1:
                         l=len(part)-k
-                        self._addel(rows[i][j][k],rows[i-1][j][-l],net_geometry_to_insert,net_data_to_insert)
-                        self._addel(rows[i-1][j][-l],rows[i][j][k],net_geometry_to_insert,net_data_to_insert)
+                        self._addel(rows[i][j][k],rows[i-1][j][-l],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
+                        self._addel(rows[i-1][j][-l],rows[i][j][k],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     else:
                         pass
 
@@ -247,7 +252,7 @@ class NetworkGenerator(Importer):
         for p1 in points:
             for p2 in points:
                 if p1!=p2 and abs(p1-p2)<delta*1.1:
-                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert)
+                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
@@ -311,13 +316,17 @@ class NetworkGenerator(Importer):
                         rows[new_row][new_element],
                         net_geometry_to_insert,
                         net_data_to_insert,
-                        (3**0.5)/2)
+                        (3**0.5)/2,
+                        lat=lat,
+                        lon=lon)
                 else:
                     self._addel(
                         rows[old_row][old_elemet],
                         rows[new_row][new_element],
                         net_geometry_to_insert,
-                        net_data_to_insert)
+                        net_data_to_insert,
+                        lat=lat,
+                        lon=lon)
 
         for i,r in enumerate(rows):
             downo=-1
@@ -445,7 +454,7 @@ class NetworkGenerator(Importer):
         for p1 in points:
             for p2 in points:
                 if p1!=p2 and abs(p1-p2)<delta*1.1:
-                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert)
+                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
@@ -508,13 +517,13 @@ class NetworkGenerator(Importer):
         for y,row in enumerate(rows):
             for x,element in enumerate(row):
                 if y!=0:
-                    self._addel(element,rows[y-1][x],net_geometry_to_insert,net_data_to_insert)
+                    self._addel(element,rows[y-1][x],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 if y!=len(rows)-1:
-                    self._addel(element,rows[y+1][x],net_geometry_to_insert,net_data_to_insert)
+                    self._addel(element,rows[y+1][x],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 if x!=0:
-                    self._addel(element,rows[y][x-1],net_geometry_to_insert,net_data_to_insert)
+                    self._addel(element,rows[y][x-1],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 if x!=len(row)-1:
-                    self._addel(element,rows[y][x+1],net_geometry_to_insert,net_data_to_insert)
+                    self._addel(element,rows[y][x+1],net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
@@ -628,7 +637,7 @@ class NetworkGenerator(Importer):
         for p1 in points:
             for p2 in points:
                 if p1!=p2 and abs(p1-p2)<delta*1.1:
-                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert)
+                    self._addel(p1,p2,net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
         self.transaction('initial/import_network_geometry',net_geometry_to_insert)
         self.transaction('initial/import_network_properties',net_data_to_insert)
@@ -696,40 +705,40 @@ class NetworkGenerator(Importer):
             self._addel(
                 parts[part_idx][0][0],
                 points[0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             self._addel(
                 points[0],
                 parts[part_idx][0][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             for row_idx,row in enumerate(rows):
                 for point_idx,point in enumerate(row):
                     if row_idx!=0:
                         self._addel(
                             parts[part_idx][row_idx][point_idx],
                             parts[part_idx][row_idx-1][point_idx],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                         self._addel(
                             parts[part_idx][row_idx-1][point_idx],
                             parts[part_idx][row_idx][point_idx],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     if point_idx!=0:
                         self._addel(
                             parts[part_idx][row_idx][point_idx],
                             parts[part_idx][row_idx][point_idx-1],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                         self._addel(
                             parts[part_idx][row_idx][point_idx-1],
                             parts[part_idx][row_idx][point_idx],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     if point_idx==0:
                         self._addel(
                             parts[(part_idx+1)%4][0][row_idx+1],
                             parts[part_idx][row_idx][0],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                         self._addel(
                             parts[part_idx][row_idx][0],
                             parts[(part_idx+1)%4][0][row_idx+1],
-                            net_geometry_to_insert,net_data_to_insert)
+                            net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
                     points.append(point)
 
@@ -809,86 +818,86 @@ class NetworkGenerator(Importer):
             self._addel(
                 parts[part_idx][0][0],
                 points[0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             self._addel(
                 points[0],
                 parts[part_idx][0][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
             self._addel(
                 parts[part_idx][0][0],
                 parts[part_idx][1][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             self._addel(
                 parts[part_idx][1][0],
                 parts[part_idx][0][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
             self._addel(
                 parts[part_idx][1][0],
                 parts[(part_idx+1)%6][0][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             self._addel(
                 parts[(part_idx+1)%6][0][0],
                 parts[part_idx][1][0],
-                net_geometry_to_insert,net_data_to_insert)
+                net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
             for point_idx,point in enumerate(rows[2]):
                 if point_idx!=0:
                     self._addel(
                         rows[2][point_idx],
                         rows[2][point_idx-1],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     self._addel(
                         rows[2][point_idx-1],
                         rows[2][point_idx],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 else:
                     self._addel(
                         rows[2][0],
                         rows[0][0],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     self._addel(
                         rows[0][0],
                         rows[2][0],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
                 self._addel(
                     rows[2][point_idx],
                     rows[3][point_idx],
-                    net_geometry_to_insert,net_data_to_insert)
+                    net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 self._addel(
                     rows[3][point_idx],
                     rows[2][point_idx],
-                    net_geometry_to_insert,net_data_to_insert)
+                    net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
                 self._addel(
                     rows[2][point_idx],
                     rows[4][point_idx],
-                    net_geometry_to_insert,net_data_to_insert)
+                    net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 self._addel(
                     rows[4][point_idx],
                     rows[2][point_idx],
-                    net_geometry_to_insert,net_data_to_insert)
+                    net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
             for point_idx,point in enumerate(rows[5]):
                 if point_idx!=0:
                     self._addel(
                         rows[5][point_idx],
                         rows[5][point_idx-1],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     self._addel(
                         rows[5][point_idx-1],
                         rows[5][point_idx],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                 else:
                     self._addel(
                         rows[5][0],
                         rows[2][-1],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
                     self._addel(
                         rows[2][-1],
                         rows[5][0],
-                        net_geometry_to_insert,net_data_to_insert)
+                        net_geometry_to_insert,net_data_to_insert,lat=lat,lon=lon)
 
         points+=[point for part in parts for row in part for point in row]
 
@@ -961,8 +970,8 @@ class NetworkGenerator(Importer):
             if (gx,gy) not in point_geoms:
                 point_geoms.add((gx,gy))
                 point_geoms.add((gy,gx))
-                self._addel(gx,gy,net_geometry_to_insert,net_data_to_insert,w)
-                self._addel(gy,gx,net_geometry_to_insert,net_data_to_insert,w)
+                self._addel(gx,gy,net_geometry_to_insert,net_data_to_insert,w,lat=lat,lon=lon)
+                self._addel(gy,gx,net_geometry_to_insert,net_data_to_insert,w,lat=lat,lon=lon)
 
 
 
